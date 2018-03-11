@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">        
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <title>Hardware</title>
+    </head>
+    <body>
+        <div id="navbarId"></div>
+
+        <div class="container my-4">
+            <h3 class="mb-3">Sensor de Temperatura y Humedad</h3>
+            <p class="text-justify mb-3">Para este dispositivo nos basamos en el ESP-8266. Se trata de un módulo WiFi de bajo coste ampliamente 
+                utilizado en multitud de proyectos basados en Arduino. Se puede utilizar junto con otro microcontrolador al que aportaría 
+                conectividad WiFi o programarlo directamente para cualquier aplicación. El fabricante Wemos dispone de modelos compactos al que se
+                pueden apilar sensores.</p>		
+            <h6>Componentes:</h6>
+            <ul>
+                <li><a href="https://wiki.wemos.cc/products:d1:d1_mini_lite">Wemos D1 Mini Lite</a></li>
+                <li><a href="https://wiki.wemos.cc/products:d1_mini_shields:sht30_shield">Wemos SHT30 Shield</a></li>
+            </ul>
+            <div class="col-md-6 offset-md-3">
+                <img src="images/temp_components.jpg" class="img-fluid" alt="Imagen no encontrada">
+            </div>
+            <p class="text-justify p-2">El montaje es muy sencilo simplemente hay que soldar a través de unos pines el módulo SHT30 a la placa  
+                D1 Mini Lite. Además se unen a través de un jumper los pines D0 y RST de forma que se puedan desconectar. Para 
+                cargar programas a tráves del conector micro usb el pin RST debe estar libre.</p>
+            <div class="row">
+                <div class="col-md-4 offset-md-2">
+                    <img src="images/temp_finished1.jpg" class="img-fluid" alt="Imagen no encontrada">
+                </div>
+                <div class="col-md-4">
+                    <img src="images/temp_finished2.jpg" class="img-fluid" alt="Imagen no encontrada">
+                </div>
+            </div>
+            <h6>Software:</h6>
+            <ul>
+                <li>
+                    <a href="https://github.com/esp8266/Arduino#installing-with-boards-manager">Instalar ESP8266 al entorno Arduino</a><br>
+                    <p class="text-justify">Para la programación podemos utilizar el IDE de Arduino gracias a las librerias desarrolladas por la 
+                        comunidad de ESP8266. Una vez instalado el plugin elegimos la placa "WeMos D1, R2 & Mini" para poder compilar y subir nuestro código.</p>
+                </li>
+                <li>
+                    <a href="https://github.com/wemos/WEMOS_SHT3x_Arduino_Library">Librería Wemos SHT30</a><br>
+                    <p class="text-justify">El sensor SHT30 se maneja a través de un puerto I2C. Hay disponible una librería del fabricante para facilitar 
+                        su uso. Con ella nos abstraemos de la comunicación a bajo nivel y ya tiene en cuenta el conexionado de los pines por lo que no requiere configuración. 
+                        Para utilizarla basta con copiarla a la carpeta <i>libraries</i> de Arduino.</p>
+                </li>
+                <li>
+                    <a href="/user/sketches/temp-esp8266.zip" download>Sketch de ejemplo</a><br>
+                    <p class="text-justify">Tras estos pasos ya podemos cargar el sketch. Tan solo hay que configurar los siguentes parámetros: 
+                        <b>ssid</b>, <b>password</b> y <b>token</b>. El programa es simple, una vez se alimenta a través del conector micro usb lo primero que hace 
+                        es obtener la temperatura y humedad. A continuación se conecta a la red wifi y hace una llamada http post al servidor.
+                        Finalmente se pone en modo reposo para no consumir y evitar que suba la temperatura del circuito unos grados debido al 
+                        funcionamiento del WiFi. Tras 20 minutos se produce una interrupción que reinicia la placa y vuelve a comenzar (es 
+                        necesario que los pines D0 y RST estén conectados).</p>
+                </li>
+            </ul>
+        </div>
+
+        <div id="footerId"></div>
+
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="/public/js/loadnavbarandfooter.js"></script>
+    </body>
+</html>
