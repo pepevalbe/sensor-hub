@@ -1,13 +1,14 @@
 # sensor-hub
-Web app for sensor data collection and representation in Spring Boot + Bootstrap 4 . 
-It is prepared to be deployed in Heroku with a PostgreSQL database.
+Web app for sensor data collection and representation in Spring Boot + Bootstrap 4. 
+It is prepared to be deployed in Heroku with a PostgreSQL database. 
+Configuration is taken from application.properties file, command line (java property) and ConfigVariable table in database (for sensitive data)
 
-You need to initialize some Java properties if running locally from maven (they are already included in netbeans configuration): 
-mvn spring-boot:run -Drun.jvmArguments="-Ddemo-user-role=ADMIN -Dsign-up-enabled=1 -Dapp-url=http://localhost:8080"
+For development enviroment you can use the default embedded H2 database or switch to a PostgreSQL database (please check properties file). 
+You need to set up your email address and password for the email sender class to work (can be done in the properties file or the database).
 
-In the application property file you can change the default embedded H2 database to a PostgreSQL database. 
-Also you need to set up your gmail address and gmail application password for the email class to work.
+How to run: *mvn spring-boot:run -Drun.jvmArguments="-Dsign-up-enabled=1"*
 
+Arquitecture:
 ![Diagram](sensor-hub-architecture.PNG)
 
 Dependencies loaded:
@@ -44,5 +45,6 @@ Includes some tools for development like auto deploy when code changes
     
 **Presentation layer:**
   * Bootstrap 4
+  * Bootstrap Toggle
   * jQuery
   * jQueryUI Datepicker 
