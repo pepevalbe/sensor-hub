@@ -29,8 +29,19 @@ $(document).ready(function () {
                     {data: 'email'},
                     {data: 'firstName'},
                     {data: 'lastName'},
-                    {data: 'creationTimestamp'}
+                    {data: 'creationTimestamp'},
+                    {data: function (row) {
+                            var aux = "<a class=\"removeRow\" id=\"{id}\" href=\"#\">Borrar</a>";
+                            return aux.replace("{id}", row._links.self.href);
+                        }}
                 ]
+            });
+
+            // Remove row from datatables and database
+            usersTable.on('draw', function () {
+                $("a.removeRow").click(function () {
+                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                });
             });
         }
     });
@@ -67,8 +78,19 @@ $(document).ready(function () {
                         }},
                     {data: 'timestamp'},
                     {data: 'temperature'},
-                    {data: 'humidity'}
+                    {data: 'humidity'},
+                    {data: function (row) {
+                            var aux = "<a class=\"removeRow\" id=\"{id}\" href=\"#\">Borrar</a>";
+                            return aux.replace("{id}", row._links.self.href);
+                        }}
                 ]
+            });
+
+            // Remove row from datatables and database
+            tempHumiditiesTable.on('draw', function () {
+                $("a.removeRow").click(function () {
+                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                });
             });
 
             // Trigger search only when pressing enter
@@ -110,8 +132,19 @@ $(document).ready(function () {
                             });
                             return username;
                         }},
-                    {data: 'timestamp'}
+                    {data: 'timestamp'},
+                    {data: function (row) {
+                            var aux = "<a class=\"removeRow\" id=\"{id}\" href=\"#\">Borrar</a>";
+                            return aux.replace("{id}", row._links.self.href);
+                        }}
                 ]
+            });
+
+            // Remove row from datatables and database
+            doorEventsTable.on('draw', function () {
+                $("a.removeRow").click(function () {
+                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                });
             });
 
             // Trigger search only when pressing enter
@@ -158,16 +191,17 @@ $(document).ready(function () {
                     {data: 'value2'},
                     {data: 'value3'},
                     {data: function (row) {
-                            var aux = "<a class=\"deleteEntity\" id=\"{id}\" href=\"#\">Borrar</a>";
+                            var aux = "<a class=\"removeRow\" id=\"{id}\" href=\"#\">Borrar</a>";
                             return aux.replace("{id}", row._links.self.href);
                         }}
-                ],
-                initComplete: function (settings, json) {
-                    $(".deleteEntity").click(function () {
-                        console.log($(this).attr("id"));
-                        deleteEntity($(this).attr("id"), alert("Borrado"));
-                    });
-                }
+                ]
+            });
+
+            // Remove row from datatables and database
+            sensorReadingsTable.on('draw', function () {
+                $("a.removeRow").click(function () {
+                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                });
             });
 
             // Trigger search only when pressing enter
@@ -203,12 +237,12 @@ function datatablesToSpringRest(data, baseUrl, entityName, columns, fnCallback, 
     });
 }
 
-function deleteEntity(url, fnCallback) {
+function removeRow(url, row, table) {
     $.ajax({
         url: url,
         method: "DELETE",
         success: function () {
-            fnCallback();
+            table.row(row).remove().draw();
         }
     });
 }
