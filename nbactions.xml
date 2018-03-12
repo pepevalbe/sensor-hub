@@ -9,7 +9,7 @@
             <goal>spring-boot:run</goal>
         </goals>
         <properties>
-            <run.jvmArguments>-noverify -XX:TieredStopAtLevel=1 -Ddemo-user-role=ADMIN -Dsign-up-enabled=1 -Dapp-base-url=http://localhost:8080</run.jvmArguments>
+            <run.jvmArguments>-noverify -XX:TieredStopAtLevel=1 -Dsign-up-enabled=1 -Dapp-base-url=http://localhost:8080</run.jvmArguments>
             <run.mainClass>com.pepe.sensor.Sensor-hubApplication</run.mainClass>
             <Env.SPRING_OUTPUT_ANSI_ENABLED>always</Env.SPRING_OUTPUT_ANSI_ENABLED>
             

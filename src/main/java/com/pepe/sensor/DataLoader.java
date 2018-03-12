@@ -4,6 +4,7 @@ import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.repository.PersonRepository;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,9 @@ public class DataLoader implements ApplicationRunner {
 
     PersonRepository personRepository;
     PasswordEncoder passwordEncoder;
+
+    @Value("${pepe-sensores.demo_user_role}")
+    String DEMO_USER_ROLE;
 
     @Autowired
     public DataLoader(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
@@ -26,7 +30,7 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         // Create demo user
-        Person user = new Person("user", passwordEncoder.encode("user"), System.getProperty("demo-user-role"),
+        Person user = new Person("user", passwordEncoder.encode("user"), DEMO_USER_ROLE,
                 "user@email.com", "NombreDeUsuario", "ApellidoDeUsuario");
 
         // Remove existing demo user (delete propagates to OnetToMany relationships)
