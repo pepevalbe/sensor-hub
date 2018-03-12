@@ -34,7 +34,7 @@ public class ScheduledTask {
 
     @Scheduled(fixedRate = 7200000, initialDelay = 1000) // Every 2 hours
     public void postTempHumidity() throws Exception {
-        //restClient.postTempHumidity();
+        restClient.postTempHumidity();
     }
 
     @Scheduled(fixedRate = 1080000, initialDelay = 1000) // Every 3 hours
