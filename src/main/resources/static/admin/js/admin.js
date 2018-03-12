@@ -10,9 +10,9 @@ var doorEventsTable;
 var sensorReadingsTable;
 
 $(document).ready(function () {
+    // Create tablae for users
     $("#usersNav").click(function () {
         if (!usersTable) {
-            // Create tablae for users
             usersTable = $("#usersTableId").DataTable({
                 lengthMenu: [20, 50, 100, 200],
                 serverSide: true,
@@ -36,16 +36,19 @@ $(document).ready(function () {
                         }}
                 ]
             });
-
             // Remove row from datatables and database
             usersTable.on('draw', function () {
                 $("a.removeRow").click(function () {
-                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                    var $td = $(this);
+                    $("#confirmRemoveRow").click(function () {
+                        $('#removeRowModal').modal('hide');
+                        removeRow($td.attr("id"), $td.parents('tr'), usersTable);
+                    });
+                    $('#removeRowModal').modal('show');
                 });
             });
         }
     });
-
     // Create temperature table
     $("#tempHumiditiesNav").click(function () {
         if (!tempHumiditiesTable) {
@@ -56,7 +59,6 @@ $(document).ready(function () {
                     var columns = ["id", "user", "timestamp", "temperature", "humidity"];
                     if (data.search.value !== "") {
                         datatablesToSpringRest(data, GET_TEMPHUMIDITIES_URL + "/search/findByUsername?username=", "tempHumidities", columns, callback, data.search.value);
-
                     } else {
                         datatablesToSpringRest(data, GET_TEMPHUMIDITIES_URL, "tempHumidities", columns, callback);
                     }
@@ -66,15 +68,7 @@ $(document).ready(function () {
                             return row._links.self.href.split('/').pop();
                         }},
                     {data: function (row) {
-                            var username = row._links.owner.href;
-                            $.ajax({
-                                async: false,
-                                url: row._links.owner.href,
-                                success: function (data) {
-                                    username = data.username;
-                                }
-                            });
-                            return username;
+                            return row._links.owner.href;
                         }},
                     {data: 'timestamp'},
                     {data: 'temperature'},
@@ -85,14 +79,23 @@ $(document).ready(function () {
                         }}
                 ]
             });
-
+            // Get and set usernames in second column after init
+            tempHumiditiesTable.on('init', function () {
+                tempHumiditiesTable.column(1).nodes().each(function (i) {
+                    getUsername(i);
+                });
+            });
             // Remove row from datatables and database
             tempHumiditiesTable.on('draw', function () {
                 $("a.removeRow").click(function () {
-                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                    var $td = $(this);
+                    $("#confirmRemoveRow").click(function () {
+                        $('#removeRowModal').modal('hide');
+                        removeRow($td.attr("id"), $td.parents('tr'), tempHumiditiesTable);
+                    });
+                    $('#removeRowModal').modal('show');
                 });
             });
-
             // Trigger search only when pressing enter
             $("#tempHumiditiesTableId_filter input").unbind().keyup(function (e) {
                 if (e.keyCode === 13) {
@@ -101,7 +104,6 @@ $(document).ready(function () {
             });
         }
     });
-
     // Create door events table
     $("#doorEventsNav").click(function () {
         if (!doorEventsTable) {
@@ -112,7 +114,6 @@ $(document).ready(function () {
                     var columns = ["id", "user", "timestamp"];
                     if (data.search.value !== "") {
                         datatablesToSpringRest(data, GET_DOOREVENTS_URL + "/search/findByUsername?username=", "doorEvents", columns, callback, data.search.value);
-
                     } else {
                         datatablesToSpringRest(data, GET_DOOREVENTS_URL, "doorEvents", columns, callback);
                     }
@@ -122,15 +123,7 @@ $(document).ready(function () {
                             return row._links.self.href.split('/').pop();
                         }},
                     {data: function (row) {
-                            var username = row._links.owner.href;
-                            $.ajax({
-                                async: false,
-                                url: row._links.owner.href,
-                                success: function (data) {
-                                    username = data.username;
-                                }
-                            });
-                            return username;
+                            return row._links.owner.href;
                         }},
                     {data: 'timestamp'},
                     {data: function (row) {
@@ -139,14 +132,23 @@ $(document).ready(function () {
                         }}
                 ]
             });
-
+            // Get and set usernames in second column after init
+            doorEventsTable.on('init', function () {
+                doorEventsTable.column(1).nodes().each(function (i) {
+                    getUsername(i);
+                });
+            });
             // Remove row from datatables and database
             doorEventsTable.on('draw', function () {
                 $("a.removeRow").click(function () {
-                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                    var $td = $(this);
+                    $("#confirmRemoveRow").click(function () {
+                        $('#removeRowModal').modal('hide');
+                        removeRow($td.attr("id"), $td.parents('tr'), doorEventsTable);
+                    });
+                    $('#removeRowModal').modal('show');
                 });
             });
-
             // Trigger search only when pressing enter
             $("#doorEventsTableId_filter input").unbind().keyup(function (e) {
                 if (e.keyCode === 13) {
@@ -155,7 +157,6 @@ $(document).ready(function () {
             });
         }
     });
-
     // Create generic sensor table
     $("#sensorReadingsNav").click(function () {
         if (!sensorReadingsTable) {
@@ -176,15 +177,7 @@ $(document).ready(function () {
                             return row._links.self.href.split('/').pop();
                         }},
                     {data: function (row) {
-                            var username = row._links.owner.href;
-                            $.ajax({
-                                async: false,
-                                url: row._links.owner.href,
-                                success: function (data) {
-                                    username = data.username;
-                                }
-                            });
-                            return username;
+                            return row._links.owner.href;
                         }},
                     {data: 'timestamp'},
                     {data: 'value1'},
@@ -196,14 +189,23 @@ $(document).ready(function () {
                         }}
                 ]
             });
-
+            // Get and set usernames in second column after init
+            sensorReadingsTable.on('init', function () {
+                sensorReadingsTable.column(1).nodes().each(function (i) {
+                    getUsername(i);
+                });
+            });
             // Remove row from datatables and database
             sensorReadingsTable.on('draw', function () {
                 $("a.removeRow").click(function () {
-                    removeRow($(this).attr("id"), $(this).parents('tr'), sensorReadingsTable);
+                    var $td = $(this);
+                    $("#confirmRemoveRow").click(function () {
+                        $('#removeRowModal').modal('hide');
+                        removeRow($td.attr("id"), $td.parents('tr'), sensorReadingsTable);
+                    });
+                    $('#removeRowModal').modal('show');
                 });
             });
-
             // Trigger search only when pressing enter
             $("#sensorReadingsTableId_filter input").unbind().keyup(function (e) {
                 if (e.keyCode === 13) {
@@ -212,9 +214,8 @@ $(document).ready(function () {
             });
         }
     });
-});
-
-
+}
+);
 // Calculate paging for spring rest, make ajax call to server, prepare response for datatables and call callback function
 function datatablesToSpringRest(data, baseUrl, entityName, columns, fnCallback, searchParam) {
     if (typeof (searchParam) === 'undefined')
@@ -233,6 +234,15 @@ function datatablesToSpringRest(data, baseUrl, entityName, columns, fnCallback, 
             dataToReturn.recordsFiltered = responseData.page.totalElements;
             dataToReturn.data = responseData._embedded[entityName];
             fnCallback(dataToReturn);
+        }
+    });
+}
+
+function getUsername(td) {
+    $.ajax({
+        url: $(td).text(),
+        success: function (data) {
+            $(td).text(data.username);
         }
     });
 }
