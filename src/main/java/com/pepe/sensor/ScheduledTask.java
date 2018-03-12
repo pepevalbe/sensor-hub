@@ -8,22 +8,22 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class ScheduledTask {
 
-    RestClient restClient;
-
     @Autowired
-    public ScheduledTask(RestClient restClient) {
-        this.restClient = restClient;
-    }
+    private RestClient restClient;
+
+    @Value("${pepe-sensores.application_base_url}")
+    private String APP_BASE_URL;
 
     // This keeps heroku server awake
     @Scheduled(fixedRate = 3000000) // Every 50 minutes
     public void keepAwake() {
         try {
-            URL obj = new URL(System.getProperty("app-url")); // get application url
+            URL obj = new URL(APP_BASE_URL); // get application url
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");    // optional default is GET
             int responseCode = con.getResponseCode();   // make requeset
@@ -34,7 +34,7 @@ public class ScheduledTask {
 
     @Scheduled(fixedRate = 7200000, initialDelay = 1000) // Every 2 hours
     public void postTempHumidity() throws Exception {
-        restClient.postTempHumidity();
+        //restClient.postTempHumidity();
     }
 
     @Scheduled(fixedRate = 1080000, initialDelay = 1000) // Every 3 hours
