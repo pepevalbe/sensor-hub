@@ -37,7 +37,7 @@ $(document).ready(function () {
 
     // Create temperature table
     $("#tempHumiditiesNav").click(function () {
-        if (!usersTable) {
+        if (!tempHumiditiesTable) {
             tempHumiditiesTable = $("#tempHumiditiesTableId").DataTable({
                 lengthMenu: [20, 50, 100, 200],
                 serverSide: true,
@@ -82,7 +82,7 @@ $(document).ready(function () {
 
     // Create door events table
     $("#doorEventsNav").click(function () {
-        if (!usersTable) {
+        if (!doorEventsTable) {
             doorEventsTable = $("#doorEventsTableId").DataTable({
                 lengthMenu: [20, 50, 100, 200],
                 serverSide: true,
