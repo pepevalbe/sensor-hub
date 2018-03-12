@@ -5,6 +5,7 @@ import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.persistence.TemporaryToken;
 import com.pepe.sensor.repository.ConfigVariableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -24,8 +25,9 @@ public class EmailSender {
     private final String newPersonalTokenTemplate = "Hola %s, se ha regenerado tu Token Personal. El nuevo Token es: %s";
     private final String newPasswordLinkSubject = "Solicitud regeneración de contraseña en pepe-sensores";
     private final String newPasswordLinkTemplate = "Hola %s, por favor utiliza el siguiente link para crear una nueva contraseña: %s?email=%s&token=%s";
-
-    private final String APP_BASE_URL;
+    
+    @Value("${pepe-sensores.application_base_url}")
+    private String APP_BASE_URL;
 
     @Autowired
     public EmailSender(JavaMailSenderImpl javaMailSenderImpl,
@@ -38,11 +40,6 @@ public class EmailSender {
             javaMailSenderImpl.setPassword(password);
         }
         javaMailSender = javaMailSenderImpl;
-
-        APP_BASE_URL = System.getProperty("app-url");
-        if (APP_BASE_URL == null) { // If java property is not set we get app url from database            
-            configVariableRepository.getValueByKey("APP_BASE_URL");
-        }
     }
 
     @Async
