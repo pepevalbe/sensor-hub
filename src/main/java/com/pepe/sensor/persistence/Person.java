@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -73,8 +72,7 @@ public class Person implements Serializable {
     @Column(nullable = false)
     private boolean doorRegisterActiveFlag;
 
-    @OneToOne(targetEntity = TemporaryToken.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(nullable = true, name = "resetPasswordToken_id")
+    @OneToOne(mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private TemporaryToken temporaryToken;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -189,7 +187,7 @@ public class Person implements Serializable {
     public void setActivated(boolean activated) {
         this.activated = activated;
     }
-    
+
     public Boolean getDoorRegisterActiveFlag() {
         return doorRegisterActiveFlag;
     }

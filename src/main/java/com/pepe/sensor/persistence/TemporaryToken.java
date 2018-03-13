@@ -35,7 +35,7 @@ public class TemporaryToken implements Serializable {
     @Column(nullable = false)
     private Timestamp expirationTimestamp;
 
-    @OneToOne(targetEntity = Person.class, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "person_id")
     private Person person;
 
@@ -110,7 +110,7 @@ public class TemporaryToken implements Serializable {
 
     @Override
     public String toString() {
-        return "com.pepe.sensor.persistence.ResetPasswordToken[ id=" + id + " ]";
+        return "com.pepe.sensor.persistence.TemporaryToken[ id=" + id + " ]";
     }
 
 }
