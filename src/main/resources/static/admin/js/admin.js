@@ -208,7 +208,7 @@ function getUsername(td, table) {
         url: $(td).text(),
         success: function (data) {
             $(td).text(data.username);
-            table.columns.adjust().responsive.recalc();
+            table.columns.adjust();
         }
     });
 }
