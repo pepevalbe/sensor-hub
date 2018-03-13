@@ -10,8 +10,8 @@ var doorEventsTable;
 var sensorReadingsTable;
 
 $(document).ready(function () {
-    // Create tablae for users
-    $("#usersNav").click(function () {
+
+    $("#usersNav").click(function () {     // Create tablae for users
         if (!usersTable) {
             usersTable = $("#usersTableId").DataTable({
                 lengthMenu: [20, 50, 100, 200],
@@ -36,21 +36,14 @@ $(document).ready(function () {
                         }}
                 ]
             });
-            // Remove row from datatables and database
+            // Once we draw the page: Add remove row link event
             usersTable.on('draw', function () {
-                $("a.removeRow").click(function () {
-                    var $td = $(this);
-                    $("#confirmRemoveRow").click(function () {
-                        $('#removeRowModal').modal('hide');
-                        removeRow($td.attr("id"), $td.parents('tr'), usersTable);
-                    });
-                    $('#removeRowModal').modal('show');
-                });
+                addRemoveRowEvent(usersTable);
             });
         }
     });
-    // Create temperature table
-    $("#tempHumiditiesNav").click(function () {
+
+    $("#tempHumiditiesNav").click(function () { // Create temperature table
         if (!tempHumiditiesTable) {
             tempHumiditiesTable = $("#tempHumiditiesTableId").DataTable({
                 lengthMenu: [20, 50, 100, 200],
@@ -79,22 +72,12 @@ $(document).ready(function () {
                         }}
                 ]
             });
-            // Get and set usernames in second column after init
-            tempHumiditiesTable.on('init', function () {
-                tempHumiditiesTable.column(1).nodes().each(function (i) {
-                    getUsername(i);
-                });
-            });
-            // Remove row from datatables and database
+            // Once we draw the page: Get usernames and add event for remove row link
             tempHumiditiesTable.on('draw', function () {
-                $("a.removeRow").click(function () {
-                    var $td = $(this);
-                    $("#confirmRemoveRow").click(function () {
-                        $('#removeRowModal').modal('hide');
-                        removeRow($td.attr("id"), $td.parents('tr'), tempHumiditiesTable);
-                    });
-                    $('#removeRowModal').modal('show');
+                doorEventsTable.column(1).nodes().each(function (i) {
+                    getUsername(i, tempHumiditiesTable);
                 });
+                addRemoveRowEvent(tempHumiditiesTable);
             });
             // Trigger search only when pressing enter
             $("#tempHumiditiesTableId_filter input").unbind().keyup(function (e) {
@@ -104,8 +87,8 @@ $(document).ready(function () {
             });
         }
     });
-    // Create door events table
-    $("#doorEventsNav").click(function () {
+
+    $("#doorEventsNav").click(function () { // Create door events table
         if (!doorEventsTable) {
             doorEventsTable = $("#doorEventsTableId").DataTable({
                 lengthMenu: [20, 50, 100, 200],
@@ -132,22 +115,12 @@ $(document).ready(function () {
                         }}
                 ]
             });
-            // Get and set usernames in second column after init
-            doorEventsTable.on('init', function () {
-                doorEventsTable.column(1).nodes().each(function (i) {
-                    getUsername(i);
-                });
-            });
-            // Remove row from datatables and database
+            // Once we draw the page: Get usernames and add event for remove row link
             doorEventsTable.on('draw', function () {
-                $("a.removeRow").click(function () {
-                    var $td = $(this);
-                    $("#confirmRemoveRow").click(function () {
-                        $('#removeRowModal').modal('hide');
-                        removeRow($td.attr("id"), $td.parents('tr'), doorEventsTable);
-                    });
-                    $('#removeRowModal').modal('show');
+                doorEventsTable.column(1).nodes().each(function (i) {
+                    getUsername(i, doorEventsTable);
                 });
+                addRemoveRowEvent(doorEventsTable);
             });
             // Trigger search only when pressing enter
             $("#doorEventsTableId_filter input").unbind().keyup(function (e) {
@@ -157,8 +130,8 @@ $(document).ready(function () {
             });
         }
     });
-    // Create generic sensor table
-    $("#sensorReadingsNav").click(function () {
+
+    $("#sensorReadingsNav").click(function () { // Create generic sensor table
         if (!sensorReadingsTable) {
             sensorReadingsTable = $("#sensorReadingsTableId").DataTable({
                 lengthMenu: [20, 50, 100, 200],
@@ -189,23 +162,15 @@ $(document).ready(function () {
                         }}
                 ]
             });
-            // Get and set usernames in second column after init
-            sensorReadingsTable.on('init', function () {
-                sensorReadingsTable.column(1).nodes().each(function (i) {
-                    getUsername(i);
-                });
-            });
-            // Remove row from datatables and database
+
+            // Once we draw the page: Get usernames and add event for remove row link
             sensorReadingsTable.on('draw', function () {
-                $("a.removeRow").click(function () {
-                    var $td = $(this);
-                    $("#confirmRemoveRow").click(function () {
-                        $('#removeRowModal').modal('hide');
-                        removeRow($td.attr("id"), $td.parents('tr'), sensorReadingsTable);
-                    });
-                    $('#removeRowModal').modal('show');
+                sensorReadingsTable.column(1).nodes().each(function (i) {
+                    getUsername(i, sensorReadingsTable);
                 });
+                addRemoveRowEvent(sensorReadingsTable);
             });
+
             // Trigger search only when pressing enter
             $("#sensorReadingsTableId_filter input").unbind().keyup(function (e) {
                 if (e.keyCode === 13) {
@@ -214,8 +179,8 @@ $(document).ready(function () {
             });
         }
     });
-}
-);
+});
+
 // Calculate paging for spring rest, make ajax call to server, prepare response for datatables and call callback function
 function datatablesToSpringRest(data, baseUrl, entityName, columns, fnCallback, searchParam) {
     if (typeof (searchParam) === 'undefined')
@@ -238,21 +203,30 @@ function datatablesToSpringRest(data, baseUrl, entityName, columns, fnCallback, 
     });
 }
 
-function getUsername(td) {
+function getUsername(td, table) {
     $.ajax({
         url: $(td).text(),
         success: function (data) {
             $(td).text(data.username);
+            table.columns.adjust().responsive.recalc();
         }
     });
 }
 
-function removeRow(url, row, table) {
-    $.ajax({
-        url: url,
-        method: "DELETE",
-        success: function () {
-            table.row(row).remove().draw();
-        }
+function addRemoveRowEvent(table) {
+    $("a.removeRow").click(function () {
+        var $td = $(this);
+        $("#confirmRemoveRow").click(function () {
+            $('#removeRowModal').modal('hide');
+            $.ajax({
+                url: $td.attr("id"),
+                method: "DELETE",
+                success: function () {
+                    table.row($td.parents('tr')).remove();
+                    table.page(table.page.info().page).draw(false);
+                }
+            });
+        });
+        $('#removeRowModal').modal('show');
     });
 }
