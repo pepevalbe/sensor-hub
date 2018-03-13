@@ -20,7 +20,6 @@ $(document).ready(function () {
         var tz = new Date().getTimezoneOffset();
         var aux = $("#input1").val().split(':');
         var minutes = (+aux[0]) * 60 + (+aux[1]);
-        console.log(tz);
         $.getJSON(FIND_TEMP_HUMIDITY_URL + "?date=" + date + "&tz=" + tz + "&minutes=" + minutes, function (measures) {
             if (measures) {
                 createMinMaxTable(measures);
