@@ -74,7 +74,7 @@ $(document).ready(function () {
             });
             // Once we draw the page: Get usernames and add event for remove row link
             tempHumiditiesTable.on('draw', function () {
-                doorEventsTable.column(1).nodes().each(function (i) {
+                tempHumiditiesTable.column(1).nodes().each(function (i) {
                     getUsername(i, tempHumiditiesTable);
                 });
                 addRemoveRowEvent(tempHumiditiesTable);
