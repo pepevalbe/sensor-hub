@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +14,12 @@ import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * TemporayToken entity
+ * 
+ * This class represents a token that can be used for user activation or password reset. 
+ * Tokens are UUID and have expiration time. They have OneToOne relationship with person.
+ */
 @Entity
 public class TemporaryToken implements Serializable {
 
@@ -35,7 +40,8 @@ public class TemporaryToken implements Serializable {
     @Column(nullable = false)
     private Timestamp expirationTimestamp;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    // Fetch is EAGER by default in ToOne relationship (LAZY in ToMany)
+    @OneToOne
     @JoinColumn(nullable = false, name = "person_id")
     private Person person;
 
