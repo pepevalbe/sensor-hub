@@ -1,45 +1,97 @@
 // Constants
+var GET_CONFIGVARIABLES_URL = "/configVariables";
 var GET_USERS_URL = "/persons";
+var GET_TEMPORARYTOKENS_URL = "/temporaryTokens";
 var GET_TEMPHUMIDITIES_URL = "/tempHumidities";
 var GET_DOOREVENTS_URL = "/doorEvents";
 var GET_SENSORREADINGS_URL = "/sensorReadings";
 
+var configTable;
 var usersTable;
+var tokensTable;
 var tempHumiditiesTable;
 var doorEventsTable;
 var sensorReadingsTable;
 
 $(document).ready(function () {
 
-    $("#usersNav").click(function () {     // Create tablae for users
-        if (!usersTable) {
-            usersTable = $("#usersTableId").DataTable({
-                lengthMenu: [20, 50, 100, 200],
-                serverSide: true,
+    $("#configNav").click(function () {     // Create table for confi variables
+        if (!configTable) {
+            configTable = $("#configTableId").DataTable({
                 searching: false,
-                ajax: function (data, callback) {
-                    var columns = ["id", "username", "email", "firstName", "lastName", "creationTimestamp"];
-                    datatablesToSpringRest(data, GET_USERS_URL, "persons", columns, callback);
+                ajax: {
+                    "url": GET_CONFIGVARIABLES_URL,
+                    "dataSrc": "_embedded.configVariables"
                 },
                 columns: [
                     {data: function (row) {
                             return row._links.self.href.split('/').pop();
                         }},
+                    {data: 'varKey'},
+                    {data: 'varValue'}
+                ]
+            });
+            addCustomEvents(configTable);
+        }
+    });
+
+    $("#usersNav").click(function () {     // Create table for users
+        if (!usersTable) {
+            usersTable = $("#usersTableId").DataTable({
+                serverSide: true,
+                searching: false,
+                ajax: function (data, callback) {
+                    var columns = ["id", "activated", "username", "email", "firstName", "lastName", "creationTimestamp"];
+                    datatablesToSpringRest(data, GET_USERS_URL, columns, callback);
+                },
+                columns: [
+                    {data: function (row) {
+                            return row._links.self.href.split('/').pop();
+                        }},
+                    {data: 'activated'},
                     {data: 'username'},
                     {data: 'email'},
                     {data: 'firstName'},
                     {data: 'lastName'},
-                    {data: 'creationTimestamp'},
+                    {data: function (row) {
+                            return row.creationTimestamp.split("T")[0];
+                        }},
                     {data: function (row) {
                             var aux = "<a class=\"removeRow\" id=\"{id}\" href=\"#\">Borrar</a>";
                             return aux.replace("{id}", row._links.self.href);
                         }}
                 ]
             });
-            // Once we draw the page: Add remove row link event
-            usersTable.on('draw', function () {
-                addRemoveRowEvent(usersTable);
+            addCustomEvents(usersTable);
+        }
+    });
+
+    $("#tokensNav").click(function () { // Create temporary tokens table
+        if (!tokensTable) {
+            tokensTable = $("#tokensTableId").DataTable({
+                searching: false,
+                ajax: {
+                    "url": GET_TEMPORARYTOKENS_URL,
+                    "dataSrc": "_embedded.temporaryTokens"
+                },
+                columns: [
+                    {data: function (row) {
+                            return row._links.self.href.split('/').pop();
+                        }},
+                    {data: function (row) {
+                            return row._links.person.href;
+                        }},
+                    {data: function (row) {
+                            return row.expirationTimestamp.split("+")[0];
+                        }},
+                    {data: 'token'},
+                    {data: function (row) {
+                            var aux = "<a class=\"removeRow\" id=\"{id}\" href=\"#\">Borrar</a>";
+                            return aux.replace("{id}", row._links.self.href);
+                        }}
+                ]
             });
+            addCustomEvents(tokensTable);
         }
     });
 
@@ -50,11 +102,7 @@ $(document).ready(function () {
                 serverSide: true,
                 ajax: function (data, callback) {
                     var columns = ["id", "user", "timestamp", "temperature", "humidity"];
-                    if (data.search.value !== "") {
-                        datatablesToSpringRest(data, GET_TEMPHUMIDITIES_URL + "/search/findByUsername?username=", "tempHumidities", columns, callback, data.search.value);
-                    } else {
-                        datatablesToSpringRest(data, GET_TEMPHUMIDITIES_URL, "tempHumidities", columns, callback);
-                    }
+                    datatablesToSpringRest(data, GET_TEMPHUMIDITIES_URL, columns, callback);
                 },
                 columns: [
                     {data: function (row) {
@@ -63,7 +111,9 @@ $(document).ready(function () {
                     {data: function (row) {
                             return row._links.owner.href;
                         }},
-                    {data: 'timestamp'},
+                    {data: function (row) {
+                            return row.timestamp.split("+")[0];
+                        }},
                     {data: 'temperature'},
                     {data: 'humidity'},
                     {data: function (row) {
@@ -72,19 +122,7 @@ $(document).ready(function () {
                         }}
                 ]
             });
-            // Once we draw the page: Get usernames and add event for remove row link
-            tempHumiditiesTable.on('draw', function () {
-                tempHumiditiesTable.column(1).nodes().each(function (i) {
-                    getUsername(i, tempHumiditiesTable);
-                });
-                addRemoveRowEvent(tempHumiditiesTable);
-            });
-            // Trigger search only when pressing enter
-            $("#tempHumiditiesTableId_filter input").unbind().keyup(function (e) {
-                if (e.keyCode === 13) {
-                    tempHumiditiesTable.search($(this).val()).draw();
-                }
-            });
+            addCustomEvents(tempHumiditiesTable);
         }
     });
 
@@ -95,11 +133,7 @@ $(document).ready(function () {
                 serverSide: true,
                 ajax: function (data, callback) {
                     var columns = ["id", "user", "timestamp"];
-                    if (data.search.value !== "") {
-                        datatablesToSpringRest(data, GET_DOOREVENTS_URL + "/search/findByUsername?username=", "doorEvents", columns, callback, data.search.value);
-                    } else {
-                        datatablesToSpringRest(data, GET_DOOREVENTS_URL, "doorEvents", columns, callback);
-                    }
+                    datatablesToSpringRest(data, GET_DOOREVENTS_URL, columns, callback);
                 },
                 columns: [
                     {data: function (row) {
@@ -108,26 +142,16 @@ $(document).ready(function () {
                     {data: function (row) {
                             return row._links.owner.href;
                         }},
-                    {data: 'timestamp'},
+                    {data: function (row) {
+                            return row.timestamp.split("+")[0];
+                        }},
                     {data: function (row) {
                             var aux = "<a class=\"removeRow\" id=\"{id}\" href=\"#\">Borrar</a>";
                             return aux.replace("{id}", row._links.self.href);
                         }}
                 ]
             });
-            // Once we draw the page: Get usernames and add event for remove row link
-            doorEventsTable.on('draw', function () {
-                doorEventsTable.column(1).nodes().each(function (i) {
-                    getUsername(i, doorEventsTable);
-                });
-                addRemoveRowEvent(doorEventsTable);
-            });
-            // Trigger search only when pressing enter
-            $("#doorEventsTableId_filter input").unbind().keyup(function (e) {
-                if (e.keyCode === 13) {
-                    doorEventsTable.search($(this).val()).draw();
-                }
-            });
+            addCustomEvents(doorEventsTable);
         }
     });
 
@@ -139,11 +163,7 @@ $(document).ready(function () {
                 serverSide: true,
                 ajax: function (data, callback) {
                     var columns = ["id", "user", "timestamp", "value1", "value2", "value3"];
-                    if (data.search.value !== "") {
-                        datatablesToSpringRest(data, GET_SENSORREADINGS_URL + "/search/findByUsername?username=", "sensorReadings", columns, callback, data.search.value);
-                    } else {
-                        datatablesToSpringRest(data, GET_SENSORREADINGS_URL, "sensorReadings", columns, callback);
-                    }
+                    datatablesToSpringRest(data, GET_SENSORREADINGS_URL, columns, callback);
                 },
                 columns: [
                     {data: function (row) {
@@ -152,7 +172,9 @@ $(document).ready(function () {
                     {data: function (row) {
                             return row._links.owner.href;
                         }},
-                    {data: 'timestamp'},
+                    {data: function (row) {
+                            return row.timestamp.split("+")[0];
+                        }},
                     {data: 'value1'},
                     {data: 'value2'},
                     {data: 'value3'},
@@ -162,71 +184,73 @@ $(document).ready(function () {
                         }}
                 ]
             });
-
-            // Once we draw the page: Get usernames and add event for remove row link
-            sensorReadingsTable.on('draw', function () {
-                sensorReadingsTable.column(1).nodes().each(function (i) {
-                    getUsername(i, sensorReadingsTable);
-                });
-                addRemoveRowEvent(sensorReadingsTable);
-            });
-
-            // Trigger search only when pressing enter
-            $("#sensorReadingsTableId_filter input").unbind().keyup(function (e) {
-                if (e.keyCode === 13) {
-                    sensorReadingsTable.search($(this).val()).draw();
-                }
-            });
+            addCustomEvents(sensorReadingsTable);
         }
     });
 });
 
 // Calculate paging for spring rest, make ajax call to server, prepare response for datatables and call callback function
-function datatablesToSpringRest(data, baseUrl, entityName, columns, fnCallback, searchParam) {
-    if (typeof (searchParam) === 'undefined')
-        searchParam = "?";
+function datatablesToSpringRest(data, baseUrl, columns, fnCallback) {
     var page = (data.start / data.length).toString();
     var size = data.length.toString();
     var sort = columns[data.order[0].column] + "," + data.order[0].dir;
-    var url = baseUrl + searchParam + "&page=" + page + "&size=" + size + "&sort=" + sort;
+    if (data.search.value !== "") {
+        var url = baseUrl + "/search/findByUsername?username=" + data.search.value + "&page=" + page + "&size=" + size + "&sort=" + sort;
+    } else {
+        var url = baseUrl + "?page=" + page + "&size=" + size + "&sort=" + sort;
+    }
+    console.log("Get data url:" + url);
     $.ajax({
-        "url": url,
-        "success": function (responseData) {
+        url: url,
+        success: function (responseData) {
             var dataToReturn = new Object();
             dataToReturn.draw = data.draw;
             dataToReturn.length = responseData.page.size;
             dataToReturn.recordsTotal = responseData.page.totalElements;
             dataToReturn.recordsFiltered = responseData.page.totalElements;
-            dataToReturn.data = responseData._embedded[entityName];
+            dataToReturn.data = responseData._embedded[baseUrl.split("/")[1]];
             fnCallback(dataToReturn);
         }
     });
 }
 
-function getUsername(td, table) {
-    $.ajax({
-        url: $(td).text(),
-        success: function (data) {
-            $(td).text(data.username);
-            table.columns.adjust();
-        }
-    });
-}
-
-function addRemoveRowEvent(table) {
-    $("a.removeRow").click(function () {
-        var $td = $(this);
-        $("#confirmRemoveRow").click(function () {
-            $('#removeRowModal').modal('hide');
-            $.ajax({
-                url: $td.attr("id"),
-                method: "DELETE",
-                success: function () {
-                    table.row($td.parents('tr')).remove();
-                    table.page(table.page.info().page).draw(false);
-                }
-            });
+function addCustomEvents(table) {
+    table.on('draw', function () {
+        // Get usernames in second column in case they start with http
+        table.column(1).nodes().each(function (i) {
+            if ($(i).text().startsWith("http://")) {
+                $.ajax({
+                    url: $(i).text(),
+                    success: function (data) {
+                        $(i).text(data.username);
+                        table.columns.adjust();
+                    }
+                });
+            }
         });
-        $('#removeRowModal').modal('show');
+        // Add remove row event to delete link
+        $("a.removeRow").click(function () {
+            var $td = $(this);
+            $("#confirmRemoveRow").click(function () {
+                $('#removeRowModal').modal('hide');
+                console.log("borrando... " + $td.attr("id"));
+                $.ajax({
+                    url: $td.attr("id"),
+                    method: "DELETE",
+                    success: function () {
+                        console.log("Borrado");
+                        table.row($td.parents('tr')).remove();
+                        table.page(table.page.info().page).draw(false);
+                    }
+                });
+            });
+            $('#removeRowModal').modal('show');
+        });
+    });
+    // Search event only when pressing enter
+    $("input").unbind().keyup(function (e) {
+        if (e.keyCode === 13) {
+            table.search($(this).val()).draw();
+        }
     });
 }

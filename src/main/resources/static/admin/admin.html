@@ -28,83 +28,110 @@
     <body>
         <div id="navbarId"></div>
 
-        <div class="container my-4">
-            <h4 class="mb-3">Administración</h2>
-                <div class="m-2">
+        <div class="container mt-4">
+            <h4 class="mt-2">Administración</h2>
+                <div class="mb-2">
                     <label>Registro de Usuarios</label>
                     <input id="signupToggleId" type="checkbox" data-toggle="toggle" data-on="Activado" data-off="Desactivado" data-onstyle="info">
                 </div>    
-                <p class="text-justify mb-3">Selecciona cada tabla para navegar por la base de datos. Se puede filtrar por nombre de usuario.</p>			
-                <div class="card">
-                    <div class="card-header">			
-                        <ul class="nav nav-tabs card-header-tabs">
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt1" id="usersNav">Usuarios</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt2" id="tempHumiditiesNav">Temperatura y Humedad</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt3" id="doorEventsNav">Accesos</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt4" id="sensorReadingsNav">Sensor Genérico</a></li>
-                        </ul>
+                <p class="text-justify">Selecciona cada tabla para navegar por la base de datos. Se puede filtrar por nombre de usuario.</p>			                	
+        </div>		
+        <div class="card m-4">
+            <div class="card-header">			
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt1" id="confNav">Configuracion</a></li>                                        
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt2" id="usersNav">Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt3" id="tokensNav">Tokens</a></li>                    
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt4" id="tempHumiditiesNav">Temperatura y Humedad</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt5" id="doorEventsNav">Accesos</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opt6" id="sensorReadingsNav">Sensor Genérico</a></li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content mb-3">
+                    <div id="opt1" class="tab-pane fade mb-3">
+                        <table id="confTableId" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Clave</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                        </table>                                
                     </div>
-                    <div class="card-body">
-                        <div class="tab-content mb-3">
-                            <div id="opt1" class="tab-pane fade mb-3">
-                                <table id="usersTableId" class="display" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Nombre de Usuario</th>
-                                            <th>Email</th>
-                                            <th>Nombre</th>
-                                            <th>Apellidos</th>
-                                            <th>Fecha registro</th>                                            
-                                            <th>Borrar</th>
-                                        </tr>
-                                    </thead>
-                                </table>                                
-                            </div>
-                            <div id="opt2" class="tab-pane fade mb-3">
-                                <table id="tempHumiditiesTableId" class="display" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Usuario</th>
-                                            <th>Fecha</th>
-                                            <th>Temperatura</th>
-                                            <th>Humedad</th>                                            
-                                            <th>Borrar</th>
-                                        </tr>
-                                    </thead>
-                                </table>     
-                            </div>
-                            <div id="opt3" class="tab-pane fade mb-3">
-                                <table id="doorEventsTableId" class="display" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Usuario</th>
-                                            <th>Fecha</th>                                            
-                                            <th>Borrar</th>
-                                        </tr>
-                                    </thead>
-                                </table>     
-                            </div>
-                            <div id="opt4" class="tab-pane fade mb-3">
-                                <table id="sensorReadingsTableId" class="display" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Usuario</th>
-                                            <th>Fecha</th>
-                                            <th>Valor 1</th>
-                                            <th>Valor 2</th>
-                                            <th>Valor 3</th>                                            
-                                            <th>Borrar</th>
-                                        </tr>
-                                    </thead>
-                                </table>     
-                            </div>
-                        </div>			
+                    <div id="opt2" class="tab-pane fade mb-3">
+                        <table id="usersTableId" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Activado</th>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Nombre</th>
+                                    <th>Apellidos</th>
+                                    <th>Fecha registro</th>                                            
+                                    <th>Borrar</th>
+                                </tr>
+                            </thead>
+                        </table>                                
+                    </div>
+                    <div id="opt3" class="tab-pane fade mb-3">
+                        <table id="tokensTableId" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Usuario</th>
+                                    <th>Timestamp</th>                                    
+                                    <th>Token</th>
+                                    <th>Borrar</th>
+                                </tr>
+                            </thead>
+                        </table>                                
+                    </div>
+                    <div id="opt4" class="tab-pane fade mb-3">
+                        <table id="tempHumiditiesTableId" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Usuario</th>
+                                    <th>Timestamp</th>
+                                    <th>Temperatura</th>
+                                    <th>Humedad</th>                                            
+                                    <th>Borrar</th>
+                                </tr>
+                            </thead>
+                        </table>     
+                    </div>
+                    <div id="opt5" class="tab-pane fade mb-3">
+                        <table id="doorEventsTableId" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Usuario</th>
+                                    <th>Timestamp</th>                                            
+                                    <th>Borrar</th>
+                                </tr>
+                            </thead>
+                        </table>     
+                    </div>
+                    <div id="opt6" class="tab-pane fade mb-3">
+                        <table id="sensorReadingsTableId" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Usuario</th>
+                                    <th>Timestamp</th>
+                                    <th>Valor 1</th>
+                                    <th>Valor 2</th>
+                                    <th>Valor 3</th>                                            
+                                    <th>Borrar</th>
+                                </tr>
+                            </thead>
+                        </table>     
                     </div>
                 </div>			
+            </div>
         </div>		
 
         <!-- Modal -->
