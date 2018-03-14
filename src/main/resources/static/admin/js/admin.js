@@ -233,12 +233,10 @@ function addCustomEvents(table) {
             var $td = $(this);
             $("#confirmRemoveRow").click(function () {
                 $('#removeRowModal').modal('hide');
-                console.log("borrando... " + $td.attr("id"));
                 $.ajax({
                     url: $td.attr("id"),
                     method: "DELETE",
                     success: function () {
-                        console.log("Borrado");
                         table.row($td.parents('tr')).remove();
                         table.page(table.page.info().page).draw(false);
                     }
