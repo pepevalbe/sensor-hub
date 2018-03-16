@@ -12,7 +12,6 @@ import com.pepe.sensor.repository.ConfigVariableRepository;
 import com.pepe.sensor.repository.PersonRepository;
 import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +31,11 @@ public class RestClient {
     @Autowired
     public RestClient(RestTemplateBuilder restTemplateBuilder,
             PersonRepository personRepository,
-            ConfigVariableRepository configVariableRepository,
-            @Value("${pepe-sensores.application_base_url}") String url) {
+            ConfigVariableRepository configVariableRepository) {
         restTemplate = restTemplateBuilder.build();
         this.personRepository = personRepository;
         this.configVariableRepository = configVariableRepository;
-        APP_BASE_URL = url;
+        APP_BASE_URL = configVariableRepository.getValueByKey("APP_BASE_URL");
         WEATHER_URL = configVariableRepository.getValueByKey("WEATHER_URL");
     }
 

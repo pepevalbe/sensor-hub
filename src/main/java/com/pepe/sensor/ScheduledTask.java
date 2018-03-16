@@ -1,5 +1,6 @@
 package com.pepe.sensor;
 
+import com.pepe.sensor.repository.ConfigVariableRepository;
 import java.io.IOException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -8,7 +9,6 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class ScheduledTask {
@@ -16,14 +16,14 @@ public class ScheduledTask {
     @Autowired
     private RestClient restClient;
 
-    @Value("${pepe-sensores.application_base_url}")
-    private String APP_BASE_URL;
+    @Autowired
+    ConfigVariableRepository configVariableRepository;
 
     // This keeps heroku server awake
     @Scheduled(fixedRate = 3000000) // Every 50 minutes
     public void keepAwake() {
         try {
-            URL obj = new URL(APP_BASE_URL); // get application url
+            URL obj = new URL(configVariableRepository.getValueByKey("APP_BASE_URL")); // get application url
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");    // optional default is GET
             int responseCode = con.getResponseCode();   // make requeset
