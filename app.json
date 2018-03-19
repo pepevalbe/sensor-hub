@@ -4,10 +4,7 @@
   "scripts": {
     "postdeploy": "scripts/create_APP_BASE_URL.sh"
   },
-  "env": {
-    "HEROKU_APP_NAME ": {
-      "required": true
-    },
+  "env": 
     "EMAIL_PASSWORD": {
       "required": true
     },
