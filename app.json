@@ -4,6 +4,9 @@
   "scripts": {
   },
   "env": {
+      "HEROKU_APP_NAME ": {
+      "required": true
+    },
     "EMAIL_PASSWORD": {
       "required": true
     },
