@@ -1,11 +1,11 @@
 {
   "name": "sensor-hub",
   "scripts": {
-    "postdeploy": "heroku config:set APP_BASE_URL2=\"http://\"${HEROKU_APP_NAME}\".herokuapp.com\""
+    "postdeploy": "export TEST=herokuapp.com"
   },
   "env": {
     "APP_BASE_URL": {
-      "required": true
+      "required": false
     },
     "EMAIL_PASSWORD": {
       "required": true
