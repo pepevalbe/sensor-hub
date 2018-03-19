@@ -30,6 +30,10 @@ public class ProjectConstants {
         this.configVariableRepository = configVariableRepository;
 
         APP_BASE_URL = getConstant("APP_BASE_URL");
+        // Workaround for review apps in heroku (created on pull requests)
+        if (APP_BASE_URL == null ) {
+            APP_BASE_URL = "http://" + getConstant("HEROKU_APP_NAME") + ".herokuapp.com";
+        }
         EMAIL_USERNAME = getConstant("EMAIL_USERNAME");
         EMAIL_PASSWORD = getConstant("EMAIL_PASSWORD");
         WEATHER_URL = getConstant("WEATHER_URL");
