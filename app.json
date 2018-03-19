@@ -1,7 +1,7 @@
 {
   "name": "sensor-hub",
   "scripts": {
-    "postdeploy": "/scripts/create_APP_BASE_URL.sh"
+    "postdeploy": "export APP_BASE_URL2=\"http://\"${HEROKU_APP_NAME}\".herokuapp.com\""
   },
   "env": {
     "APP_BASE_URL": {
