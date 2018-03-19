@@ -4,7 +4,7 @@
   "scripts": {
     "postdeploy": "scripts/create_APP_BASE_URL.sh"
   },
-  "env": 
+  "env": {
     "EMAIL_PASSWORD": {
       "required": true
     },
