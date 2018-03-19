@@ -1,0 +1,32 @@
+{
+  "name": "sensor-hub",
+  "scripts": {
+  },
+  "env": {
+    "APP_BASE_URL": {
+      "required": true
+    },
+    "EMAIL_PASSWORD": {
+      "required": true
+    },
+    "EMAIL_USERNAME": {
+      "required": true
+    },
+    "WEATHER_URL": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ]
+}
