@@ -2,7 +2,6 @@
   "name": "sensor-hub",
   "description": "Web App for Home Sensors in Spring Boot.",
   "scripts": {
-    "postdeploy": "scripts/create_APP_BASE_URL.sh"
   },
   "env": {
     "EMAIL_PASSWORD": {
