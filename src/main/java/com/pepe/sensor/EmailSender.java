@@ -3,7 +3,6 @@ package com.pepe.sensor;
 import com.pepe.sensor.controller.UserController;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.persistence.TemporaryToken;
-import com.pepe.sensor.repository.ConfigVariableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,19 +24,10 @@ public class EmailSender {
     private final String newPasswordLinkSubject = "Solicitud regeneración de contraseña en pepe-sensores";
     private final String newPasswordLinkTemplate = "Hola %s, por favor utiliza el siguiente link para crear una nueva contraseña: %s?email=%s&token=%s";
 
-    private final String APP_BASE_URL;
-
     @Autowired
-    public EmailSender(JavaMailSenderImpl javaMailSenderImpl,
-            ConfigVariableRepository configVariableRepository) {
-
-        APP_BASE_URL = configVariableRepository.getValueByKey("APP_BASE_URL");
-        String username = configVariableRepository.getValueByKey("EMAIL_USERNAME");
-        String password = configVariableRepository.getValueByKey("EMAIL_PASSWORD");
-        if (username != null && password != null) {
-            javaMailSenderImpl.setUsername(username);
-            javaMailSenderImpl.setPassword(password);
-        }
+    public EmailSender(JavaMailSenderImpl javaMailSenderImpl) {
+        javaMailSenderImpl.setUsername(ProjectConstants.EMAIL_USERNAME);
+        javaMailSenderImpl.setPassword(ProjectConstants.EMAIL_PASSWORD);
         javaMailSender = javaMailSenderImpl;
     }
 
@@ -56,7 +46,7 @@ public class EmailSender {
         message.setTo(user.getEmail());
         message.setSubject(activateUserLinkSubject);
         String text = String.format(activateUserLinkTemplate, user.getFirstName(),
-                APP_BASE_URL + UserController.PUBLIC_ACTIVATEUSER_URL, user.getEmail(), user.getTemporaryToken().getToken());
+                ProjectConstants.APP_BASE_URL + UserController.PUBLIC_ACTIVATEUSER_URL, user.getEmail(), user.getTemporaryToken().getToken());
         message.setText(text);
         javaMailSender.send(message);
     }
@@ -66,7 +56,7 @@ public class EmailSender {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject(welcomeSubject);
-        String text = String.format(welcomeTemplate, user.getFirstName(), user.getUsername(), APP_BASE_URL, user.getToken());
+        String text = String.format(welcomeTemplate, user.getFirstName(), user.getUsername(), ProjectConstants.APP_BASE_URL, user.getToken());
         message.setText(text);
         javaMailSender.send(message);
     }
@@ -87,7 +77,7 @@ public class EmailSender {
         message.setTo(user.getEmail());
         message.setSubject(newPasswordLinkSubject);
         message.setText(String.format(newPasswordLinkTemplate, user.getFirstName(),
-                APP_BASE_URL + UserController.PUBLIC_RESETPASSWORDFORM_URL, user.getEmail(), token.getToken()));
+                ProjectConstants.APP_BASE_URL + UserController.PUBLIC_RESETPASSWORDFORM_URL, user.getEmail(), token.getToken()));
         javaMailSender.send(message);
     }
 }
