@@ -1,7 +1,6 @@
 {
   "name": "sensor-hub",
   "scripts": {
-    "postdeploy": "scripts/create_APP_BASE_URL.sh"
   },
   "env": {
     "APP_BASE_URL": {
