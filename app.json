@@ -4,9 +4,6 @@
     "postdeploy": "export TEST=herokuapp.com"
   },
   "env": {
-    "APP_BASE_URL": {
-      "required": false
-    },
     "EMAIL_PASSWORD": {
       "required": true
     },
@@ -17,10 +14,10 @@
       "required": true
     },
     "HEROKU_APP_NAME": {
-      "required": false
+      "required": true
     },
     "HEROKU_PARENT_APP_NAME": {
-      "required": false
+      "required": true
     }
   },
   "formation": {
