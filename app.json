@@ -1,11 +1,9 @@
 {
   "name": "sensor-hub",
-  "description": "Web App for Home Sensors in Spring Boot.",
   "scripts": {
-    "postdeploy": "scripts/create_APP_BASE_URL.sh"
   },
   "env": {
-    "HEROKU_APP_NAME ": {
+    "APP_BASE_URL": {
       "required": true
     },
     "EMAIL_PASSWORD": {
@@ -16,6 +14,12 @@
     },
     "WEATHER_URL": {
       "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "required": false
+    },
+    "HEROKU_PARENT_APP_NAME": {
+      "required": false
     }
   },
   "formation": {
