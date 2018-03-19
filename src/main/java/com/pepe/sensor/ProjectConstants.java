@@ -20,7 +20,6 @@ public class ProjectConstants {
     public static String EMAIL_USERNAME;
     public static String EMAIL_PASSWORD;
     public static String WEATHER_URL;
-    public static String SIGN_UP_ENABLE;
 
     private final Environment env;
     private final ConfigVariableRepository configVariableRepository;
