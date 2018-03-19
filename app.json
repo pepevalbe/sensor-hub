@@ -14,6 +14,12 @@
     },
     "WEATHER_URL": {
       "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "required": false
+    },
+    "HEROKU_PARENT_APP_NAME": {
+      "required": false
     }
   },
   "formation": {
