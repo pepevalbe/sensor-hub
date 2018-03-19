@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectConstants {
 
-    public static String APP_BASE_URL;
-    public static String EMAIL_USERNAME;
-    public static String EMAIL_PASSWORD;
-    public static String WEATHER_URL;
+    public String APP_BASE_URL;
+    public final String EMAIL_USERNAME;
+    public final String EMAIL_PASSWORD;
+    public final String WEATHER_URL;
 
     private final Environment env;
     private final ConfigVariableRepository configVariableRepository;

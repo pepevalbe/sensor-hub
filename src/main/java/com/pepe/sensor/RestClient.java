@@ -23,17 +23,20 @@ public class RestClient {
 
     private final RestTemplate restTemplate;
     private final PersonRepository personRepository;
+    private final ProjectConstants projectConstants;
 
     @Autowired
     public RestClient(RestTemplateBuilder restTemplateBuilder,
-            PersonRepository personRepository) {
+            PersonRepository personRepository,
+            ProjectConstants projectConstants) {
         restTemplate = restTemplateBuilder.build();
         this.personRepository = personRepository;
+        this.projectConstants = projectConstants;
     }
 
     @Async
     public void postTempHumidity() throws Exception {
-        ResponseEntity<String> response = restTemplate.getForEntity(ProjectConstants.WEATHER_URL, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(projectConstants.WEATHER_URL, String.class);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(response.getBody());
         JsonNode main = root.path("main");
@@ -42,7 +45,7 @@ public class RestClient {
         temphumidityDTO.setHumidity(Float.parseFloat(main.path("humidity").asText()));
         temphumidityDTO.setToken(personRepository.findByUsername("user").getToken());
         HttpEntity<TempHumidityDTO> request = new HttpEntity<>(temphumidityDTO);
-        restTemplate.postForObject(ProjectConstants.APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMPHUMIDITY_URL, request, TempHumidityDTO.class);
+        restTemplate.postForObject(projectConstants.APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMPHUMIDITY_URL, request, TempHumidityDTO.class);
     }
 
     @Async
@@ -51,7 +54,7 @@ public class RestClient {
         DoorEventDTO doorEventDTO = new DoorEventDTO();
         doorEventDTO.setToken(personRepository.findByUsername("user").getToken());
         HttpEntity<DoorEventDTO> request = new HttpEntity<>(doorEventDTO);
-        restTemplate.postForObject(ProjectConstants.APP_BASE_URL + DoorEventRestController.PUBLIC_DOOREVENT_URL, request, DoorEventDTO.class);
+        restTemplate.postForObject(projectConstants.APP_BASE_URL + DoorEventRestController.PUBLIC_DOOREVENT_URL, request, DoorEventDTO.class);
     }
 
     @Async
@@ -62,6 +65,6 @@ public class RestClient {
         sensorReadingDTO.setValue3((float) ThreadLocalRandom.current().nextGaussian());
         sensorReadingDTO.setToken(personRepository.findByUsername("user").getToken());
         HttpEntity<SensorReadingDTO> request = new HttpEntity<>(sensorReadingDTO);
-        restTemplate.postForObject(ProjectConstants.APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERICSENSOR_URL, request, SensorReadingDTO.class);
+        restTemplate.postForObject(projectConstants.APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERICSENSOR_URL, request, SensorReadingDTO.class);
     }
 }
