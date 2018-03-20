@@ -22,10 +22,10 @@ Starter for exposing Spring Data repositories over REST using Spring Data REST
 **spring-boot-starter-data-jpa:**
 Starter for using Spring Data JPA with Hibernate
 
-**postgresql:**:
+**postgresql:**
 Provides PostgreSQL database support.
 
-**h2:**:
+**h2:**
 Provides H2 database support.
 
 **spring-boot-starter-security:**
