@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectConstants {
 
+
     public String APP_BASE_URL;
     public final String EMAIL_USERNAME;
     public final String EMAIL_PASSWORD;
