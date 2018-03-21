@@ -1,7 +1,7 @@
 {
   "name": "sensor-hub",
   "scripts": {
-    "postdeploy": /src/main/resources/import.sql
+    "postdeploy": "/src/main/resources/import.sql"
   },
   "env": {
     "EMAIL_PASSWORD": {
