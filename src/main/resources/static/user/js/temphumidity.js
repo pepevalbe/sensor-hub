@@ -22,16 +22,72 @@ $(document).ready(function () {
         var minutes = (+aux[0]) * 60 + (+aux[1]);
         $.getJSON(FIND_TEMP_HUMIDITY_URL + "?date=" + date + "&tz=" + tz + "&minutes=" + minutes, function (measures) {
             if (measures) {
+				var temperaturePoints = [];
                 createMinMaxTable(measures);
                 addHeaderToTable();
                 $.each(measures, function (i, measure) {
                     var row = new Object();
+					var temperaturePoint = new Object();
                     row.id = measure.id;
                     row.time = new Date(measure.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
                     row.temperature = measure.temperature;
                     row.humidity = measure.humidity;
+					temperaturePoint.x = new Date(measure.timestamp);
+					temperaturePoint.y = row.temperature;
+					temperaturePoints.push(temperaturePoint);
                     addRowToTable(row);
                 });
+				
+				var ctx = document.getElementById('myChart').getContext('2d');
+				var chart = new Chart(ctx, {
+					// The type of chart we want to create
+					type: 'scatter',
+					
+					// The data for our dataset
+					data: {
+						datasets: [{
+							label: "Temperatura",
+							borderColor: 'rgb(255,140,0)',
+							data: temperaturePoints,
+						}]
+					},
+
+					// Configuration options go here
+					options: {
+				        scales: {
+							xAxes: [{
+								type: 'time',
+								time: {
+									displayFormats: {
+										'millisecond': 'HH:mm',
+										'second': 'HH:mm',
+										'minute': 'HH:mm',
+										'hour': 'HH:mm',
+										'day': 'HH:mm',
+										'week': 'HH:mm',
+										'month': 'HH:mm',
+										'quarter': 'HH:mm',
+										'year': 'HH:mm'
+									}
+								},
+								position: 'bottom',
+								distribution: 'linear'
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: 'Temperatura'
+								},
+								ticks: {
+									callback: function(value, index, values) {
+										return value + ' ºC';
+									}
+								}
+							}]
+						}
+					}
+				});	
+			
             } else {
                 alert("No hay información para el " + date);
             }
