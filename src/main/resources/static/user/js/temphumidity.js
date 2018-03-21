@@ -23,18 +23,23 @@ $(document).ready(function () {
         $.getJSON(FIND_TEMP_HUMIDITY_URL + "?date=" + date + "&tz=" + tz + "&minutes=" + minutes, function (measures) {
             if (measures) {
 				var temperaturePoints = [];
+				var humidityPoints = [];
                 createMinMaxTable(measures);
                 addHeaderToTable();
                 $.each(measures, function (i, measure) {
                     var row = new Object();
 					var temperaturePoint = new Object();
+					var humidityPoint = new Object();
                     row.id = measure.id;
                     row.time = new Date(measure.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
                     row.temperature = measure.temperature;
                     row.humidity = measure.humidity;
 					temperaturePoint.x = new Date(measure.timestamp);
 					temperaturePoint.y = row.temperature;
+					humidityPoint.x = new Date(measure.timestamp);
+					humidityPoint.y = row.humidity;
 					temperaturePoints.push(temperaturePoint);
+					humidityPoints.push(humidityPoint);
                     addRowToTable(row);
                 });
 				
@@ -47,8 +52,15 @@ $(document).ready(function () {
 					data: {
 						datasets: [{
 							label: "Temperatura",
+							yAxisID: 'temp',
 							borderColor: 'rgb(255,140,0)',
 							data: temperaturePoints,
+						},
+						{
+							label: "Humedad",
+							yAxisID: 'hum',
+							borderColor: 'rgb(0,0,139)',
+							data: humidityPoints,
 						}]
 					},
 
@@ -74,17 +86,42 @@ $(document).ready(function () {
 								distribution: 'linear'
 							}],
 							yAxes: [{
+								id: 'temp',
 								scaleLabel: {
 									display: true,
 									labelString: 'Temperatura'
 								},
 								ticks: {
 									callback: function(value, index, values) {
-										return value + ' ºC';
+										return value.toFixed(2) + ' ºC';
+									}
+								}
+							},
+							{
+								id: 'hum',
+								position: 'right',
+								scaleLabel: {
+									display: true,
+									labelString: 'Humedad'
+								},
+								ticks: {
+									callback: function(value, index, values) {
+										return value.toFixed(2) + ' %';
 									}
 								}
 							}]
-						}
+						},
+						tooltips: [{
+							enabled: true,
+							mode: 'single',
+							callbacks: {
+								label: function(tooltipItems, data) { 
+									var hour = tooltipItems.xLabel.getHours();
+									var minutes = tooltipItems.xLabel.getMinutes();
+									return hour + ':' + minutes + ' ' + tooltipItems.yLabel + ' ºC';
+								}
+							}
+						}]
 					}
 				});	
 			
