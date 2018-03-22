@@ -1,5 +1,7 @@
 package com.pepe.sensor.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -25,20 +27,23 @@ public class AdminController {
     private Environment environment;
 
     /**
-     * Get config vars
+     * Get active profiles and config vars
      *
-     * @return true sign up enabled, false sign up disabled
+     * @return Active profiles and config vars
      */
     @RequestMapping(ADMIN_CONFIGVARS_URL)
     @ResponseBody
-    public String[] getConfigVars() {
-        String[] returnValue = new String[5];
-        returnValue[0] = environment.getActiveProfiles()[0];        
-        returnValue[1] = environment.getProperty("pepe-sensores.app_base_url");
-        returnValue[2] = environment.getProperty("pepe-sensores.weather_url");
-        returnValue[3] = environment.getProperty("pepe-sensores.sign_up_enabled");
-        returnValue[4] = environment.getProperty("pepe-sensores.demo_user_role");
-        return returnValue;
+    public List<String> getConfigVars() {
+        List<String> configVars = new ArrayList<>();
+
+        for (String profile : environment.getActiveProfiles()) {
+            configVars.add(profile);
+        }
+        configVars.add(environment.getProperty("pepe-sensores.app_base_url"));
+        configVars.add(environment.getProperty("pepe-sensores.weather_url"));
+        configVars.add(environment.getProperty("pepe-sensores.sign_up_enabled"));
+        configVars.add(environment.getProperty("pepe-sensores.demo_user_role"));
+        return configVars;
     }
 
     /**
