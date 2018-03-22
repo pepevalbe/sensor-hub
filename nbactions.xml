@@ -9,10 +9,10 @@
             <goal>spring-boot:run</goal>
         </goals>
         <properties>
-            <run.jvmArguments>-noverify -XX:TieredStopAtLevel=1 -Dsign-up-enabled=1</run.jvmArguments>
+            <run.jvmArguments>-noverify -XX:TieredStopAtLevel=1 -Dspring.profiles.active=development -Dsign-up-enabled=1</run.jvmArguments>
             <run.mainClass>com.pepe.sensor.Sensor-hubApplication</run.mainClass>
             <Env.SPRING_OUTPUT_ANSI_ENABLED>always</Env.SPRING_OUTPUT_ANSI_ENABLED>
-            
+                   
         </properties>
     </action>
     <action>
@@ -24,10 +24,12 @@
             <goal>spring-boot:run</goal>
         </goals>
         <properties>
-            <run.jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -noverify -XX:TieredStopAtLevel=1 -Ddemo-user-role=ADMIN -Dsign-up-enabled=1 -Dapp-url=http://localhost</run.jvmArguments>
+            <run.jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -noverify -XX:TieredStopAtLevel=1 -Dspring.profiles.active=development -Dsign-up-enabled=1</run.jvmArguments>
             <run.mainClass>com.pepe.sensor.Sensor-hubApplication</run.mainClass>
             <Env.SPRING_OUTPUT_ANSI_ENABLED>always</Env.SPRING_OUTPUT_ANSI_ENABLED>
             <jpda.listen>true</jpda.listen>
+            <run.arguments>-Dspring-boot.run.profiles=development</run.arguments>
+            
             
         </properties>
     </action>
