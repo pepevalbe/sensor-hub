@@ -12,7 +12,10 @@
     },
     "WEATHER_URL": {
       "required": true
-    }
+    },
+	"DEMO_USER_ROLE": {
+      "required": true
+    }	
   },
   "formation": {
     "web": {
