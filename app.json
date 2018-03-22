@@ -1,24 +1,18 @@
 {
   "name": "sensor-hub",
-  "scripts": {
-    "postdeploy": "src/main/resources/import.sql"
-  },
-  "env": {
-    "EMAIL_PASSWORD": {
+  "env": {    
+    "HEROKU_APP_NAME": {
       "required": true
     },
     "EMAIL_USERNAME": {
       "required": true
     },
+    "EMAIL_PASSWORD": {
+      "required": true
+    },
     "WEATHER_URL": {
       "required": true
     },
-    "HEROKU_APP_NAME": {
-      "required": true
-    },
-    "HEROKU_PARENT_APP_NAME": {
-      "required": true
-    }
   },
   "formation": {
     "web": {
