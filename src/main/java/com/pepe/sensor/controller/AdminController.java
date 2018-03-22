@@ -32,7 +32,13 @@ public class AdminController {
     @RequestMapping(ADMIN_CONFIGVARS_URL)
     @ResponseBody
     public String[] getConfigVars() {
-        return environment.getActiveProfiles();
+        String[] returnValue = new String[5];
+        returnValue[0] = environment.getActiveProfiles()[0];        
+        returnValue[1] = environment.getProperty("pepe-sensores.app_base_url");
+        returnValue[2] = environment.getProperty("pepe-sensores.weather_url");
+        returnValue[3] = environment.getProperty("pepe-sensores.sign_up_enabled");
+        returnValue[4] = environment.getProperty("pepe-sensores.demo_user_role");
+        return returnValue;
     }
 
     /**
