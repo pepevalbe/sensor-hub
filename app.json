@@ -12,7 +12,7 @@
     },
     "WEATHER_URL": {
       "required": true
-    },
+    }
   },
   "formation": {
     "web": {
