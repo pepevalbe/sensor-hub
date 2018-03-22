@@ -33,3 +33,4 @@
 -- INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (20, 20.2, 12.0, CURRENT_TIMESTAMP - 2 * INTERVAL '1 hour', 1);
 -- INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (21, 20.2, 11.8, CURRENT_TIMESTAMP - INTERVAL '1 HOUR', 1);
 -- INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (22, 20.1, 11.5, CURRENT_TIMESTAMP, 1);
+
