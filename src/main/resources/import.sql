@@ -2,7 +2,7 @@
 -- It is meant to be used for the embedded H2 database in a local development enviroment, not for producion
 
 -- Adding data user in person table. Username: data, Password: data
--- INSERT INTO public.person(id, activated, creation_timestamp, door_register_active_flag, email, first_name, last_name, password, role, token, username)	VALUES (1, true, CURRENT_TIMESTAMP, true, 'data@email.com', 'dataName', 'dataLastName', '$2a$10$8e7ei9HAbMvmtn3qXiAoQOg3CJmFpgFGV9GXHx3qxBkxW/RI3PIGi', 'ADMIN', '8b47b8a7-9fd6-47a9-ab63-f4fd9fc9a22b', 'data');
+INSERT INTO public.person(id, activated, creation_timestamp, door_register_active_flag, email, first_name, last_name, password, role, token, username)	VALUES (1, true, CURRENT_TIMESTAMP, true, 'data@email.com', 'dataName', 'dataLastName', '$2a$10$8e7ei9HAbMvmtn3qXiAoQOg3CJmFpgFGV9GXHx3qxBkxW/RI3PIGi', 'ADMIN', '8b47b8a7-9fd6-47a9-ab63-f4fd9fc9a22b', 'data');
 
 -- Adding some temperature and humidity entries for data user
 -- INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (10, 20.0, 10.0, DATEADD('HOUR',-12, CURRENT_TIMESTAMP), 1);
