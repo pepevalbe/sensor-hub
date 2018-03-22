@@ -23,8 +23,7 @@
     }
   },
   "addons": [
-    "heroku-postgresql",
-    "trevor"
+    "heroku-postgresql"
   ],
   "buildpacks": [
     {
