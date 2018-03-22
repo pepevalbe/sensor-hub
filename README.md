@@ -7,7 +7,7 @@ and three for Heroku enviroments (configuration taken from config vars).
 For development enviroment you can use the default embedded H2 database or switch to a PostgreSQL database (please check properties file). 
 You need to set up your email address and password for the email sender class to work.
 
-How to run: *mvn spring-boot:run -Drun.jvmArguments="-Dsign-up-enabled=1" -Drun.profiles=development*
+How to run: *mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=development -Dsign-up-enabled=1"*
 
 Arquitecture:
 ![Diagram](sensor-hub-architecture.PNG)
