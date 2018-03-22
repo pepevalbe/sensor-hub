@@ -18,3 +18,19 @@ INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id)
 INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (20, 20.2, 12.0, DATEADD('HOUR',-2, CURRENT_TIMESTAMP), 999);
 INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (21, 20.2, 11.8, DATEADD('HOUR',-1, CURRENT_TIMESTAMP), 999);
 INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (22, 20.1, 11.5, CURRENT_TIMESTAMP, 999);
+
+-- This would be with a PostgreSQL database (using interval instead of dateadd)
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (10, 20.0, 10.0, CURRENT_TIMESTAMP - 12 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (11, 20.1, 10.2, CURRENT_TIMESTAMP - 11 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (12, 20.2, 10.4, CURRENT_TIMESTAMP - 10 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (13, 20.3, 10.6, CURRENT_TIMESTAMP - 9 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (14, 20.4, 10.8, CURRENT_TIMESTAMP - 8 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (15, 20.4, 11.4, CURRENT_TIMESTAMP - 7 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (16, 20.4, 11.6, CURRENT_TIMESTAMP - 6 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (17, 20.3, 12.1, CURRENT_TIMESTAMP - 5 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (18, 20.3, 12.2, CURRENT_TIMESTAMP - 4 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (19, 20.2, 12.2, CURRENT_TIMESTAMP - 3 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (20, 20.2, 12.0, CURRENT_TIMESTAMP - 2 * INTERVAL '1 hour', 999);
+INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (21, 20.2, 11.8, CURRENT_TIMESTAMP - INTERVAL '1 HOUR', 999);
+-- INSERT INTO public.temp_humidity(id, humidity, temperature, timestamp, owner_id) VALUES (22, 20.1, 11.5, CURRENT_TIMESTAMP, 999);
+
