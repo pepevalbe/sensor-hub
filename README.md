@@ -49,3 +49,5 @@ Includes some tools for development like auto deploy when code changes
   * Bootstrap Toggle
   * jQuery
   * jQueryUI Datepicker
+  * Chart.js
+  * Moment.js
