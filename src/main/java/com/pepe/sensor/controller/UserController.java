@@ -102,7 +102,7 @@ public class UserController {
      */
     @RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
     public ResponseEntity<String> createUser(@RequestBody Person user) {
-        if ("1".equals(System.getProperty("sign-up-enabled"))) {
+        if ("true".equals(System.getProperty("sign-up-enabled"))) {
             if (personRepository.findByUsername(user.getUsername()) != null) {
                 return new ResponseEntity<>("El nombre de usuario ya existe, por favor elija otro.", HttpStatus.CONFLICT);
             } else if (personRepository.findByEmail(user.getEmail()) != null) {
