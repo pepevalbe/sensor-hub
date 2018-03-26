@@ -1,0 +1,10 @@
+package com.pepe.sensor.repository;
+
+import com.pepe.sensor.persistence.TemporaryToken;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+@RepositoryRestResource
+public interface TemporaryTokenRepository extends CrudRepository<TemporaryToken, Long> {
+
+}

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">        
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <title>Cómo funciona</title>
+    </head>
+    <body>
+        <div id="navbarId"></div>
+
+        <div class="container my-4">
+            <h3 class="mb-3">Cómo funciona</h3>
+            <p class="text-justify mb-3">Esta aplicación web te permite recopilar información de sensores instalados en tu hogar y visualizarlos 
+                de forma cómoda en cualquier dispositivo con acceso a internet. Actualmente cada usuario puede registrar 
+                hasta tres tipos diferentes de medidas/eventos:</p>
+            <ul class="list-group">		
+                <li class="list-group-item list-group-item-action flex-column align-items-start">			
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Temperatura y Humedad</h5>				  
+                    </div>
+                    <p class="text-justify mb-1">Valores de temperatura y humedad relativa que pueden ser recogidos por multitud de pequeños sensores de bajo coste.</p>
+                </li>
+                <li class="list-group-item list-group-item-action flex-column align-items-start">			
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Accesos</h5>				  
+                    </div>
+                    <p class="text-justify mb-1">Detección de la apertura de una puerta para controlar las horas de accesos a la vivienda o una habitación. 
+                        Se puede utilizar para ello un interruptor magnético, un sensor de efecto hall o incluso acelerómetros.</p>
+                </li>
+                <li class="list-group-item list-group-item-action flex-column align-items-start">			
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Sensor Genérico</h5>				  
+                    </div>
+                    <p class="text-justify mb-1">Se dispone también de una interfaz para recibir otro tipo de medida o evento genérico. 
+                        Cada registro de este tipo puede contener hasta 3 tipos de valores diferentes. Se podría utilizar por 
+                        ejemplo para medir la humedad de una planta, monitorizar el nivel de decibelios, controlar la calidad 
+                        del aire o cualquier otra cosa que se te ocurra si encuentras el sensor adecuado para ello.</p>
+                </li>
+            </ul>
+        </div>			
+
+        <div class="container my-4">
+            <h4 class="mb-3" id="integrationId">Integración</h2>
+                <p class="text-justify mb-3">Para enviar información desde tus dispositivos al servidor se dispone de una sencilla API. En ella se 
+                    expone una URL para cada tipo de registro. Las peticiones son HTTP POST y la información debe viajar en el body 
+                    de la petición. Se acepta como formato tanto JSON como XML (indicando el correspondiente content-type).
+                    En cada llamada además de los valores propios de la medida se deberá informar el <a href="user_profile.html">Token Personal</a> de usuario, 
+                    para identificar el llamante. Selecciona cada sensor para ver ejemplos:</p>			
+                <div class="card">
+                    <div class="card-header">			
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#api1">Temperatura y Humedad</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#api2">Accesos</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#api3">Sensor Genérico</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content mb-3">
+                            <div id="api1" class="tab-pane fade mb-3">
+                                <h5 class="mb-1">Temperatura y Humedad</h5>
+                                <p class="mb-1">HTTP POST http://pepe-sensores.herokuapp.com/public/temphumidity</p>
+                                <pre><code>Content-Type: application/json
+{
+    "temperature": 23.45,
+    "humidity": 33.33,
+    "token": "20a21608-a45d-43d0-a484-e9d10cf05a66"
+}
+</code></pre>
+                            </div>
+                            <div id="api2" class="tab-pane fade mb-3">
+                                <h5 class="mb-1">Accesos</h5>
+                                <p class="mb-1">HTTP POST http://pepe-sensores.herokuapp.com/public/doorevent</p>
+                                <pre><code>Content-Type: application/json
+{
+    "token": "20a21608-a45d-43d0-a484-e9d10cf05a66"
+}
+</code></pre>
+                            </div>
+                            <div id="api3" class="tab-pane fade mb-3">
+                                <h5 class="mb-1">Sensor Genérico</h5>
+                                <p class="mb-1">HTTP POST http://pepe-sensores.herokuapp.com/public/genericsensor</p>
+                                <pre><code>Content-Type: application/json
+{
+    "value1": 11.11,
+    "value2": 22.22,
+    "value3": 33.33,
+    "token": "20a21608-a45d-43d0-a484-e9d10cf05a66"
+}
+</code></pre>
+                            </div>	
+                        </div>			
+                    </div>
+                </div>			
+        </div>			
+
+        <div id="footerId"></div>
+
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="/public/js/loadnavbarandfooter.js"></script>
+    </body>
+</html>
