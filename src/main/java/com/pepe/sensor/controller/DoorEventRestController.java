@@ -9,6 +9,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +38,8 @@ public class DoorEventRestController {
     public static final String USER_DOOREVENT_FINDBYUSERNAME_URL = "/user/doorevent/findByUsername";
     public static final String ADMIN_DOOREVENT_FINDALL_URL = "/admin/doorevent/findall";
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     DoorEventRepository doorEventRepository;
 
@@ -55,6 +59,7 @@ public class DoorEventRestController {
         if (doorEvent == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
+            logger.trace("Door event requested: " + doorEvent.toString());
             return new ResponseEntity<>(new DoorEventDTO(doorEvent), HttpStatus.OK);
         }
     }
@@ -70,6 +75,7 @@ public class DoorEventRestController {
 
         if (doorEventRepository.exists(new Long(id))) {
             doorEventRepository.delete(new Long(id));
+            logger.trace("Door event deleted: " + id);
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -98,6 +104,7 @@ public class DoorEventRestController {
 
         // Create new entity
         DoorEvent createdDoorEvent = doorEventRepository.save(new DoorEvent(owner));
+        logger.trace(owner.getUsername() + " posted a new door event:" + createdDoorEvent.toString());
         return new ResponseEntity<>(new DoorEventDTO(createdDoorEvent), HttpStatus.CREATED);
     }
 
@@ -128,6 +135,7 @@ public class DoorEventRestController {
 
         // Get data from database        
         doorEvents = (List<DoorEvent>) doorEventRepository.findByOwnerAndTimestampRange(owner, beginTimestamp, endTimestamp);
+        logger.trace(owner.getUsername() + " requested some door events in the interval: " + beginTimestamp + " - " + endTimestamp);
 
         // Convert data to DTO
         if (doorEvents.isEmpty()) {
@@ -162,6 +170,7 @@ public class DoorEventRestController {
         Page<DoorEvent> doorEvents;
         doorEvents = doorEventRepository.findByUsername(auth.getName(),
                 new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
+        logger.trace(auth.getName() + " requested some door events (page,size): " + page + "," + size);
 
         Page<DoorEventDTO> doorEventsDTO = doorEvents.map((DoorEvent doorEvent) -> new DoorEventDTO(doorEvent));
 
@@ -185,7 +194,7 @@ public class DoorEventRestController {
 
         Page<DoorEvent> doorEvents;
         doorEvents = doorEventRepository.findAll(new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
-
+        logger.trace("Requested all door events (page,size): " + page + "," + size);
         return new ResponseEntity<>(doorEvents, HttpStatus.OK);
     }
 }

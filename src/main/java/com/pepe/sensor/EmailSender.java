@@ -3,6 +3,8 @@ package com.pepe.sensor;
 import com.pepe.sensor.controller.UserController;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.persistence.TemporaryToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,6 +30,8 @@ public class EmailSender {
     private final String newPasswordLinkSubject = "Solicitud regeneración de contraseña en pepe-sensores";
     private final String newPasswordLinkTemplate = "Hola %s, por favor utiliza el siguiente link para crear una nueva contraseña: %s?email=%s&token=%s";
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     @Async
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -35,6 +39,7 @@ public class EmailSender {
         message.setSubject(subject);
         message.setText(text);
         javaMailSender.send(message);
+        logger.info("Sending email to: " + to);
     }
 
     @Async
@@ -46,6 +51,7 @@ public class EmailSender {
                 APP_BASE_URL + UserController.PUBLIC_ACTIVATEUSER_URL, user.getEmail(), user.getTemporaryToken().getToken());
         message.setText(text);
         javaMailSender.send(message);
+        logger.info("Sending activate user link email to: " + user.getUsername() + " - " + user.getEmail());
     }
 
     @Async
@@ -56,6 +62,7 @@ public class EmailSender {
         String text = String.format(welcomeTemplate, user.getFirstName(), user.getUsername(), APP_BASE_URL, user.getToken());
         message.setText(text);
         javaMailSender.send(message);
+        logger.info("Sending welcome email to: " + user.getUsername() + " - " + user.getEmail());
     }
 
     @Async
@@ -65,6 +72,7 @@ public class EmailSender {
         message.setSubject(newPersonalTokenSubject);
         message.setText(String.format(newPersonalTokenTemplate, user.getFirstName(), user.getToken()));
         javaMailSender.send(message);
+        logger.info("Sending new personal token email to: " + user.getUsername() + " - " + user.getEmail());
     }
 
     @Async
@@ -76,5 +84,6 @@ public class EmailSender {
         message.setText(String.format(newPasswordLinkTemplate, user.getFirstName(),
                 APP_BASE_URL + UserController.PUBLIC_RESETPASSWORDFORM_URL, user.getEmail(), token.getToken()));
         javaMailSender.send(message);
+        logger.info("Sending reset password link email to: " + user.getUsername() + " - " + user.getEmail());
     }
 }

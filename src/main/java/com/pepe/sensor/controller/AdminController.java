@@ -2,6 +2,8 @@ package com.pepe.sensor.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -24,12 +26,14 @@ public class AdminController {
     public static final String ADMIN_SIGNUPDISABLE_URL = "/admin/signupdisable";
     public static final String ADMIN_SIGNUPSTATUS_URL = "/admin/signupstatus";
 
-    private final Environment environment;
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
+    private final Environment environment;    
+    
     @Autowired
     public AdminController(Environment environment, @Value("${pepe-sensores.sign_up_enabled}") String sign_up_enabled) {
         this.environment = environment;
-        System.setProperty("sign-up-enabled", sign_up_enabled);
+        System.setProperty("sign-up-enabled", sign_up_enabled);        
     }
 
     /**
@@ -59,6 +63,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public void enableSignup() {
         System.setProperty("sign-up-enabled", "true");
+        logger.info("Sign up enabled");
     }
 
     /**
@@ -68,6 +73,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public void disableSignup() {
         System.setProperty("sign-up-enabled", "false");
+        logger.info("Sign up disabled");
     }
 
     /**

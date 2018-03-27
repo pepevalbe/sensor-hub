@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.pepe.sensor.repository.TemporaryTokenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
-public class UserController {
+public class UserController {    
 
     public static final String PUBLIC_LOGIN_URL = "/public/login";
     public static final String PUBLIC_USERNAME_URL = "/public/username";
@@ -34,6 +36,8 @@ public class UserController {
     public static final String PUBLIC_RESETPASSWORDFORM_URL = "/public/resetpasswordform";
     public static final String PUBLIC_RESETPASSWORD_URL = "/public/resetpassword";
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     @Autowired
     PersonRepository personRepository;
 
@@ -113,9 +117,11 @@ public class UserController {
                 user.setTemporaryToken(new TemporaryToken(user));
                 personRepository.save(user);
                 emailSender.sendActivateUserLinkEmail(user);
+                logger.info("User created: " + user.getUsername() + " - " + user.getEmail());
                 return new ResponseEntity<>("Usuario creado. Necesita activarlo utilizando un link que se ha enviado a su email.", HttpStatus.CREATED);
             }
         } else {
+            logger.info("Trying to create user but sign up is disabled: " + user.getUsername() + " - " + user.getEmail());
             return new ResponseEntity("Registro deshabilitado. Contacte con el administrador.", HttpStatus.CONFLICT);
         }
     }
@@ -148,6 +154,7 @@ public class UserController {
             emailSender.sendWelcomeEmail(user);
             model.put("name", user.getFirstName());
             model.put("username", user.getUsername());
+            logger.info("User activated: " + user.getUsername() + " - " + user.getEmail());
         } else {
             model.put("error", true);
         }
@@ -169,6 +176,7 @@ public class UserController {
             loggedUser.setToken(UUID.randomUUID().toString());
             personRepository.save(loggedUser);
             emailSender.sendNewPersonalTokenEmail(loggedUser);
+            logger.info("Personal token regenerated: " + loggedUser.getUsername() + " - " + loggedUser.getEmail());
             return new ResponseEntity(HttpStatus.OK);
         }
     }
@@ -246,7 +254,7 @@ public class UserController {
 
         Person user = personRepository.findByEmail(email);
 
-        // If token is ok we remove token it and change password
+        // If token is ok we remove it and change password
         if (user != null && user.getTemporaryToken() != null
                 && token.equals(user.getTemporaryToken().getToken())
                 && !user.getTemporaryToken().hasExpired()) {
@@ -256,6 +264,7 @@ public class UserController {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setActivated(true);    // In case user vas never activated
             personRepository.save(user);
+            logger.info("Password reset: " + user.getUsername() + " - " + user.getEmail());
         }
 
         // Always redirect to login page

@@ -9,6 +9,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +36,8 @@ public class SensorReadingRestController {
     public static final String USER_GENERICSENSOR_FINDBYUSERNAME_URL = "/user/genericsensor/findByUsername";
     public static final String ADMIN_GENERICSENSOR_FINDALL_URL = "/admin/genericsensor/findall";
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     SensorReadingRepository sensorReadingRepository;
 
@@ -53,6 +57,7 @@ public class SensorReadingRestController {
         if (sensorReading == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
+            logger.trace("Sensor reading requested: " + sensorReading.toString());
             return new ResponseEntity<>(new SensorReadingDTO(sensorReading), HttpStatus.OK);
         }
     }
@@ -68,6 +73,7 @@ public class SensorReadingRestController {
 
         if (sensorReadingRepository.exists(new Long(id))) {
             sensorReadingRepository.delete(new Long(id));
+            logger.trace("Sensor reading register deleted: " + id);
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -93,6 +99,7 @@ public class SensorReadingRestController {
         // Create new entity
         SensorReading sensorReading = new SensorReading(sensorReadingDTO.getValue1(), sensorReadingDTO.getValue2(), sensorReadingDTO.getValue3(), owner);
         SensorReading createdSensorReading = sensorReadingRepository.save(sensorReading);
+        logger.trace(owner.getUsername() + " posted a sensor reading:" + createdSensorReading.toString());
         return new ResponseEntity<>(new SensorReadingDTO(createdSensorReading), HttpStatus.CREATED);
     }
 
@@ -123,6 +130,7 @@ public class SensorReadingRestController {
 
         // Get data from database
         sensorReadings = (List<SensorReading>) sensorReadingRepository.findByOwnerAndTimestampRange(owner, beginTimestamp, endTimestamp);
+        logger.trace(owner.getUsername() + " requested some sensor readings in the interval: " + beginTimestamp + " - " + endTimestamp);
 
         // Convert data to DTO
         if (sensorReadings.isEmpty()) {
@@ -156,6 +164,7 @@ public class SensorReadingRestController {
         Page<SensorReading> sensorReadings;
         sensorReadings = sensorReadingRepository.findByUsername(auth.getName(),
                 new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
+        logger.trace(auth.getName() + " requested some sensor readings (page,size): " + page + "," + size);
 
         Page<SensorReadingDTO> sensorReadingsDTO = sensorReadings.map(SensorReadingDTO::new);
 
@@ -180,6 +189,7 @@ public class SensorReadingRestController {
 
         Page<SensorReading> sensorReadings;
         sensorReadings = sensorReadingRepository.findAll(new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
+        logger.trace("Requested all sensor readings (page,size): " + page + "," + size);
 
         return new ResponseEntity<>(sensorReadings, HttpStatus.OK);
     }

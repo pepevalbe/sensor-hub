@@ -3,6 +3,8 @@ package com.pepe.sensor.controller;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.repository.PersonRepository;
 import java.security.Principal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ public class ActivateDoorRegisterController {
     public static final String API_DOOREVENT_ACTIVATE_URL = "/user/activate-doorevents";
     public static final String API_DOOREVENT_DEACTIVATE_URL = "/user/deactivate-doorevents";
     public static final String API_DOOREVENT_STATUS_URL = "/user/get-doorevents-status";
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     PersonRepository personRepository;
@@ -30,6 +34,7 @@ public class ActivateDoorRegisterController {
         Person user = personRepository.findByUsername(principal.getName());
         user.setDoorRegisterActiveFlag(true);
         personRepository.save(user);
+        logger.info(user.getUsername() + " activated door register");
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -44,6 +49,7 @@ public class ActivateDoorRegisterController {
         Person user = personRepository.findByUsername(principal.getName());
         user.setDoorRegisterActiveFlag(false);
         personRepository.save(user);
+        logger.info(user.getUsername() + " deactivated door register");
         return new ResponseEntity(HttpStatus.OK);
     }
 
