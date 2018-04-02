@@ -116,15 +116,15 @@ $(document).ready(function () {
                                 mode: 'nearest',
                                 callbacks: {
 									title: function (tooltipItems, data) {
-                                        var hour = tooltipItems.xLabel.getHours();
-                                        var minutes = tooltipItems.xLabel.getMinutes();
+                                        var hour = tooltipItems[0].xLabel.getHours();
+                                        var minutes = tooltipItems[0].xLabel.getMinutes();
                                         return hour + ':' + minutes;
 									},
                                     label: function (tooltipItems, data) {
-										if (tooltipItems.datasetIndex  === 0) {
-											return tooltipItems.yLabel + ' ºC';
-										} else if (tooltipItems.datasetIndex  === 1) {
-											return tooltipItems.yLabel + ' %';
+										if (tooltipItems[0].datasetIndex  === 0) {
+											return tooltipItems[0].yLabel + ' ºC';
+										} else if (tooltipItems[0].datasetIndex  === 1) {
+											return tooltipItems[0].yLabel + ' %';
 										}
                                     }
                                 }
