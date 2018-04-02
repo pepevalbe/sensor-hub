@@ -121,10 +121,10 @@ $(document).ready(function () {
                                         return hour + ':' + minutes;
 									},
                                     label: function (tooltipItems, data) {
-										if (tooltipItems[0].datasetIndex  === 0) {
-											return tooltipItems[0].yLabel + ' ºC';
-										} else if (tooltipItems[0].datasetIndex  === 1) {
-											return tooltipItems[0].yLabel + ' %';
+										if (tooltipItems.datasetIndex  === 0) {
+											return tooltipItems.yLabel + ' ºC';
+										} else if (tooltipItems.datasetIndex  === 1) {
+											return tooltipItems.yLabel + ' %';
 										}
                                     }
                                 }
