@@ -111,28 +111,24 @@ $(document).ready(function () {
                                     }
                                 }]
                         },
-                        tooltips: [{
+                        tooltips: {
                                 enabled: true,
                                 mode: 'nearest',
                                 callbacks: {
-                                    label: function (tooltipItems, data) {
+									title: function (tooltipItems, data) {
                                         var hour = tooltipItems.xLabel.getHours();
                                         var minutes = tooltipItems.xLabel.getMinutes();
-                                        return hour + ':' + minutes + ' ' + tooltipItems.yLabel + ' ºC';
-                                    }
-                                }
-                            },
-							{
-                                enabled: true,
-                                mode: 'nearest',
-                                callbacks: {
+                                        return hour + ':' + minutes;
+									},
                                     label: function (tooltipItems, data) {
-                                        var hour = tooltipItems.xLabel.getHours();
-                                        var minutes = tooltipItems.xLabel.getMinutes();
-                                        return hour + ':' + minutes + ' ' + tooltipItems.yLabel + ' %';
+										if (tooltipItems.datasetIndex  === 0) {
+											return tooltipItems.yLabel + ' ºC';
+										} else if (tooltipItems.datasetIndex  === 1) {
+											return tooltipItems.yLabel + ' %';
+										}
                                     }
                                 }
-                            }]
+                        }
                     }
                 });
 
