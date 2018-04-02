@@ -113,12 +113,23 @@ $(document).ready(function () {
                         },
                         tooltips: [{
                                 enabled: true,
-                                mode: 'single',
+                                mode: 'nearest',
                                 callbacks: {
                                     label: function (tooltipItems, data) {
                                         var hour = tooltipItems.xLabel.getHours();
                                         var minutes = tooltipItems.xLabel.getMinutes();
                                         return hour + ':' + minutes + ' ' + tooltipItems.yLabel + ' ºC';
+                                    }
+                                }
+                            },
+							{
+                                enabled: true,
+                                mode: 'nearest',
+                                callbacks: {
+                                    label: function (tooltipItems, data) {
+                                        var hour = tooltipItems.xLabel.getHours();
+                                        var minutes = tooltipItems.xLabel.getMinutes();
+                                        return hour + ':' + minutes + ' ' + tooltipItems.yLabel + ' %';
                                     }
                                 }
                             }]
