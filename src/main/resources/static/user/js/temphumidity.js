@@ -119,13 +119,13 @@ $(document).ready(function () {
 									title: function (tooltipItems, data) {
                                         var hour = tooltipItems[0].xLabel.getHours();
                                         var minutes = tooltipItems[0].xLabel.getMinutes();
-                                        return hour + ':' + minutes;
+                                        return 'Hora: ' + hour + ':' + minutes;
 									},
                                     label: function (tooltipItems, data) {
 										if (tooltipItems.datasetIndex  === 0) {
-											return tooltipItems.yLabel + ' ºC';
+											return 'Temperatura: ' + tooltipItems.yLabel + ' ºC';
 										} else if (tooltipItems.datasetIndex  === 1) {
-											return tooltipItems.yLabel + ' %';
+											return 'Humedad: ' + tooltipItems.yLabel + ' %';
 										}
                                     }
                                 }
