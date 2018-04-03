@@ -113,7 +113,8 @@ $(document).ready(function () {
                         },
                         tooltips: {
                                 enabled: true,
-                                mode: 'nearest',
+                                mode: 'index',
+                                position: 'nearest',
                                 callbacks: {
 									title: function (tooltipItems, data) {
                                         var hour = tooltipItems[0].xLabel.getHours();
