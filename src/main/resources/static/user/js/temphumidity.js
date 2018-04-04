@@ -17,6 +17,8 @@ $(document).ready(function () {
     $('#button0').click(function () {
         $("thead").empty();
         $("tbody").empty();
+		if (chartGlobalVar) chartGlobalVar.destroy();
+		
         var date = $("#input0").val();
         var tz = new Date().getTimezoneOffset();
         var aux = $("#input1").val().split(':');
@@ -45,7 +47,7 @@ $(document).ready(function () {
                 });
 
                 var ctx = document.getElementById('tempHumidityChart').getContext('2d');
-				if (chartGlobalVar) chartGlobalVar.destroy();
+				
                 chartGlobalVar = new Chart(ctx, {
                     // The type of chart we want to create
                     type: 'scatter',
