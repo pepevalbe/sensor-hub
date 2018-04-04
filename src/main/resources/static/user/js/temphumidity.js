@@ -136,7 +136,7 @@ $(document).ready(function () {
                 });
 
             } else {
-                alert("No hay información para el " + date);
+                $('#noDataModal').modal();
             }
         });
     });
