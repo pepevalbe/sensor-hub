@@ -35,7 +35,7 @@ $(document).ready(function () {
                 });
                 $("html, body").animate({scrollTop: $(document).height()}, 1000);
             } else {
-                alert("No hay información para el " + date);
+                $('#noDataModal').modal();
             }
         });
     });

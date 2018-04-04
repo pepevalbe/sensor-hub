@@ -11,6 +11,25 @@
         <title>Sensor Genérico</title>
     </head>
     <body>
+		<div class="modal fade" tabindex="-1" role="dialog" id="noDataModal" style="display: none;" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Sin información</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>No se han encontrado datos para este día.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	
         <div id="navbarId"></div>
 
         <div class="jumbotron text-center">
