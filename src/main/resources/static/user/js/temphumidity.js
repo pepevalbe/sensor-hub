@@ -1,5 +1,6 @@
 // Constants
 var FIND_TEMP_HUMIDITY_URL = "/user/temphumidity/find";
+var chartGlobalVar;
 
 // Add datepicker
 $(document).ready(function () {
@@ -44,7 +45,8 @@ $(document).ready(function () {
                 });
 
                 var ctx = document.getElementById('tempHumidityChart').getContext('2d');
-                var chart = new Chart(ctx, {
+				if (chartGlobalVar) chartGlobalVar.destroy();
+                chartGlobalVar = new Chart(ctx, {
                     // The type of chart we want to create
                     type: 'scatter',
 
