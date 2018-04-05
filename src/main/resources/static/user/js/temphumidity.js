@@ -123,7 +123,7 @@ $(document).ready(function () {
 									title: function (tooltipItems, data) {
                                         var hour = tooltipItems[0].xLabel.getHours();
                                         var minutes = tooltipItems[0].xLabel.getMinutes();
-                                        return 'Hora: ' + hour + ':' + minutes;
+                                        return 'Hora: ' + hour.padStart(2, "0") + ':' + minutes.padStart(2, "0");
 									},
                                     label: function (tooltipItems, data) {
 										if (tooltipItems.datasetIndex  === 0) {
