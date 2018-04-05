@@ -1,5 +1,6 @@
 // Constants
 var FIND_TEMP_HUMIDITY_URL = "/user/temphumidity/find";
+var chartGlobalVar;
 
 // Add datepicker
 $(document).ready(function () {
@@ -16,6 +17,8 @@ $(document).ready(function () {
     $('#button0').click(function () {
         $("thead").empty();
         $("tbody").empty();
+		if (chartGlobalVar) chartGlobalVar.destroy();
+		
         var date = $("#input0").val();
         var tz = new Date().getTimezoneOffset();
         var aux = $("#input1").val().split(':');
@@ -44,7 +47,8 @@ $(document).ready(function () {
                 });
 
                 var ctx = document.getElementById('tempHumidityChart').getContext('2d');
-                var chart = new Chart(ctx, {
+				
+                chartGlobalVar = new Chart(ctx, {
                     // The type of chart we want to create
                     type: 'scatter',
 
@@ -111,22 +115,30 @@ $(document).ready(function () {
                                     }
                                 }]
                         },
-                        tooltips: [{
+                        tooltips: {
                                 enabled: true,
-                                mode: 'single',
+                                mode: 'index',
+                                position: 'nearest',
                                 callbacks: {
+									title: function (tooltipItems, data) {
+                                        var hour = tooltipItems[0].xLabel.getHours();
+                                        var minutes = tooltipItems[0].xLabel.getMinutes();
+                                        return 'Hora: ' + hour.toString().padStart(2, "0") + ':' + minutes.toString().padStart(2, "0");
+									},
                                     label: function (tooltipItems, data) {
-                                        var hour = tooltipItems.xLabel.getHours();
-                                        var minutes = tooltipItems.xLabel.getMinutes();
-                                        return hour + ':' + minutes + ' ' + tooltipItems.yLabel + ' ºC';
+										if (tooltipItems.datasetIndex  === 0) {
+											return 'Temperatura: ' + tooltipItems.yLabel + ' ºC';
+										} else if (tooltipItems.datasetIndex  === 1) {
+											return 'Humedad: ' + tooltipItems.yLabel + ' %';
+										}
                                     }
                                 }
-                            }]
+                        }
                     }
                 });
 
             } else {
-                alert("No hay información para el " + date);
+                $('#noDataModal').modal();
             }
         });
     });
