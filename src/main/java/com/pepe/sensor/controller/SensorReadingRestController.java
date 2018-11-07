@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +52,10 @@ public class SensorReadingRestController {
      * @return
      */
     @GetMapping(USER_GENERICSENSOR_URL)
-    public ResponseEntity<SensorReadingDTO> get(@RequestParam String id) {
-
-        SensorReading sensorReading = sensorReadingRepository.findOne(new Long(id));
-        if (sensorReading == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            logger.trace("Sensor reading requested: " + sensorReading.toString());
-            return new ResponseEntity<>(new SensorReadingDTO(sensorReading), HttpStatus.OK);
-        }
+    public ResponseEntity<SensorReadingDTO> get(@RequestParam("id") long id) {
+        return sensorReadingRepository.findById(id)
+                .map(s -> ResponseEntity.ok(new SensorReadingDTO(s)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -69,10 +65,10 @@ public class SensorReadingRestController {
      * @return Http 200 OK if deleted or 404 if not found
      */
     @DeleteMapping(USER_GENERICSENSOR_URL)
-    public ResponseEntity delete(@RequestParam String id) {
+    public ResponseEntity delete(@RequestParam("id") long id) {
 
-        if (sensorReadingRepository.exists(new Long(id))) {
-            sensorReadingRepository.delete(new Long(id));
+        if (sensorReadingRepository.existsById(id)) {
+            sensorReadingRepository.deleteById(id);
             logger.trace("Sensor reading register deleted: " + id);
             return new ResponseEntity(HttpStatus.OK);
         } else {
@@ -91,11 +87,12 @@ public class SensorReadingRestController {
     public ResponseEntity<SensorReadingDTO> post(@RequestBody SensorReadingDTO sensorReadingDTO) {
 
         // Search for user
-        Person owner = personRepository.findByToken(sensorReadingDTO.getToken());
-        if (owner == null) {
+        Optional<Person> opt = personRepository.findByToken(sensorReadingDTO.getToken());
+        if (!opt.isPresent()) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-
+        Person owner = opt.get();
+        
         // Create new entity
         SensorReading sensorReading = new SensorReading(sensorReadingDTO.getValue1(), sensorReadingDTO.getValue2(), sensorReadingDTO.getValue3(), owner);
         SensorReading createdSensorReading = sensorReadingRepository.save(sensorReading);
@@ -119,7 +116,7 @@ public class SensorReadingRestController {
             @RequestParam(value = "tz", defaultValue = "0") Integer tz) {
 
         List<SensorReading> sensorReadings;
-        Person owner = personRepository.findByUsername(auth.getName());
+        Person owner = personRepository.getOne(auth.getName());
 
         if (date == null) {
             date = new Date(System.currentTimeMillis());

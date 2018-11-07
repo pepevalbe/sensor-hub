@@ -5,12 +5,12 @@ import java.sql.Timestamp;
 
 public class SensorReadingDTO {
 
-    long id;
-    Timestamp timestamp;
-    float value1;
-    float value2;
-    float value3;
-    String token;
+    private long id;
+    private Timestamp timestamp;
+    private float value1;
+    private float value2;
+    private float value3;
+    private String token;
 
     public SensorReadingDTO() {
     }

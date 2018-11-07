@@ -10,9 +10,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final PersonRepository personRepository;
@@ -26,18 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DisabledException {
-        Person user = personRepository.findByUsername(username);
-
-        if (user == null) {
-            logger.info("Trying to log in but user not found: " + username);
-            throw new UsernameNotFoundException("User " + username + " not found!");
-        }
+        Person user = personRepository.getOne(username);
         if (!user.isActivated()) {
             logger.info("Trying to log in but user not activated: " + user.getUsername() + " - " + user.getEmail());
             throw new DisabledException("User " + username + " not activated!");
         }
-
-        UserDetails userDetails = User.withUsername(user.getUsername()).password(user.getPassword()).roles(user.getRole()).build();
-        return userDetails;
+        return User.withUsername(user.getUsername()).password(user.getPassword()).roles(user.getRole()).build();
     }
 }

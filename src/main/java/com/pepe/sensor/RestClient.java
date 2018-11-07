@@ -48,7 +48,7 @@ public class RestClient {
         TempHumidityDTO temphumidityDTO = new TempHumidityDTO();
         temphumidityDTO.setTemperature(Float.parseFloat(main.path("temp").asText()));
         temphumidityDTO.setHumidity(Float.parseFloat(main.path("humidity").asText()));
-        temphumidityDTO.setToken(personRepository.findByUsername("user").getToken());
+        temphumidityDTO.setToken(personRepository.getOne("user").getToken());
         HttpEntity<TempHumidityDTO> request = new HttpEntity<>(temphumidityDTO);
         restTemplate.postForObject(APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMPHUMIDITY_URL, request, TempHumidityDTO.class);
     }
@@ -57,7 +57,7 @@ public class RestClient {
     public void postDoorEvent() throws Exception {
         Thread.sleep(ThreadLocalRandom.current().nextLong(1, 100) * 60 * 1000L);    // Seleeps 1-100 minutes
         DoorEventDTO doorEventDTO = new DoorEventDTO();
-        doorEventDTO.setToken(personRepository.findByUsername("user").getToken());
+        doorEventDTO.setToken(personRepository.getOne("user").getToken());
         HttpEntity<DoorEventDTO> request = new HttpEntity<>(doorEventDTO);
         restTemplate.postForObject(APP_BASE_URL + DoorEventRestController.PUBLIC_DOOREVENT_URL, request, DoorEventDTO.class);
     }
@@ -68,7 +68,7 @@ public class RestClient {
         sensorReadingDTO.setValue1(ThreadLocalRandom.current().nextFloat());
         sensorReadingDTO.setValue2((float) ThreadLocalRandom.current().nextDouble(-100, 100));
         sensorReadingDTO.setValue3((float) ThreadLocalRandom.current().nextGaussian());
-        sensorReadingDTO.setToken(personRepository.findByUsername("user").getToken());
+        sensorReadingDTO.setToken(personRepository.getOne("user").getToken());
         HttpEntity<SensorReadingDTO> request = new HttpEntity<>(sensorReadingDTO);
         restTemplate.postForObject(APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERICSENSOR_URL, request, SensorReadingDTO.class);
     }

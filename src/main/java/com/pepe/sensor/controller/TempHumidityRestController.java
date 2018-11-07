@@ -1,23 +1,17 @@
 package com.pepe.sensor.controller;
 
 import com.pepe.sensor.DTO.TempHumidityDTO;
-import com.pepe.sensor.persistence.Person;
+import com.pepe.sensor.DTO.DateFilterDTO;
+import com.pepe.sensor.DTO.PageDTO;
 import com.pepe.sensor.persistence.TempHumidity;
 import com.pepe.sensor.repository.PersonRepository;
-import com.pepe.sensor.repository.TempHumidityRepository;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import com.pepe.sensor.service.TempHumidityService;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Slf4j
 @RestController
+@AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class TempHumidityRestController {
 
     public static final String USER_TEMPHUMIDITY_URL = "/user/temphumidity";
@@ -36,14 +32,10 @@ public class TempHumidityRestController {
     public static final String USER_TEMPHUMIDITY_FINDBYDATE_URL = "/user/temphumidity/find";
     public static final String USER_TEMPHUMIDITY_FINDBYUSERNAME_URL = "/user/temphumidity/findByUsername";
     public static final String ADMIN_TEMPHUMIDITY_FINDALL_URL = "/admin/temphumidity/findall";
+    
+    private TempHumidityService tempHumidityService;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    TempHumidityRepository tempHumidityRepository;
-
-    @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
 
     /**
      * Get a Temperature and Humidity register
@@ -52,14 +44,10 @@ public class TempHumidityRestController {
      * @return
      */
     @GetMapping(USER_TEMPHUMIDITY_URL)
-    public ResponseEntity<TempHumidityDTO> get(@RequestParam String id) {
-        TempHumidity tempHumidity = tempHumidityRepository.findOne(new Long(id));
-        if (tempHumidity == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            logger.trace("TempHumidity register requested: " + tempHumidity.toString());
-            return new ResponseEntity<>(new TempHumidityDTO(tempHumidity), HttpStatus.OK);
-        }
+    public ResponseEntity<TempHumidityDTO> get(@RequestParam("id") long id) {
+        return tempHumidityService.getById(id)
+                .map(t -> ResponseEntity.ok(t))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -69,15 +57,9 @@ public class TempHumidityRestController {
      * @return Http 200 OK if deleted or 404 if not found
      */
     @DeleteMapping(USER_TEMPHUMIDITY_URL)
-    public ResponseEntity delete(@RequestParam String id) {
-
-        if (tempHumidityRepository.exists(new Long(id))) {
-            tempHumidityRepository.delete(new Long(id));
-            logger.trace("TempHumidity register deleted: " + id);
-            return new ResponseEntity(HttpStatus.OK);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<String> delete(@RequestParam("id") long id) {
+        tempHumidityService.deleteById(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
@@ -89,18 +71,9 @@ public class TempHumidityRestController {
      */
     @PostMapping(PUBLIC_TEMPHUMIDITY_URL)
     public ResponseEntity<TempHumidityDTO> post(@RequestBody TempHumidityDTO tempHumidityDTO) {
-
-        // Search for user
-        Person owner = personRepository.findByToken(tempHumidityDTO.getToken());
-        if (owner == null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
-        // Create new entity
-        TempHumidity tempHumidity = new TempHumidity(tempHumidityDTO.getTemperature(), tempHumidityDTO.getHumidity(), owner);
-        TempHumidity createdTempHumidity = tempHumidityRepository.save(tempHumidity);
-        logger.trace(owner.getUsername() + " posted a temphumidity register:" + createdTempHumidity.toString());
-        return new ResponseEntity<>(new TempHumidityDTO(createdTempHumidity), HttpStatus.CREATED);
+        return tempHumidityService.create(tempHumidityDTO)
+                .map(t -> ResponseEntity.status(HttpStatus.CREATED).body(t))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -116,35 +89,10 @@ public class TempHumidityRestController {
      * @return List of Temperature, Humidity and Timestamp
      */
     @GetMapping(USER_TEMPHUMIDITY_FINDBYDATE_URL)
-    public ResponseEntity<List<TempHumidityDTO>> findByUsernameAndDate(Authentication auth,
-            @RequestParam(value = "date", required = false) Date date,
-            @RequestParam(value = "tz", defaultValue = "0") Integer tz,
-            @RequestParam(value = "minutes", defaultValue = "0") Integer minutes) {
-
-        List<TempHumidity> tempHumidities;
-        Person owner = personRepository.findByUsername(auth.getName());
-
-        if (date == null) {
-            date = new Date(System.currentTimeMillis());
-        }
-        // Calculate beginning and end interval of the date in timestamp, considering timezone and minutes offset 
-        Timestamp beginTimestamp = new Timestamp(date.getTime() + (tz + minutes) * 60000);
-        Timestamp endTimestamp = new Timestamp(beginTimestamp.getTime() + 86400000 - 1);
-
-        // Get data from database
-        tempHumidities = (List<TempHumidity>) tempHumidityRepository.findByOwnerAndTimestampRange(owner, beginTimestamp, endTimestamp);
-        logger.trace(owner.getUsername() + " requested some temhumidty registers in the interval: " + beginTimestamp + " - " + endTimestamp);
-
-        // Convert data to DTO
-        if (tempHumidities.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            List<TempHumidityDTO> tempHumiditysDTO = new ArrayList<>();
-            for (TempHumidity tempHumidity : tempHumidities) {
-                tempHumiditysDTO.add(new TempHumidityDTO(tempHumidity));
-            }
-            return new ResponseEntity<>(tempHumiditysDTO, HttpStatus.OK);
-        }
+    public ResponseEntity<List<TempHumidityDTO>> findByUsernameAndDate(Authentication auth, DateFilterDTO filter) {
+        return tempHumidityService.find(auth.getName(), filter)
+                .map(l -> ResponseEntity.ok(l))
+                .orElse(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
     /**
@@ -152,52 +100,21 @@ public class TempHumidityRestController {
      *
      * @param auth Automatically filled when user is logged
      * @param page Page number
-     * @param size Page size
      * @return Page of Temperature, Humidity and Timestamp from logged user
      */
     @GetMapping(USER_TEMPHUMIDITY_FINDBYUSERNAME_URL)
-    public ResponseEntity<Page<TempHumidityDTO>> findByUsername(Authentication auth,
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "20") Integer size) {
-
-        if (size > 50) {
-            size = 50;
-        }
-
-        Page<TempHumidity> tempHumidities;
-        tempHumidities = tempHumidityRepository.findByUsername(auth.getName(),
-                new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
-        logger.trace(auth.getName() + " requested some temphumidity registers (page,size): " + page + "," + size);
-
-        Page<TempHumidityDTO> tempHumiditiesDTO = tempHumidities.map(new Converter<TempHumidity, TempHumidityDTO>() {
-            @Override
-            public TempHumidityDTO convert(TempHumidity tempHumidity) {
-                return new TempHumidityDTO(tempHumidity);
-            }
-        });
-
-        return new ResponseEntity<>(tempHumiditiesDTO, HttpStatus.OK);
+    public ResponseEntity<Page<TempHumidityDTO>> findByUsername(Authentication auth, PageDTO page) {
+        return ResponseEntity.ok(tempHumidityService.find(auth.getName(), page));
     }
 
     /**
      * Find all. Find all Temperature and Humidity registers
      *
-     * @param page Page number
-     * @param size Page size
+     * @param page Page
      * @return Page of Temperature, Humidity and Timestamp
      */
     @GetMapping(ADMIN_TEMPHUMIDITY_FINDALL_URL)
-    public ResponseEntity<Page<TempHumidity>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "20") Integer size) {
-
-        if (size > 50) {
-            size = 50;
-        }
-
-        Page<TempHumidity> tempHumidities;
-        tempHumidities = tempHumidityRepository.findAll(new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
-        logger.trace("Requested all temphumidity registers (page,size): " + page + "," + size);
-
-        return new ResponseEntity<>(tempHumidities, HttpStatus.OK);
+    public ResponseEntity<Page<TempHumidity>> findAll(PageDTO page) {
+        return ResponseEntity.ok(tempHumidityService.findAll(page));
     }
 }
