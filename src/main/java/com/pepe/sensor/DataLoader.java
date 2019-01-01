@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataLoader implements ApplicationRunner {
 
-    PersonRepository personRepository;
-    PasswordEncoder passwordEncoder;
+    private PersonRepository personRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Value("${pepe-sensores.demo_user_role}")
-    String DEMO_USER_ROLE;
+    private String demoUserRole;
 
     @Autowired
     public DataLoader(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
@@ -30,7 +30,7 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         // Create demo user
-        Person user = new Person("user", passwordEncoder.encode("user"), DEMO_USER_ROLE,
+        Person user = new Person("user", passwordEncoder.encode("user"), demoUserRole,
                 "user@email.com", "NombreDeUsuario", "ApellidoDeUsuario");
 
         // Remove existing demo user (delete propagates to OnetToMany relationships)

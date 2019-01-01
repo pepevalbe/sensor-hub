@@ -90,10 +90,9 @@ public class UserController {
     @RequestMapping(value = USER_USERPROFILE_URL, method = RequestMethod.GET)
     public ResponseEntity<Person> getUserProfile(Principal principal) {
         if (principal == null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            Person loggedUser = personRepository.findByUsername(principal.getName());
-            return new ResponseEntity<>(loggedUser, HttpStatus.OK);
+            return ResponseEntity.ok(personRepository.getOne(principal.getName()));
         }
     }
 
@@ -107,7 +106,7 @@ public class UserController {
     @RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
     public ResponseEntity<String> createUser(@RequestBody Person user) {
         if ("true".equals(System.getProperty("sign-up-enabled"))) {
-            if (personRepository.findByUsername(user.getUsername()) != null) {
+            if (!personRepository.findById(user.getUsername()).isPresent()) {
                 return new ResponseEntity<>("El nombre de usuario ya existe, por favor elija otro.", HttpStatus.CONFLICT);
             } else if (personRepository.findByEmail(user.getEmail()) != null) {
                 return new ResponseEntity<>("Ya se ha utilizado este email para registrarse, por favor utilice otro.", HttpStatus.CONFLICT);
@@ -172,7 +171,7 @@ public class UserController {
         if (principal == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         } else {
-            Person loggedUser = personRepository.findByUsername(principal.getName());
+            Person loggedUser = personRepository.getOne(principal.getName());
             loggedUser.setToken(UUID.randomUUID().toString());
             personRepository.save(loggedUser);
             emailSender.sendNewPersonalTokenEmail(loggedUser);

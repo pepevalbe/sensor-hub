@@ -10,11 +10,19 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@Data
 @Entity
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class TempHumidity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -24,93 +32,21 @@ public class TempHumidity implements Serializable {
     private Timestamp timestamp;
 
     @NotNull
+    @NonNull
     @Column(nullable = false)
-    private Float temperature;
+    private double temperature;
 
     @NotNull
+    @NonNull
     @Column(nullable = false)
-    private Float humidity;
+    private double humidity;
 
     @ManyToOne
+    @NonNull
     private Person owner;
 
     @PrePersist
     protected void onCreate() {
         timestamp = new Timestamp(System.currentTimeMillis());
     }
-
-    public TempHumidity() {
-    }
-
-    public TempHumidity(Float temperature, Float humidity, Person owner) {
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.owner = owner;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Float getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Float temperature) {
-        this.temperature = temperature;
-    }
-
-    public Float getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(Float humidity) {
-        this.humidity = humidity;
-    }
-
-    public Person getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Person owner) {
-        this.owner = owner;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TempHumidity)) {
-            return false;
-        }
-        TempHumidity other = (TempHumidity) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.pepe.sensor.repository.TempHumidity[ id=" + id + " ]";
-    }
-
 }

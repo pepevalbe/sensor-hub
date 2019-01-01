@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,15 +54,11 @@ public class DoorEventRestController {
      * @return
      */
     @GetMapping(USER_DOOREVENT_URL)
-    public ResponseEntity<DoorEventDTO> get(@RequestParam("id") String id) {
+    public ResponseEntity<DoorEventDTO> get(@RequestParam("id") long id) {
 
-        DoorEvent doorEvent = doorEventRepository.findOne(new Long(id));
-        if (doorEvent == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            logger.trace("Door event requested: " + doorEvent.toString());
-            return new ResponseEntity<>(new DoorEventDTO(doorEvent), HttpStatus.OK);
-        }
+        return doorEventRepository.findById(id)
+                .map(d -> ResponseEntity.ok(new DoorEventDTO(d)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -73,8 +70,8 @@ public class DoorEventRestController {
     @DeleteMapping(USER_DOOREVENT_URL)
     public ResponseEntity delete(@RequestParam("id") String id) {
 
-        if (doorEventRepository.exists(new Long(id))) {
-            doorEventRepository.delete(new Long(id));
+        if (doorEventRepository.existsById(new Long(id))) {
+            doorEventRepository.deleteById(new Long(id));
             logger.trace("Door event deleted: " + id);
             return new ResponseEntity(HttpStatus.OK);
         } else {
@@ -91,13 +88,14 @@ public class DoorEventRestController {
     @PostMapping(PUBLIC_DOOREVENT_URL)
     public ResponseEntity<DoorEventDTO> post(@RequestBody DoorEventDTO doorEventDTO) {
         // Search for user
-        Person owner = personRepository.findByToken(doorEventDTO.getToken());
-        if (owner == null) {
+        Optional<Person> opt = personRepository.findByToken(doorEventDTO.getToken());
+        if (!opt.isPresent()) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-
+        Person owner = opt.get();
+        
         // If user has disabled door register we ignore the request
-        if (owner.getDoorRegisterActiveFlag() != true) {
+        if (!owner.isDoorRegisterActiveFlag()) {
             // return OK so the sensor doesn't keep trying to POST
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -124,7 +122,7 @@ public class DoorEventRestController {
             @RequestParam(value = "tz", defaultValue = "0") Integer tz) {
 
         List<DoorEvent> doorEvents;
-        Person owner = personRepository.findByUsername(auth.getName());
+        Person owner = personRepository.getOne(auth.getName());
 
         if (date == null) {
             date = new Date(System.currentTimeMillis());
