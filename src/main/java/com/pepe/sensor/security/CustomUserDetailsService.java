@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DisabledException {
-        Person user = personRepository.getOne(username);
+        Person user = personRepository.findById(username).get();
         if (!user.isActivated()) {
             logger.info("Trying to log in but user not activated: " + user.getUsername() + " - " + user.getEmail());
             throw new DisabledException("User " + username + " not activated!");
