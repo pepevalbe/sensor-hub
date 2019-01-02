@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class ActivateDoorRegisterController {
 
+    public static final String API_DOOREVENT_ACTIVATE_URL = "/user/activate-doorevents";
+    public static final String API_DOOREVENT_DEACTIVATE_URL = "/user/deactivate-doorevents";
+    public static final String API_DOOREVENT_STATUS_URL = "/user/get-doorevents-status";
+
     private PersonRepository personRepository;
 
     /**
@@ -24,7 +28,7 @@ public class ActivateDoorRegisterController {
      * @param principal Automatically filled when user is logged
      * @return 200 OK
      */
-    @RequestMapping("/activate-doorevents")
+    @RequestMapping(API_DOOREVENT_ACTIVATE_URL)
     public ResponseEntity activate(Principal principal) {
         Person user = personRepository.getOne(principal.getName());
         user.setDoorRegisterActiveFlag(true);
@@ -39,7 +43,7 @@ public class ActivateDoorRegisterController {
      * @param principal Automatically filled when user is logged
      * @return 200 OK
      */
-    @RequestMapping("/deactivate-doorevents")
+    @RequestMapping(API_DOOREVENT_DEACTIVATE_URL)
     public ResponseEntity deactivate(Principal principal) {
         Person user = personRepository.getOne(principal.getName());
         user.setDoorRegisterActiveFlag(false);
@@ -54,7 +58,7 @@ public class ActivateDoorRegisterController {
      * @param principal Automatically filled when user is logged
      * @return Door register status: 1 on, 0 off
      */
-    @RequestMapping("/get-doorevents-status")
+    @RequestMapping(API_DOOREVENT_STATUS_URL)
     public ResponseEntity<String> getStatus(Principal principal) {
         return personRepository.findById(principal.getName())
                 .map((Person p) -> ResponseEntity.ok(String.valueOf(p.isDoorRegisterActiveFlag())))
