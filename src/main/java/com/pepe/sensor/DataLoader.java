@@ -35,9 +35,11 @@ public class DataLoader implements ApplicationRunner {
 
         // Remove existing demo user (delete propagates to OnetToMany relationships)
         personRepository.deleteByUsername(user.getUsername());
-        //Before saving we need to actually delete from database (flush)
+        // Use flush to actually delete from database
         personRepository.flush();
-        personRepository.saveAndFlush(user);
+        
+        // Save user (create timestamp and token)
+        user = personRepository.saveAndFlush(user);
 
         // Activate demo user
         user.setActivated(true);
