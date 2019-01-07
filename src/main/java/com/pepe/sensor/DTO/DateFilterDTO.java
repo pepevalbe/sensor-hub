@@ -10,7 +10,13 @@ public class DateFilterDTO {
     private Date date;
     private int tz;
     private int minutes;
-    
+
+    public DateFilterDTO(Date date, int tz, int minutes) {
+        this.date = date;
+        this.tz = tz;
+        this.minutes = minutes;
+    }
+
     public Timestamp getBegin(){
         if (date == null) {
             date = new Date(System.currentTimeMillis());

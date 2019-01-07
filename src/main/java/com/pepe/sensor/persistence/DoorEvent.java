@@ -10,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 @Entity
 public class DoorEvent implements Serializable {
 
@@ -26,11 +28,6 @@ public class DoorEvent implements Serializable {
     @ManyToOne
     private Person owner;
 
-    @PrePersist
-    protected void onCreate() {
-        timestamp = new Timestamp(System.currentTimeMillis());
-    }
-
     public DoorEvent() {
     }
 
@@ -38,53 +35,8 @@ public class DoorEvent implements Serializable {
         this.owner = owner;
     }
 
-    public Long getId() {
-        return id;
+    @PrePersist
+    protected void onCreate() {
+        timestamp = new Timestamp(System.currentTimeMillis());
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Person getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Person owner) {
-        this.owner = owner;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof DoorEvent)) {
-            return false;
-        }
-        DoorEvent other = (DoorEvent) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.pepe.sensor.persistence.DoorEvent[ id=" + id + " ]";
-    }
-
 }

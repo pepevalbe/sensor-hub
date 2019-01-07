@@ -1,10 +1,13 @@
 package com.pepe.sensor.controller;
 
+import com.pepe.sensor.DTO.DateFilterDTO;
 import com.pepe.sensor.DTO.DoorEventDTO;
+import com.pepe.sensor.DTO.PageDTO;
 import com.pepe.sensor.persistence.DoorEvent;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.repository.DoorEventRepository;
 import com.pepe.sensor.repository.PersonRepository;
+import com.pepe.sensor.service.DoorEventService;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -42,6 +45,9 @@ public class DoorEventRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
+    DoorEventService doorEventService;
+
+    @Autowired
     DoorEventRepository doorEventRepository;
 
     @Autowired
@@ -56,8 +62,8 @@ public class DoorEventRestController {
     @GetMapping(USER_DOOREVENT_URL)
     public ResponseEntity<DoorEventDTO> get(@RequestParam("id") long id) {
 
-        return doorEventRepository.findById(id)
-                .map(d -> ResponseEntity.ok(new DoorEventDTO(d)))
+        return doorEventService.getById(id)
+                .map(d -> ResponseEntity.ok(d))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -68,15 +74,10 @@ public class DoorEventRestController {
      * @return Http 200 OK if deleted or 404 if not found
      */
     @DeleteMapping(USER_DOOREVENT_URL)
-    public ResponseEntity delete(@RequestParam("id") String id) {
+    public ResponseEntity delete(@RequestParam("id") long id) {
 
-        if (doorEventRepository.existsById(new Long(id))) {
-            doorEventRepository.deleteById(new Long(id));
-            logger.trace("Door event deleted: " + id);
-            return new ResponseEntity(HttpStatus.OK);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        doorEventService.deleteById(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
@@ -93,17 +94,16 @@ public class DoorEventRestController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Person owner = opt.get();
-        
+
         // If user has disabled door register we ignore the request
         if (!owner.isDoorRegisterActiveFlag()) {
             // return OK so the sensor doesn't keep trying to POST
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        // Create new entity
-        DoorEvent createdDoorEvent = doorEventRepository.save(new DoorEvent(owner));
-        logger.trace(owner.getUsername() + " posted a new door event:" + createdDoorEvent.toString());
-        return new ResponseEntity<>(new DoorEventDTO(createdDoorEvent), HttpStatus.CREATED);
+        return doorEventService.create(doorEventDTO)
+                .map(d -> ResponseEntity.status(HttpStatus.CREATED).body(d))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -119,32 +119,11 @@ public class DoorEventRestController {
     @GetMapping(USER_DOOREVENT_FINDBYDATE_URL)
     public ResponseEntity<List<DoorEventDTO>> findByUsernameAndDate(Authentication auth,
             @RequestParam(value = "date", required = false) Date date,
-            @RequestParam(value = "tz", defaultValue = "0") Integer tz) {
+            @RequestParam(value = "tz", defaultValue = "0") int tz) {
 
-        List<DoorEvent> doorEvents;
-        Person owner = personRepository.getOne(auth.getName());
-
-        if (date == null) {
-            date = new Date(System.currentTimeMillis());
-        }
-        // Calculate beginning and end interval of the date in timestamp, considering timezone offset
-        Timestamp beginTimestamp = new Timestamp(date.getTime() + tz * 60000);
-        Timestamp endTimestamp = new Timestamp(beginTimestamp.getTime() + 86400000 - 1);
-
-        // Get data from database        
-        doorEvents = (List<DoorEvent>) doorEventRepository.findByOwnerAndTimestampRange(owner, beginTimestamp, endTimestamp);
-        logger.trace(owner.getUsername() + " requested some door events in the interval: " + beginTimestamp + " - " + endTimestamp);
-
-        // Convert data to DTO
-        if (doorEvents.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            List<DoorEventDTO> doorEventsDTO = new ArrayList<>();
-            for (DoorEvent doorEvent : doorEvents) {
-                doorEventsDTO.add(new DoorEventDTO(doorEvent));
-            }
-            return new ResponseEntity<>(doorEventsDTO, HttpStatus.OK);
-        }
+        return doorEventService.find(auth.getName(), new DateFilterDTO(date, tz, 0))
+                .map(d -> ResponseEntity.ok(d))
+                .orElse(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
     /**
@@ -158,21 +137,10 @@ public class DoorEventRestController {
      */
     @GetMapping(USER_DOOREVENT_FINDBYUSERNAME_URL)
     public ResponseEntity<Page<DoorEventDTO>> findByUsername(Authentication auth,
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "20") Integer size) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
 
-        if (size > 50) {
-            size = 50;
-        }
-
-        Page<DoorEvent> doorEvents;
-        doorEvents = doorEventRepository.findByUsername(auth.getName(),
-                new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
-        logger.trace(auth.getName() + " requested some door events (page,size): " + page + "," + size);
-
-        Page<DoorEventDTO> doorEventsDTO = doorEvents.map((DoorEvent doorEvent) -> new DoorEventDTO(doorEvent));
-
-        return new ResponseEntity<>(doorEventsDTO, HttpStatus.OK);
+        return ResponseEntity.ok(doorEventService.find(auth.getName(), new PageDTO(page, size)));
     }
 
     /**
@@ -183,16 +151,9 @@ public class DoorEventRestController {
      * @return List of Door Events and Timestamp
      */
     @RequestMapping(path = ADMIN_DOOREVENT_FINDALL_URL, method = GET)
-    public ResponseEntity<Page<DoorEvent>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "20") Integer size) {
+    public ResponseEntity<Page<DoorEvent>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
 
-        if (size > 50) {
-            size = 50;
-        }
-
-        Page<DoorEvent> doorEvents;
-        doorEvents = doorEventRepository.findAll(new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
-        logger.trace("Requested all door events (page,size): " + page + "," + size);
-        return new ResponseEntity<>(doorEvents, HttpStatus.OK);
+        return ResponseEntity.ok(doorEventService.findAll(new PageDTO(page, size)));
     }
 }
