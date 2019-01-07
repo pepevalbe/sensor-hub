@@ -21,50 +21,49 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@AllArgsConstructor(onConstructor = @__({@Autowired}))
+@AllArgsConstructor(onConstructor = @__({
+    @Autowired}))
 public class TempHumidityService {
-    
+
     private TempHumidityRepository tempHumidityRepository;
 
     private PersonRepository personRepository;
-    
+
     private TempHumidityMapper tempHumidityMapper;
 
     @Transactional(readOnly = true)
-    public Optional<TempHumidityDTO> getById(long id){
+    public Optional<TempHumidityDTO> getById(long id) {
         return tempHumidityRepository.findById(id).map(tempHumidityMapper::map);
     }
-    
+
     @Transactional
-    public void deleteById(long id){
+    public void deleteById(long id) {
         tempHumidityRepository.deleteById(id);
     }
-    
+
     @Transactional
-    public Optional<TempHumidityDTO> create(@NonNull TempHumidityDTO tempHumidityDTO){
+    public Optional<TempHumidityDTO> create(@NonNull TempHumidityDTO tempHumidityDTO) {
         return personRepository.findByToken(tempHumidityDTO.getToken())
                 .map(owner -> tempHumidityMapper.map(tempHumidityDTO, owner))
                 .map(tempHumidityRepository::save)
                 .map(tempHumidityMapper::map);
     }
-    
+
     @Transactional(readOnly = true)
-    public Optional<List<TempHumidityDTO>> find(String username, DateFilterDTO filter){
+    public Optional<List<TempHumidityDTO>> find(String username, DateFilterDTO filter) {
         return personRepository.findById(username)
                 .map(owner -> tempHumidityRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
-                        .map(tempHumidityMapper::map).collect(Collectors.toList()));
+                .map(tempHumidityMapper::map).collect(Collectors.toList()));
     }
-    
+
     @Transactional(readOnly = true)
-    public Page<TempHumidityDTO> find(String username, PageDTO p){
-        return personRepository.findById(username)
-                .map(owner -> tempHumidityRepository.findByUsername(username, p.toRequest(Sort.Direction.ASC, "timestamp"))
-                        .map(tempHumidityMapper::map))
-                .orElse(Page.empty());
+    public Page<TempHumidityDTO> find(String username, PageDTO p) {
+        return tempHumidityRepository.findByUsername(username, p.toRequest(Sort.Direction.ASC, "timestamp"))
+                .map(tempHumidityMapper::map);
     }
-    
+
     @Transactional(readOnly = true)
-    public Page<TempHumidity> findAll(PageDTO p){
+    public Page<TempHumidity> findAll(PageDTO p) {
         return tempHumidityRepository.findAll(p.toRequest(Sort.Direction.ASC, "timestamp"));
     }
 }
