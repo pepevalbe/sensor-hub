@@ -1,8 +1,8 @@
 package com.pepe.sensor.controller;
 
-import com.pepe.sensor.DTO.TempHumidityDTO;
-import com.pepe.sensor.DTO.DateFilterDTO;
-import com.pepe.sensor.DTO.PageDTO;
+import com.pepe.sensor.dto.TempHumidityDTO;
+import com.pepe.sensor.dto.DateFilterDTO;
+import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.persistence.TempHumidity;
 import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.service.TempHumidityService;

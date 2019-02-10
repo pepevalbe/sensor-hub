@@ -1,4 +1,4 @@
-package com.pepe.sensor.DTO;
+package com.pepe.sensor.dto;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

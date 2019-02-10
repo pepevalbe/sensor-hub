@@ -1,6 +1,6 @@
 package com.pepe.sensor.service.mapper;
 
-import com.pepe.sensor.DTO.SensorReadingDTO;
+import com.pepe.sensor.dto.SensorReadingDTO;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.persistence.SensorReading;
 import org.mapstruct.Mapper;

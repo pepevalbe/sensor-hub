@@ -1,4 +1,4 @@
-package com.pepe.sensor.DTO;
+package com.pepe.sensor.dto;
 
 import java.sql.Timestamp;
 import lombok.Data;

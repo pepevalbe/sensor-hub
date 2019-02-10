@@ -1,4 +1,4 @@
-package com.pepe.sensor.DTO;
+package com.pepe.sensor.dto;
 
 import com.pepe.sensor.persistence.DoorEvent;
 import java.sql.Timestamp;

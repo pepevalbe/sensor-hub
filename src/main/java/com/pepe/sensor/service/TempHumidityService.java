@@ -1,8 +1,8 @@
 package com.pepe.sensor.service;
 
-import com.pepe.sensor.DTO.TempHumidityDTO;
-import com.pepe.sensor.DTO.DateFilterDTO;
-import com.pepe.sensor.DTO.PageDTO;
+import com.pepe.sensor.dto.TempHumidityDTO;
+import com.pepe.sensor.dto.DateFilterDTO;
+import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.persistence.TempHumidity;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;

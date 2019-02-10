@@ -2,9 +2,9 @@ package com.pepe.sensor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pepe.sensor.DTO.DoorEventDTO;
-import com.pepe.sensor.DTO.SensorReadingDTO;
-import com.pepe.sensor.DTO.TempHumidityDTO;
+import com.pepe.sensor.dto.DoorEventDTO;
+import com.pepe.sensor.dto.SensorReadingDTO;
+import com.pepe.sensor.dto.TempHumidityDTO;
 import com.pepe.sensor.controller.DoorEventRestController;
 import com.pepe.sensor.controller.SensorReadingRestController;
 import com.pepe.sensor.controller.TempHumidityRestController;

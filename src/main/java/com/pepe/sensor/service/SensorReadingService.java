@@ -1,8 +1,8 @@
 package com.pepe.sensor.service;
 
-import com.pepe.sensor.DTO.DateFilterDTO;
-import com.pepe.sensor.DTO.PageDTO;
-import com.pepe.sensor.DTO.SensorReadingDTO;
+import com.pepe.sensor.dto.DateFilterDTO;
+import com.pepe.sensor.dto.PageDTO;
+import com.pepe.sensor.dto.SensorReadingDTO;
 import com.pepe.sensor.persistence.SensorReading;
 import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.repository.SensorReadingRepository;
