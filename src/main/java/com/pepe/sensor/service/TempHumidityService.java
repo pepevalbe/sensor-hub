@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@AllArgsConstructor(onConstructor = @__({
-    @Autowired}))
+@AllArgsConstructor
 public class TempHumidityService {
 
     private TempHumidityRepository tempHumidityRepository;

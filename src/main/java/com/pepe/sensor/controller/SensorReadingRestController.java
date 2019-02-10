@@ -1,21 +1,17 @@
 package com.pepe.sensor.controller;
 
+import com.pepe.sensor.DTO.DateFilterDTO;
+import com.pepe.sensor.DTO.PageDTO;
 import com.pepe.sensor.DTO.SensorReadingDTO;
-import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.persistence.SensorReading;
 import com.pepe.sensor.repository.PersonRepository;
-import com.pepe.sensor.repository.SensorReadingRepository;
+import com.pepe.sensor.service.SensorReadingService;
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -40,7 +36,7 @@ public class SensorReadingRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    SensorReadingRepository sensorReadingRepository;
+    SensorReadingService sensorReadingService;
 
     @Autowired
     PersonRepository personRepository;
@@ -53,8 +49,8 @@ public class SensorReadingRestController {
      */
     @GetMapping(USER_GENERICSENSOR_URL)
     public ResponseEntity<SensorReadingDTO> get(@RequestParam("id") long id) {
-        return sensorReadingRepository.findById(id)
-                .map(s -> ResponseEntity.ok(new SensorReadingDTO(s)))
+        return sensorReadingService.getById(id)
+                .map(t -> ResponseEntity.ok(t))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -67,13 +63,8 @@ public class SensorReadingRestController {
     @DeleteMapping(USER_GENERICSENSOR_URL)
     public ResponseEntity delete(@RequestParam("id") long id) {
 
-        if (sensorReadingRepository.existsById(id)) {
-            sensorReadingRepository.deleteById(id);
-            logger.trace("Sensor reading register deleted: " + id);
-            return new ResponseEntity(HttpStatus.OK);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        sensorReadingService.deleteById(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
@@ -86,18 +77,9 @@ public class SensorReadingRestController {
     @PostMapping(PUBLIC_GENERICSENSOR_URL)
     public ResponseEntity<SensorReadingDTO> post(@RequestBody SensorReadingDTO sensorReadingDTO) {
 
-        // Search for user
-        Optional<Person> opt = personRepository.findByToken(sensorReadingDTO.getToken());
-        if (!opt.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        Person owner = opt.get();
-        
-        // Create new entity
-        SensorReading sensorReading = new SensorReading(sensorReadingDTO.getValue1(), sensorReadingDTO.getValue2(), sensorReadingDTO.getValue3(), owner);
-        SensorReading createdSensorReading = sensorReadingRepository.save(sensorReading);
-        logger.trace(owner.getUsername() + " posted a sensor reading:" + createdSensorReading.toString());
-        return new ResponseEntity<>(new SensorReadingDTO(createdSensorReading), HttpStatus.CREATED);
+        return sensorReadingService.create(sensorReadingDTO)
+                .map(t -> ResponseEntity.status(HttpStatus.CREATED).body(t))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -115,30 +97,9 @@ public class SensorReadingRestController {
             @RequestParam(value = "date", required = false) Date date,
             @RequestParam(value = "tz", defaultValue = "0") Integer tz) {
 
-        List<SensorReading> sensorReadings;
-        Person owner = personRepository.getOne(auth.getName());
-
-        if (date == null) {
-            date = new Date(System.currentTimeMillis());
-        }
-        // Calculate beginning and end interval of the date in timestamp, considering timezone offset
-        Timestamp beginTimestamp = new Timestamp(date.getTime() + tz * 60000);
-        Timestamp endTimestamp = new Timestamp(beginTimestamp.getTime() + 86400000 - 1);
-
-        // Get data from database
-        sensorReadings = (List<SensorReading>) sensorReadingRepository.findByOwnerAndTimestampRange(owner, beginTimestamp, endTimestamp);
-        logger.trace(owner.getUsername() + " requested some sensor readings in the interval: " + beginTimestamp + " - " + endTimestamp);
-
-        // Convert data to DTO
-        if (sensorReadings.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            List<SensorReadingDTO> sensorReadingsDTO = new ArrayList<>();
-            for (SensorReading sensorReading : sensorReadings) {
-                sensorReadingsDTO.add(new SensorReadingDTO(sensorReading));
-            }
-            return new ResponseEntity<>(sensorReadingsDTO, HttpStatus.OK);
-        }
+        return sensorReadingService.find(auth.getName(), new DateFilterDTO(date, tz, 0))
+                .map(l -> ResponseEntity.ok(l))
+                .orElse(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
     /**
@@ -158,14 +119,7 @@ public class SensorReadingRestController {
             size = 50;
         }
 
-        Page<SensorReading> sensorReadings;
-        sensorReadings = sensorReadingRepository.findByUsername(auth.getName(),
-                new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
-        logger.trace(auth.getName() + " requested some sensor readings (page,size): " + page + "," + size);
-
-        Page<SensorReadingDTO> sensorReadingsDTO = sensorReadings.map(SensorReadingDTO::new);
-
-        return new ResponseEntity<>(sensorReadingsDTO, HttpStatus.OK);
+        return ResponseEntity.ok(sensorReadingService.find(auth.getName(), new PageDTO(page, size)));
     }
 
     /**
@@ -184,10 +138,6 @@ public class SensorReadingRestController {
             size = 50;
         }
 
-        Page<SensorReading> sensorReadings;
-        sensorReadings = sensorReadingRepository.findAll(new PageRequest(page, size, Sort.Direction.ASC, "timestamp"));
-        logger.trace("Requested all sensor readings (page,size): " + page + "," + size);
-
-        return new ResponseEntity<>(sensorReadings, HttpStatus.OK);
+        return ResponseEntity.ok(sensorReadingService.findAll(new PageDTO(page, size)));
     }
 }
