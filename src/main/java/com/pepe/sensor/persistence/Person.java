@@ -17,10 +17,12 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
