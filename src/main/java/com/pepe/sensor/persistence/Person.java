@@ -2,8 +2,6 @@ package com.pepe.sensor.persistence;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,13 +14,11 @@ import java.util.UUID;
 @Data
 @Entity
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @NonNull
     @Size(min = 3, max = 20)
     @Column(length = 20)
     private String username;
@@ -32,31 +28,26 @@ public class Person implements Serializable {
     private Timestamp creationTimestamp;
 
     @NotNull
-    @NonNull
     @Size(min = 3, max = 60)
     @Column(nullable = false, length = 60)
     private String password;
 
     @NotNull
-    @NonNull
     @Size(min = 1, max = 10)
     @Column(nullable = false, length = 10)
     private String role;
 
     @NotNull
-    @NonNull
     @Size(min = 3, max = 100)
     @Column(unique = true, nullable = false, length = 100)
     private String email;
 
     @NotNull
-    @NonNull
     @Size(min = 1, max = 100)
     @Column(nullable = false, length = 100)
     private String firstName;
 
     @NotNull
-    @NonNull
     @Size(min = 1, max = 100)
     @Column(nullable = false, length = 100)
     private String lastName;
@@ -85,6 +76,15 @@ public class Person implements Serializable {
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SensorReading> sensorReading;
+
+    public Person(String username, String password, String role, String email, String firstName, String lastName) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     @PrePersist
     protected void onCreate() {
