@@ -11,9 +11,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class DoorEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,13 +29,6 @@ public class DoorEvent implements Serializable {
 
     @ManyToOne
     private Person owner;
-
-    public DoorEvent() {
-    }
-
-    public DoorEvent(Person owner) {
-        this.owner = owner;
-    }
 
     @PrePersist
     protected void onCreate() {

@@ -17,12 +17,10 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,7 +30,7 @@ public class Person implements Serializable {
     @Size(min = 3, max = 20)
     @Column(length = 20)
     private String username;
-    
+
     @NotNull
     @Column(nullable = false)
     private Timestamp creationTimestamp;

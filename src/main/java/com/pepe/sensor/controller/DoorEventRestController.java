@@ -4,21 +4,12 @@ import com.pepe.sensor.dto.DateFilterDTO;
 import com.pepe.sensor.dto.DoorEventDTO;
 import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.persistence.DoorEvent;
-import com.pepe.sensor.persistence.Person;
-import com.pepe.sensor.repository.DoorEventRepository;
-import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.service.DoorEventService;
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -33,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Slf4j
 @RestController
+@AllArgsConstructor
 public class DoorEventRestController {
 
     public static final String USER_DOOREVENT_URL = "/user/doorevent";
@@ -42,16 +35,7 @@ public class DoorEventRestController {
     public static final String USER_DOOREVENT_FINDBYUSERNAME_URL = "/user/doorevent/findByUsername";
     public static final String ADMIN_DOOREVENT_FINDALL_URL = "/admin/doorevent/findall";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    DoorEventService doorEventService;
-
-    @Autowired
-    DoorEventRepository doorEventRepository;
-
-    @Autowired
-    PersonRepository personRepository;
+    private final DoorEventService doorEventService;
 
     /**
      * Get a Door Event register
@@ -88,19 +72,7 @@ public class DoorEventRestController {
      */
     @PostMapping(PUBLIC_DOOREVENT_URL)
     public ResponseEntity<DoorEventDTO> post(@RequestBody DoorEventDTO doorEventDTO) {
-        // Search for user
-        Optional<Person> opt = personRepository.findByToken(doorEventDTO.getToken());
-        if (!opt.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        Person owner = opt.get();
-
-        // If user has disabled door register we ignore the request
-        if (!owner.isDoorRegisterActiveFlag()) {
-            // return OK so the sensor doesn't keep trying to POST
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
+   
         return doorEventService.create(doorEventDTO)
                 .map(d -> ResponseEntity.status(HttpStatus.CREATED).body(d))
                 .orElse(ResponseEntity.notFound().build());

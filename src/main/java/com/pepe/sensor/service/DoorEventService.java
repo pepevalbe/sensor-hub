@@ -10,24 +10,24 @@ import com.pepe.sensor.service.mapper.DoorEventMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
+@AllArgsConstructor
 public class DoorEventService {
 
-    @Autowired
-    private DoorEventRepository doorEventRepository;
+    private final  DoorEventRepository doorEventRepository;
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final  PersonRepository personRepository;
 
-    @Autowired
-    private DoorEventMapper doorEventMapper;
+    private final  DoorEventMapper doorEventMapper;
 
     @Transactional(readOnly = true)
     public Optional<DoorEventDTO> getById(long id) {

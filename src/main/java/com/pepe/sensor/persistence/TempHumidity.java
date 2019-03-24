@@ -18,11 +18,10 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class TempHumidity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

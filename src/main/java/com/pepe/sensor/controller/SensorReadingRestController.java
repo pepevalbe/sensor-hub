@@ -4,13 +4,11 @@ import com.pepe.sensor.dto.DateFilterDTO;
 import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.dto.SensorReadingDTO;
 import com.pepe.sensor.persistence.SensorReading;
-import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.service.SensorReadingService;
 import java.sql.Date;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 
@@ -24,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Slf4j
 @RestController
+@AllArgsConstructor
 public class SensorReadingRestController {
 
     public static final String USER_GENERICSENSOR_URL = "/user/genericsensor";
@@ -33,13 +33,7 @@ public class SensorReadingRestController {
     public static final String USER_GENERICSENSOR_FINDBYUSERNAME_URL = "/user/genericsensor/findByUsername";
     public static final String ADMIN_GENERICSENSOR_FINDALL_URL = "/admin/genericsensor/findall";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    SensorReadingService sensorReadingService;
-
-    @Autowired
-    PersonRepository personRepository;
+    private final SensorReadingService sensorReadingService;
 
     /**
      * Get a Sensor Reading register

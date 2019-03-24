@@ -5,7 +5,6 @@ import com.pepe.sensor.dto.DateFilterDTO;
 import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.persistence.TempHumidity;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pepe.sensor.repository.TempHumidityRepository;
 import com.pepe.sensor.repository.PersonRepository;
@@ -24,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class TempHumidityService {
 
-    private TempHumidityRepository tempHumidityRepository;
+    private final TempHumidityRepository tempHumidityRepository;
 
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    private TempHumidityMapper tempHumidityMapper;
+    private final TempHumidityMapper tempHumidityMapper;
 
     @Transactional(readOnly = true)
     public Optional<TempHumidityDTO> getById(long id) {

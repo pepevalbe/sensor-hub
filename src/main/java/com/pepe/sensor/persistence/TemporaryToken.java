@@ -13,14 +13,19 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * TemporayToken entity
- * 
- * This class represents a token that can be used for user activation or password reset. 
- * Tokens are UUID and have expiration time. They have OneToOne relationship with person.
+ *
+ * This class represents a token that can be used for user activation or
+ * password reset. Tokens are UUID and have expiration time. They have OneToOne
+ * relationship with person.
  */
+@Data
 @Entity
+@NoArgsConstructor
 public class TemporaryToken implements Serializable {
 
     // Expiration time set to 24h
@@ -45,78 +50,18 @@ public class TemporaryToken implements Serializable {
     @JoinColumn(nullable = false, name = "person_id")
     private Person person;
 
+    public TemporaryToken(Person person) {
+        this.person = person;
+    }
+
     @PrePersist
     protected void onCreate() {
         token = UUID.randomUUID().toString();
         expirationTimestamp = new Timestamp(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME_MILLIS);
     }
 
-    public TemporaryToken() {
-    }
-
-    public TemporaryToken(Person person) {
-        this.person = person;
-    }
-
     public boolean hasExpired() {
         return expirationTimestamp.getTime() < System.currentTimeMillis();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Timestamp getExpirationTimestamp() {
-        return expirationTimestamp;
-    }
-
-    public void setExpirationTimestamp(Timestamp expirationTimestamp) {
-        this.expirationTimestamp = expirationTimestamp;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TemporaryToken)) {
-            return false;
-        }
-        TemporaryToken other = (TemporaryToken) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.pepe.sensor.persistence.TemporaryToken[ id=" + id + " ]";
     }
 
 }

@@ -43,6 +43,15 @@ Starter for testing Spring Boot applications with libraries including JUnit, Ham
 
 **spring-boot-devtools:**
 Includes some tools for development like auto deploy when code changes
+
+**lombok:**
+Boilerplate code generator. Avoid repetitive code such as constructors, loggers getters and setters
+
+**mapstruct:**
+Mapping objects code generator used to pass objects between layers.
+
+**swagger:**
+Create documentations for rest interfaces
     
 **Presentation layer:**
   * Bootstrap 4

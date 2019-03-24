@@ -1,30 +1,26 @@
 package com.pepe.sensor.controller;
 
-import com.pepe.sensor.EmailSender;
 import com.pepe.sensor.persistence.Person;
-import com.pepe.sensor.persistence.TemporaryToken;
-import com.pepe.sensor.repository.PersonRepository;
 import java.net.URI;
 import java.security.Principal;
 import java.util.Map;
-import java.util.UUID;
 import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.pepe.sensor.repository.TemporaryTokenRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.pepe.sensor.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
-public class UserController {    
+@AllArgsConstructor
+public class UserController {
 
     public static final String PUBLIC_LOGIN_URL = "/public/login";
     public static final String PUBLIC_USERNAME_URL = "/public/username";
@@ -36,19 +32,7 @@ public class UserController {
     public static final String PUBLIC_RESETPASSWORDFORM_URL = "/public/resetpasswordform";
     public static final String PUBLIC_RESETPASSWORD_URL = "/public/resetpassword";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    @Autowired
-    PersonRepository personRepository;
-
-    @Autowired
-    TemporaryTokenRepository temporaryTokenRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    EmailSender emailSender;
+    private final UserService userService;
 
     /**
      * Generate Login form
@@ -60,6 +44,7 @@ public class UserController {
     @RequestMapping(value = PUBLIC_LOGIN_URL)
     public String loginForm(@RequestParam(name = "error", required = false) String error,
             Map<String, Object> model) {
+
         if (error != null) {
             model.put("loginError", true);
         }
@@ -74,10 +59,11 @@ public class UserController {
      */
     @RequestMapping(value = PUBLIC_USERNAME_URL, method = RequestMethod.GET)
     public ResponseEntity<String> getUsername(Principal principal) {
+
         if (principal == null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            return new ResponseEntity<>(principal.getName(), HttpStatus.OK);
+            return ResponseEntity.ok().build();
         }
     }
 
@@ -89,10 +75,11 @@ public class UserController {
      */
     @RequestMapping(value = USER_USERPROFILE_URL, method = RequestMethod.GET)
     public ResponseEntity<Person> getUserProfile(Principal principal) {
+
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            return ResponseEntity.ok(personRepository.getOne(principal.getName()));
+            return ResponseEntity.ok(userService.getUserProfile(principal.getName()));
         }
     }
 
@@ -105,23 +92,19 @@ public class UserController {
      */
     @RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
     public ResponseEntity<String> createUser(@RequestBody Person user) {
+
         if ("true".equals(System.getProperty("sign-up-enabled"))) {
-            if (!personRepository.findById(user.getUsername()).isPresent()) {
-                return new ResponseEntity<>("El nombre de usuario ya existe, por favor elija otro.", HttpStatus.CONFLICT);
-            } else if (personRepository.findByEmail(user.getEmail()) != null) {
-                return new ResponseEntity<>("Ya se ha utilizado este email para registrarse, por favor utilice otro.", HttpStatus.CONFLICT);
+            if (userService.getUserProfile(user.getUsername()) != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya existe, por favor elija otro.");
+            } else if (userService.getByEmail(user.getEmail()) != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya se ha utilizado este email para registrarse, por favor utilice otro.");
             } else {
-                user.setRole("USER");
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                user.setTemporaryToken(new TemporaryToken(user));
-                personRepository.save(user);
-                emailSender.sendActivateUserLinkEmail(user);
-                logger.info("User created: " + user.getUsername() + " - " + user.getEmail());
-                return new ResponseEntity<>("Usuario creado. Necesita activarlo utilizando un link que se ha enviado a su email.", HttpStatus.CREATED);
+                userService.createUser(user);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado. Necesita activarlo utilizando un link que se ha enviado a su email.");
             }
         } else {
-            logger.info("Trying to create user but sign up is disabled: " + user.getUsername() + " - " + user.getEmail());
-            return new ResponseEntity("Registro deshabilitado. Contacte con el administrador.", HttpStatus.CONFLICT);
+            log.info("Trying to create user but sign up is disabled: " + user.getUsername() + " - " + user.getEmail());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Registro deshabilitado. Contacte con el administrador.");
         }
     }
 
@@ -138,22 +121,12 @@ public class UserController {
     public String activateUser(@RequestParam("email") String email,
             @RequestParam("token") String token, Map<String, Object> model) {
 
-        Person user = personRepository.findByEmail(email);
+        Person user = userService.activateUser(email, token);
 
         // If token is ok we remove it and activate user otherwise we show an error
-        if (user != null && user.getTemporaryToken() != null
-                && token.equals(user.getTemporaryToken().getToken())
-                && !user.getTemporaryToken().hasExpired()) {
-
-            temporaryTokenRepository.delete(user.getTemporaryToken());
-            user.setTemporaryToken(null);
-            user.setActivated(true);
-            personRepository.save(user);
-
-            emailSender.sendWelcomeEmail(user);
+        if (user != null) {
             model.put("name", user.getFirstName());
             model.put("username", user.getUsername());
-            logger.info("User activated: " + user.getUsername() + " - " + user.getEmail());
         } else {
             model.put("error", true);
         }
@@ -168,15 +141,12 @@ public class UserController {
      */
     @RequestMapping(value = USER_REGENERATEPERSONALTOKEN_URL, method = RequestMethod.POST)
     public ResponseEntity regeneratePersonalToken(Principal principal) {
+
         if (principal == null) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            Person loggedUser = personRepository.getOne(principal.getName());
-            loggedUser.setToken(UUID.randomUUID().toString());
-            personRepository.save(loggedUser);
-            emailSender.sendNewPersonalTokenEmail(loggedUser);
-            logger.info("Personal token regenerated: " + loggedUser.getUsername() + " - " + loggedUser.getEmail());
-            return new ResponseEntity(HttpStatus.OK);
+            userService.regeneratePersonalToken(principal.getName());
+            return ResponseEntity.ok().build();
         }
     }
 
@@ -190,19 +160,7 @@ public class UserController {
     @RequestMapping(value = PUBLIC_GENERATEPASSWORDTOKEN_URL)
     public ResponseEntity generatePasswordToken(@RequestParam("email") String email) {
 
-        Person user = personRepository.findByEmail(email);
-
-        if (user != null) {
-            TemporaryToken previousToken = user.getTemporaryToken();
-            if (previousToken != null) {
-                // If there is a previous token, remove it
-                temporaryTokenRepository.delete(previousToken);
-            }
-            // Create new token
-            user.setTemporaryToken(new TemporaryToken(user));
-            personRepository.save(user);
-            emailSender.sendNewPasswordLinkEmail(user.getTemporaryToken());
-        }
+        userService.generatePasswordToken(email);
 
         // Always redirect to login page
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -222,7 +180,7 @@ public class UserController {
     public String resetPasswordForm(@RequestParam("email") String email,
             @RequestParam("token") String token, Map<String, Object> model) {
 
-        Person user = personRepository.findByEmail(email);
+        Person user = userService.getByEmail(email);
 
         // If token is Ok we print the form otherwise we show an error
         if (user != null && user.getTemporaryToken() != null
@@ -251,20 +209,7 @@ public class UserController {
             @RequestParam("token") String token,
             @RequestParam("newPassword") String newPassword) {
 
-        Person user = personRepository.findByEmail(email);
-
-        // If token is ok we remove it and change password
-        if (user != null && user.getTemporaryToken() != null
-                && token.equals(user.getTemporaryToken().getToken())
-                && !user.getTemporaryToken().hasExpired()) {
-
-            temporaryTokenRepository.delete(user.getTemporaryToken());
-            user.setTemporaryToken(null);
-            user.setPassword(passwordEncoder.encode(newPassword));
-            user.setActivated(true);    // In case user vas never activated
-            personRepository.save(user);
-            logger.info("Password reset: " + user.getUsername() + " - " + user.getEmail());
-        }
+        userService.resetPassword(email, token, newPassword);
 
         // Always redirect to login page
         HttpHeaders httpHeaders = new HttpHeaders();

@@ -4,12 +4,10 @@ import com.pepe.sensor.dto.TempHumidityDTO;
 import com.pepe.sensor.dto.DateFilterDTO;
 import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.persistence.TempHumidity;
-import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.service.TempHumidityService;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RestController
-@AllArgsConstructor(onConstructor = @__({@Autowired}))
+@AllArgsConstructor
 public class TempHumidityRestController {
 
     public static final String USER_TEMPHUMIDITY_URL = "/user/temphumidity";
@@ -33,9 +31,7 @@ public class TempHumidityRestController {
     public static final String USER_TEMPHUMIDITY_FINDBYUSERNAME_URL = "/user/temphumidity/findByUsername";
     public static final String ADMIN_TEMPHUMIDITY_FINDALL_URL = "/admin/temphumidity/findall";
     
-    private TempHumidityService tempHumidityService;
-
-    private PersonRepository personRepository;
+    private final TempHumidityService tempHumidityService;
 
     /**
      * Get a Temperature and Humidity register
@@ -59,7 +55,7 @@ public class TempHumidityRestController {
     @DeleteMapping(USER_TEMPHUMIDITY_URL)
     public ResponseEntity<String> delete(@RequestParam("id") long id) {
         tempHumidityService.deleteById(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     /**

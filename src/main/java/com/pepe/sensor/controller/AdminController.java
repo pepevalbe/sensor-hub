@@ -1,10 +1,9 @@
 package com.pepe.sensor.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Controller for Admin operations
  *
  */
+@Slf4j
 @Controller
 public class AdminController {
 
@@ -26,14 +26,11 @@ public class AdminController {
     public static final String ADMIN_SIGNUPDISABLE_URL = "/admin/signupdisable";
     public static final String ADMIN_SIGNUPSTATUS_URL = "/admin/signupstatus";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    private final Environment environment;    
-    
-    @Autowired
+    private final Environment environment;
+
     public AdminController(Environment environment, @Value("${pepe-sensores.sign_up_enabled}") String sign_up_enabled) {
         this.environment = environment;
-        System.setProperty("sign-up-enabled", sign_up_enabled);        
+        System.setProperty("sign-up-enabled", sign_up_enabled);
     }
 
     /**
@@ -44,11 +41,9 @@ public class AdminController {
     @RequestMapping(ADMIN_CONFIGVARS_URL)
     @ResponseBody
     public List<String> getConfigVars() {
+        
         List<String> configVars = new ArrayList<>();
-
-        for (String profile : environment.getActiveProfiles()) {
-            configVars.add(profile);
-        }
+        configVars.addAll(Arrays.asList(environment.getActiveProfiles()));
         configVars.add(environment.getProperty("pepe-sensores.app_base_url"));
         configVars.add(environment.getProperty("pepe-sensores.weather_url"));
         configVars.add(environment.getProperty("pepe-sensores.sign_up_enabled"));
@@ -63,7 +58,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public void enableSignup() {
         System.setProperty("sign-up-enabled", "true");
-        logger.info("Sign up enabled");
+        log.info("Sign up enabled");
     }
 
     /**
@@ -73,7 +68,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public void disableSignup() {
         System.setProperty("sign-up-enabled", "false");
-        logger.info("Sign up disabled");
+        log.info("Sign up disabled");
     }
 
     /**
