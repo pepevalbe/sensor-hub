@@ -28,7 +28,7 @@ public class PageDTO {
         this.size = Math.min(50, Math.max(10,size));
     }
     
-    public PageRequest toRequest(Sort.Direction direction, String... properies){
-        return PageRequest.of(page, size, direction, properies);
+    public PageRequest toRequest(Sort.Direction direction, String... properties){
+        return PageRequest.of(page, size, direction, properties);
     }
 }
