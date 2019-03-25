@@ -1,7 +1,8 @@
 package com.pepe.sensor.persistence;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,8 +18,9 @@ import java.util.UUID;
  * password reset. Tokens are UUID and have expiration time. They have OneToOne
  * relationship with person.
  */
-@Data
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 public class TemporaryToken implements Serializable {
 

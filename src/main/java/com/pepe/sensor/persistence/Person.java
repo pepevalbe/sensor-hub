@@ -1,7 +1,8 @@
 package com.pepe.sensor.persistence;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,8 +12,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
-@Data
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 public class Person implements Serializable {
 

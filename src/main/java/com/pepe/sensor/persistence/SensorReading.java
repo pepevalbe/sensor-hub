@@ -1,15 +1,17 @@
 package com.pepe.sensor.persistence;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-@Data
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 public class SensorReading implements Serializable {
 
