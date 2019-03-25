@@ -1,10 +1,10 @@
 package com.pepe.sensor.controller;
 
+import com.pepe.sensor.dto.PersonDTO;
 import com.pepe.sensor.persistence.Person;
-import java.net.URI;
-import java.security.Principal;
-import java.util.Map;
-import javax.transaction.Transactional;
+import com.pepe.sensor.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.pepe.sensor.service.UserService;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import javax.transaction.Transactional;
+import java.net.URI;
+import java.security.Principal;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -63,7 +65,7 @@ public class UserController {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(userService.getUserProfile(principal.getName()).getUsername());
         }
     }
 
@@ -74,7 +76,7 @@ public class UserController {
      * @return Logged user (Person object) or 403 (forbidden)if not logged
      */
     @RequestMapping(value = USER_USERPROFILE_URL, method = RequestMethod.GET)
-    public ResponseEntity<Person> getUserProfile(Principal principal) {
+    public ResponseEntity<PersonDTO> getUserProfile(Principal principal) {
 
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -91,19 +93,19 @@ public class UserController {
      * up is disabled by admin or 201 (created) if user is successfully created
      */
     @RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
-    public ResponseEntity<String> createUser(@RequestBody Person user) {
+    public ResponseEntity<String> createUser(@RequestBody PersonDTO userDTO) {
 
         if ("true".equals(System.getProperty("sign-up-enabled"))) {
-            if (userService.getUserProfile(user.getUsername()) != null) {
+            if (userService.getUserProfile(userDTO.getUsername()) != null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya existe, por favor elija otro.");
-            } else if (userService.getByEmail(user.getEmail()) != null) {
+            } else if (userService.getByEmail(userDTO.getEmail()) != null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya se ha utilizado este email para registrarse, por favor utilice otro.");
             } else {
-                userService.createUser(user);
+                userService.createUser(userDTO);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado. Necesita activarlo utilizando un link que se ha enviado a su email.");
             }
         } else {
-            log.info("Trying to create user but sign up is disabled: " + user.getUsername() + " - " + user.getEmail());
+            log.info("Trying to create user but sign up is disabled: " + userDTO.getUsername() + " - " + userDTO.getEmail());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Registro deshabilitado. Contacte con el administrador.");
         }
     }
@@ -121,7 +123,7 @@ public class UserController {
     public String activateUser(@RequestParam("email") String email,
             @RequestParam("token") String token, Map<String, Object> model) {
 
-        Person user = userService.activateUser(email, token);
+        PersonDTO user = userService.activateUser(email, token);
 
         // If token is ok we remove it and activate user otherwise we show an error
         if (user != null) {
@@ -180,12 +182,8 @@ public class UserController {
     public String resetPasswordForm(@RequestParam("email") String email,
             @RequestParam("token") String token, Map<String, Object> model) {
 
-        Person user = userService.getByEmail(email);
-
         // If token is Ok we print the form otherwise we show an error
-        if (user != null && user.getTemporaryToken() != null
-                && token.equals(user.getTemporaryToken().getToken())
-                && !user.getTemporaryToken().hasExpired()) {
+        if (userService.checkTemporaryToken(email, token)) {
             model.put("email", email);
             model.put("token", token);
         } else {

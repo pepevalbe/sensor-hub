@@ -1,8 +1,10 @@
 package com.pepe.sensor.service;
 
 import com.pepe.sensor.EmailSender;
+import com.pepe.sensor.dto.PersonDTO;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.persistence.TemporaryToken;
+import com.pepe.sensor.service.mapper.PersonMapper;
 import org.springframework.stereotype.Service;
 import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.repository.TemporaryTokenRepository;
@@ -25,21 +27,24 @@ public class UserService {
 
     private final EmailSender emailSender;
 
-    @Transactional(readOnly = true)
-    public Person getUserProfile(String username) {
+    private final PersonMapper personMapper;
 
-        return personRepository.getOne(username);
+    @Transactional(readOnly = true)
+    public PersonDTO getUserProfile(String username) {
+
+        return personMapper.map(personRepository.findById(username).get());
     }
 
     @Transactional(readOnly = true)
-    public Person getByEmail(String email) {
+    public PersonDTO getByEmail(String email) {
 
-        return personRepository.findByEmail(email);
+        return  personMapper.map(personRepository.findByEmail(email));
     }
 
     @Transactional()
-    public void createUser(Person user) {
+    public void createUser(PersonDTO userDTO) {
 
+        Person user = personMapper.map(userDTO);
         user.setRole("USER");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setTemporaryToken(new TemporaryToken(user));
@@ -49,7 +54,7 @@ public class UserService {
     }
 
     @Transactional()
-    public Person activateUser(String email, String token) {
+    public PersonDTO activateUser(String email, String token) {
 
         Person user = personRepository.findByEmail(email);
 
@@ -66,7 +71,7 @@ public class UserService {
             emailSender.sendWelcomeEmail(user);
             log.info("User activated: " + user.getUsername() + " - " + user.getEmail());
 
-            return user;
+            return personMapper.map(user);
         }
 
         return null;
@@ -101,6 +106,14 @@ public class UserService {
             emailSender.sendNewPasswordLinkEmail(user.getTemporaryToken());
         }
     }
+
+	public boolean checkTemporaryToken(String email, String token) {
+
+		Person user = personRepository.findByEmail(email);
+		return user != null && user.getTemporaryToken() != null
+				&& token.equals(user.getTemporaryToken().getToken())
+				&& !user.getTemporaryToken().hasExpired();
+	}
 
     public void resetPassword(String email, String token, String newPassword) {
 
