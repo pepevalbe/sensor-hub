@@ -18,6 +18,9 @@ public class EmailSender {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Value("${spring.mail.username}")
+    private String SENDER_EMAIL;
+    
     @Value("${pepe-sensores.app_base_url}")
     private String APP_BASE_URL;
 
@@ -35,6 +38,7 @@ public class EmailSender {
     @Async
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(SENDER_EMAIL);
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
