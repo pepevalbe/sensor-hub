@@ -7,7 +7,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.repository.query.Param;
 
 // Extends JpaRepository so we can use flush (see DataLoader)
-// Exported as HATEOAS in /profile
 @RepositoryRestResource
 public interface PersonRepository extends JpaRepository<Person, String> {
     

@@ -23,7 +23,7 @@
     }
   },
   "addons": [
-    "heroku-postgresql"
+    "heroku-jawsdb"
   ],
   "buildpacks": [
     {
