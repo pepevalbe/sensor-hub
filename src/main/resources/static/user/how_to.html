@@ -68,7 +68,11 @@
     "humidity": 33.33,
     "token": "20a21608-a45d-43d0-a484-e9d10cf05a66"
 }
-</code></pre>
+</code>
+curl --header 'content-type:application/json' --request POST \
+--data '{ "temperature": 23.45, "humidity": 33.33, "token": "20a21608-a45d-43d0-a484-e9d10cf05a66" }' \
+http://pepe-sensores.herokuapp.com/public/temphumidity
+</pre>
                             </div>
                             <div id="api2" class="tab-pane fade mb-3">
                                 <h5 class="mb-1">Accesos</h5>
@@ -77,7 +81,11 @@
 {
     "token": "20a21608-a45d-43d0-a484-e9d10cf05a66"
 }
-</code></pre>
+</code>
+curl --header 'content-type:application/json' --request POST \
+--data '{ "token": "20a21608-a45d-43d0-a484-e9d10cf05a66" }' \
+http://pepe-sensores.herokuapp.com/public/doorevent
+</pre>
                             </div>
                             <div id="api3" class="tab-pane fade mb-3">
                                 <h5 class="mb-1">Sensor Genérico</h5>
@@ -89,7 +97,11 @@
     "value3": 33.33,
     "token": "20a21608-a45d-43d0-a484-e9d10cf05a66"
 }
-</code></pre>
+</code>
+curl --header 'content-type:application/json' --request POST \
+--data '{ "value1": 11.11, "value2": 22.22, "value3": 33.33, "token": "20a21608-a45d-43d0-a484-e9d10cf05a66" }' \
+http://pepe-sensores.herokuapp.com/public/genericsensor
+</pre>
                             </div>	
                         </div>			
                     </div>
