@@ -10,6 +10,7 @@ public class PersonDTO {
 	private String firstName;
 	private String lastName;
 	private String token;
+	private String password;
 	private boolean activated;
 	private boolean doorRegisterActiveFlag;
 }

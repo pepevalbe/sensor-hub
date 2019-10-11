@@ -32,7 +32,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public PersonDTO getUserProfile(String username) {
 
-        return personMapper.map(personRepository.findById(username).get());
+        return personMapper.map(personRepository.findById(username).orElse(null));
     }
 
     @Transactional(readOnly = true)
@@ -43,14 +43,14 @@ public class UserService {
 
     @Transactional()
     public void createUser(PersonDTO userDTO) {
-
+        System.out.println(userDTO);
         Person user = personMapper.map(userDTO);
         user.setRole("USER");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setTemporaryToken(new TemporaryToken(user));
-        personRepository.save(user);
-        emailSender.sendActivateUserLinkEmail(user);
-        log.info("User created: " + user.getUsername() + " - " + user.getEmail());
+        Person createdUser = personRepository.save(user);
+        emailSender.sendActivateUserLinkEmail(createdUser);
+        log.info("User created: " + createdUser.getUsername() + " - " + createdUser.getEmail());
     }
 
     @Transactional()
