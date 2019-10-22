@@ -1,7 +1,8 @@
 package com.pepe.sensor.dto;
 
-import java.sql.Timestamp;
 import lombok.Data;
+
+import java.sql.Timestamp;
 
 @Data
 public class SensorReadingDTO {

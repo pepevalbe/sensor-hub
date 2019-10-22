@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final PersonRepository personRepository;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     @Autowired
     public CustomUserDetailsService(PersonRepository personRepository) {
         this.personRepository = personRepository;

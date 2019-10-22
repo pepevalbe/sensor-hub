@@ -13,7 +13,7 @@ import java.util.UUID;
 
 /**
  * TemporayToken entity
- *
+ * <p>
  * This class represents a token that can be used for user activation or
  * password reset. Tokens are UUID and have expiration time. They have OneToOne
  * relationship with person.

@@ -1,72 +1,84 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">        
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <title>Sensores</title>
-    </head>
-    <body style="background-color: #eee">
-        <div id="navbarId"></div>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Sensores</title>
+</head>
+<body style="background-color: #eee">
+<div id="navbarId"></div>
 
-        <div class="container my-5">
-            <div class="row">
-                <div class="col-lg-6 offset-lg-3">
-                    <ul class="list-group">
-                        <li class="list-group-item bg-info text-center active"><strong>Perfil de usuario</strong></li>
-                        <li class="list-group-item d-flex justify-content-between">Nombre de Usuario<span id=userProfileUsernameId></span></li>
-                        <li class="list-group-item d-flex justify-content-between">Email<span id=userProfileEmailId></span></li>
-                        <li class="list-group-item d-flex justify-content-between">Nombre<span id=userProfileFirstNameId></span></li>
-                        <li class="list-group-item d-flex justify-content-between">Apellidos<span id=userProfileLastNameId></span></li>                        
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-lg-4 offset-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Token Personal</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Utiliza este token para enviar datos desde tus dispositivos:</h6>
-                            <p class="card-text"><span id=userProfileTokenId></span></p>
-                            <div class="d-flex justify-content-between">
-                                <a href="/user/how_to.html#integrationId" class="card-link">¿Cómo se utiliza?</a>
-                                <button class="btn btn-info" data-toggle="modal" data-target="#regenarateTokenModal">Regenerar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <ul class="list-group">
+                <li class="list-group-item bg-info text-center active"><strong>Perfil de usuario</strong></li>
+                <li class="list-group-item d-flex justify-content-between">Nombre de Usuario<span
+                        id=userProfileUsernameId></span></li>
+                <li class="list-group-item d-flex justify-content-between">Email<span id=userProfileEmailId></span></li>
+                <li class="list-group-item d-flex justify-content-between">Nombre<span id=userProfileFirstNameId></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">Apellidos<span
+                        id=userProfileLastNameId></span></li>
         </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="regenarateTokenModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">¿Estás seguro?</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
+    </div>
+    <div class="row mt-3">
+        <div class="col-lg-4 offset-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Token Personal</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Utiliza este token para enviar datos desde tus
+                        dispositivos:</h6>
+                    <p class="card-text"><span id=userProfileTokenId></span></p>
+                    <div class="d-flex justify-content-between">
+                        <a href="/user/how_to.html#integrationId" class="card-link">¿Cómo se utiliza?</a>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#regenarateTokenModal">Regenerar
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <p>Si regeneras tu token personal cualquier dispositivo que esté enviando datos actualmente dejará de funcionar</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-info" id="regenerateTokenButtonId">Confirmar</button>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <div id="footerId"></div>
+<!-- Modal -->
+<div class="modal fade" id="regenarateTokenModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">¿Estás seguro?</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Si regeneras tu token personal cualquier dispositivo que esté enviando datos actualmente dejará de
+                    funcionar</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-info" id="regenerateTokenButtonId">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="/public/js/loadnavbarandfooter.js"></script>
-        <script src="/user/js/userprofile.js"></script>
-    </body>
+<div id="footerId"></div>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="/public/js/loadnavbarandfooter.js"></script>
+<script src="/user/js/userprofile.js"></script>
+</body>
 </html>

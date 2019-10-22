@@ -1,22 +1,23 @@
 package com.pepe.sensor.service;
 
-import com.pepe.sensor.dto.TempHumidityDTO;
 import com.pepe.sensor.dto.DateFilterDTO;
 import com.pepe.sensor.dto.PageDTO;
+import com.pepe.sensor.dto.TempHumidityDTO;
 import com.pepe.sensor.persistence.TempHumidity;
-import java.util.Optional;
-import org.springframework.stereotype.Service;
-import com.pepe.sensor.repository.TempHumidityRepository;
 import com.pepe.sensor.repository.PersonRepository;
+import com.pepe.sensor.repository.TempHumidityRepository;
 import com.pepe.sensor.service.mapper.TempHumidityMapper;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,7 +52,7 @@ public class TempHumidityService {
     public Optional<List<TempHumidityDTO>> find(String username, DateFilterDTO filter) {
         return personRepository.findById(username)
                 .map(owner -> tempHumidityRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
-                .map(tempHumidityMapper::map).collect(Collectors.toList()));
+                        .map(tempHumidityMapper::map).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)

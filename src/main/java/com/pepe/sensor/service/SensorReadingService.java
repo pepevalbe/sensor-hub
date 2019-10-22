@@ -7,9 +7,6 @@ import com.pepe.sensor.persistence.SensorReading;
 import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.repository.SensorReadingRepository;
 import com.pepe.sensor.service.mapper.SensorReadingMapper;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,16 +15,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @AllArgsConstructor
 public class SensorReadingService {
 
-    private final  SensorReadingRepository sensorReadingRepository;
-    
-    private final  PersonRepository personRepository;
-    
-    private final  SensorReadingMapper sensorReadingMapper;
+    private final SensorReadingRepository sensorReadingRepository;
+
+    private final PersonRepository personRepository;
+
+    private final SensorReadingMapper sensorReadingMapper;
 
     @Transactional(readOnly = true)
     public Optional<SensorReadingDTO> getById(long id) {
@@ -51,7 +52,7 @@ public class SensorReadingService {
     public Optional<List<SensorReadingDTO>> find(String username, DateFilterDTO filter) {
         return personRepository.findById(username)
                 .map(owner -> sensorReadingRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
-                .map(sensorReadingMapper::map).collect(Collectors.toList()));
+                        .map(sensorReadingMapper::map).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)

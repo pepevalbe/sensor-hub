@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -22,7 +22,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     CustomUserDetailsService customeUserDetailsService;
 
     private final int REMEMBERME_VALIDITY = 15 * 24 * 60 * 60;    // 15 Days
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -37,7 +37,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin().loginPage("/public/login").loginProcessingUrl("/public/login").failureUrl("/public/login?error")
                 .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/public/logout")).logoutSuccessUrl("/")
                 .and().rememberMe().rememberMeParameter("remember-me").key("cookie-secret").tokenValiditySeconds(REMEMBERME_VALIDITY);
-        
+
         http.headers().frameOptions().sameOrigin();     // Needed for H2 console
     }
 

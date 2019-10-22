@@ -20,7 +20,7 @@ public class EmailSender {
 
     @Value("${spring.mail.username}")
     private String SENDER_EMAIL;
-    
+
     @Value("${pepe-sensores.app_base_url}")
     private String APP_BASE_URL;
 
@@ -34,7 +34,7 @@ public class EmailSender {
     private final String newPasswordLinkTemplate = "Hola %s, por favor utiliza el siguiente link para crear una nueva contraseña: %s?email=%s&token=%s";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     @Async
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();

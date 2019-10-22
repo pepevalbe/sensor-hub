@@ -1,8 +1,5 @@
 package com.pepe.sensor.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -12,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
- *
  * Controller for Admin operations
- *
  */
 @Slf4j
 @Controller
@@ -41,7 +40,7 @@ public class AdminController {
     @RequestMapping(ADMIN_CONFIGVARS_URL)
     @ResponseBody
     public List<String> getConfigVars() {
-        
+
         List<String> configVars = new ArrayList<>();
         configVars.addAll(Arrays.asList(environment.getActiveProfiles()));
         configVars.add(environment.getProperty("pepe-sensores.app_base_url"));

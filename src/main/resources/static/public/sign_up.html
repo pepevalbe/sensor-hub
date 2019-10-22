@@ -1,99 +1,110 @@
 <!doctype html>
 <html>
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">        
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <title>Registro Sensores</title>
-    </head>
-    <body style="background-color: #eee">
-        <div id="navbarId"></div>	    
-        <div class="container">	
-            <div class="col-md-8 offset-md-2 my-5">	
-                <h2 class="text-center">Introduzca sus datos para registrarse</h2>		
-                <form onsubmit="createUser(); return false;" class="my-4">				  
-                    <div class="row">						
-                        <div class="col-md-6">						
-                            <div class="form-group">
-                                <input type="text" id="usernameId" class="form-control input-sm" pattern=".{3,}" title="El nombre de usuario debe tener al menos 3 caracteres" placeholder="Nombre de usuario" autofocus required>
-                            </div>  
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="email" id="emailId" class="form-control input-sm" placeholder="Email" required>
-                            </div>
-                        </div>							
-                    </div>						  
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Registro Sensores</title>
+</head>
+<body style="background-color: #eee">
+<div id="navbarId"></div>
+<div class="container">
+    <div class="col-md-8 offset-md-2 my-5">
+        <h2 class="text-center">Introduzca sus datos para registrarse</h2>
+        <form onsubmit="createUser(); return false;" class="my-4">
+            <div class="row">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <input type="text" id="firstNameId" class="form-control input-sm" placeholder="Nombre" required>
+                        <input type="text" id="usernameId" class="form-control input-sm" pattern=".{3,}"
+                               title="El nombre de usuario debe tener al menos 3 caracteres"
+                               placeholder="Nombre de usuario" autofocus required>
                     </div>
+                </div>
+                <div class="col-md-6">
                     <div class="form-group">
-                        <input type="text" id="lastNameId" class="form-control input-sm" placeholder="Apellidos" required>
-                    </div>								
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="password" id="passwordId" class="form-control input-sm" pattern=".{3,}" title="La contraseña debe tener al menos 3 caracteres" placeholder="Contraseña" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="password" id="passwordConfirmationId" class="form-control input-sm" placeholder="Confirmar contraseña" required oninput="checkPasswords(this)">
-                            </div>
-                        </div>
-                    </div>
-                    <input type="submit" value="Registrarse" id="submitNewUserId" class="btn btn-info btn-block mt-3">
-                </form>
-            </div>
-        </div>
-
-        <!-- Modals -->
-        <div class="modal fade" id="errorModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Error creando usuario</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="errorMessageId" class="text-justify">Ha ocurrido algún problema en la creacion del usuario.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Aceptar</button>
+                        <input type="email" id="emailId" class="form-control input-sm" placeholder="Email" required>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="modal fade" id="userCreatedModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Usuario creado</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
+            <div class="form-group">
+                <input type="text" id="firstNameId" class="form-control input-sm" placeholder="Nombre" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="lastNameId" class="form-control input-sm" placeholder="Apellidos" required>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="password" id="passwordId" class="form-control input-sm" pattern=".{3,}"
+                               title="La contraseña debe tener al menos 3 caracteres" placeholder="Contraseña" required>
                     </div>
-                    <div class="modal-body">
-                        <p class="text-justify">Antes de poder utilizar sus credenciales para entrar necesita activar su usuario. Para ello utilice un link que se ha enviado a su email.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-info" href="/">Aceptar</a>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="password" id="passwordConfirmationId" class="form-control input-sm"
+                               placeholder="Confirmar contraseña" required oninput="checkPasswords(this)">
                     </div>
                 </div>
             </div>
+            <input type="submit" value="Registrarse" id="submitNewUserId" class="btn btn-info btn-block mt-3">
+        </form>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Error creando usuario</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessageId" class="text-justify">Ha ocurrido algún problema en la creacion del usuario.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Aceptar</button>
+            </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="userCreatedModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Usuario creado</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-justify">Antes de poder utilizar sus credenciales para entrar necesita activar su
+                    usuario. Para ello utilice un link que se ha enviado a su email.</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-info" href="/">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <div id="footerId"></div>
+<div id="footerId"></div>
 
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="js/loadnavbarandfooter.js"></script>
-        <script src="/public/js/signup.js"></script>
-    </body>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="js/loadnavbarandfooter.js"></script>
+<script src="/public/js/signup.js"></script>
+</body>
 </html>

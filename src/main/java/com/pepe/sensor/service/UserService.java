@@ -4,15 +4,16 @@ import com.pepe.sensor.EmailSender;
 import com.pepe.sensor.dto.PersonDTO;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.persistence.TemporaryToken;
-import com.pepe.sensor.service.mapper.PersonMapper;
-import org.springframework.stereotype.Service;
 import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.repository.TemporaryTokenRepository;
-import java.util.UUID;
+import com.pepe.sensor.service.mapper.PersonMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -38,7 +39,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public PersonDTO getByEmail(String email) {
 
-        return  personMapper.map(personRepository.findByEmail(email));
+        return personMapper.map(personRepository.findByEmail(email));
     }
 
     @Transactional()
@@ -107,13 +108,13 @@ public class UserService {
         }
     }
 
-	public boolean checkTemporaryToken(String email, String token) {
+    public boolean checkTemporaryToken(String email, String token) {
 
-		Person user = personRepository.findByEmail(email);
-		return user != null && user.getTemporaryToken() != null
-				&& token.equals(user.getTemporaryToken().getToken())
-				&& !user.getTemporaryToken().hasExpired();
-	}
+        Person user = personRepository.findByEmail(email);
+        return user != null && user.getTemporaryToken() != null
+                && token.equals(user.getTemporaryToken().getToken())
+                && !user.getTemporaryToken().hasExpired();
+    }
 
     public void resetPassword(String email, String token, String newPassword) {
 

@@ -25,10 +25,10 @@ public class PageDTO {
     }
 
     public void setSize(int size) {
-        this.size = Math.min(50, Math.max(10,size));
+        this.size = Math.min(50, Math.max(10, size));
     }
-    
-    public PageRequest toRequest(Sort.Direction direction, String... properties){
+
+    public PageRequest toRequest(Sort.Direction direction, String... properties) {
         return PageRequest.of(page, size, direction, properties);
     }
 }

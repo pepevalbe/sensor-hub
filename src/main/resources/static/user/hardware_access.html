@@ -1,65 +1,80 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">        
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <title>Hardware</title>
-    </head>
-    <body>
-        <div id="navbarId"></div>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Hardware</title>
+</head>
+<body>
+<div id="navbarId"></div>
 
-        <div class="container my-4">
-            <h3 class="mb-3">Registro de accesos</h3>
-            <p class="text-justify mb-3">Para controlar la apertura de una puerta utilizaremos un switch magnético y un imán de tal modo que cuando
-                se mueva el imán cuando se abre la puerta se produzca una interrupción en una placa Arduino. El envío de datos (una única llamada para
-                que se registre la hora) lo realizamos con un módulo SIM800L, se trata de un dispositivo GSM/GPRS de bajo coste con el que con una 
-                tarjeta SIM se pueden hacer llamadas web.</p>		
-            <h6>Componentes:</h6>
-            <ul>
-                <li><a href="">Arduino Nano</a></li>
-                <li><a href="">SIMCOM SIM800L</a></li>
-                <li><a href="">Switch Magnético</a></li>
-            </ul>
-            <div class="col-md-6 offset-md-3">
-                <img src="images/access_finished.jpg" class="img-fluid" alt="Imagen no encontrada">
-            </div>
-            <p class="text-justify p-2">Para el montaje debemos conectar al microcontrolador el módulo SIMCOM (pines TX/RX y RST) y el switch 
-                magnético (pin de interrupción). Alimentamos tanto la placa Arduino como el SIM800L con una batería de litio de una célula (4.2v).
-                Para que funcione debemos fijar el conjunto en el marco de la puerta y colocar con cuidado un imán en el borde, de tal forma que 
-                quede enfrentado al switch magnéntico</p>
-            <div class="row">
-                <div class="col-md-4 offset-md-2">
-                    <img src="images/access_finished.jpg" class="img-fluid" alt="Imagen no encontrada">
-                </div>
-                <div class="col-md-4">
-                    <img src="images/access_finished.jpg" class="img-fluid" alt="Imagen no encontrada">
-                </div>
-            </div>
-            <h6>Software:</h6>
-            <ul>
-                <li>
-                    <a href="https://github.com/pepevalbe/sim800">Librería SIMCOM 800L</a><br>
-                    <p class="text-justify">El módulo SIMCOM se maneja desde un microcontrolador a través de comandos AT. Con esta librería nos 
-                        ahorramos el trabajo de bajo nivel y podemos controlar el módulo a través de una clase sencilla en Arduino.
-                        Para utilizarla basta con copiarla a la carpeta <i>libraries</i> de Arduino.</p>
-                </li>
-                <li>
-                    <a href="/user/sketches/register.zip" download>Sketch de ejemplo</a><br>
-                    <p class="text-justify">Tras estos pasos ya podemos cargar el sketch. Tan solo hay que configurar los siguentes parámetros: 
-                        <b>ssid</b>, <b>password</b> y <b>token</b>.</p>
-                </li>
-            </ul>
+<div class="container my-4">
+    <h3 class="mb-3">Registro de accesos</h3>
+    <p class="text-justify mb-3">Para controlar la apertura de una puerta utilizaremos un switch magnético y un imán de
+        tal modo que cuando
+        se mueva el imán cuando se abre la puerta se produzca una interrupción en una placa Arduino. El envío de datos
+        (una única llamada para
+        que se registre la hora) lo realizamos con un módulo SIM800L, se trata de un dispositivo GSM/GPRS de bajo coste
+        con el que con una
+        tarjeta SIM se pueden hacer llamadas web.</p>
+    <h6>Componentes:</h6>
+    <ul>
+        <li><a href="">Arduino Nano</a></li>
+        <li><a href="">SIMCOM SIM800L</a></li>
+        <li><a href="">Switch Magnético</a></li>
+    </ul>
+    <div class="col-md-6 offset-md-3">
+        <img src="images/access_finished.jpg" class="img-fluid" alt="Imagen no encontrada">
+    </div>
+    <p class="text-justify p-2">Para el montaje debemos conectar al microcontrolador el módulo SIMCOM (pines TX/RX y
+        RST) y el switch
+        magnético (pin de interrupción). Alimentamos tanto la placa Arduino como el SIM800L con una batería de litio de
+        una célula (4.2v).
+        Para que funcione debemos fijar el conjunto en el marco de la puerta y colocar con cuidado un imán en el borde,
+        de tal forma que
+        quede enfrentado al switch magnéntico</p>
+    <div class="row">
+        <div class="col-md-4 offset-md-2">
+            <img src="images/access_finished.jpg" class="img-fluid" alt="Imagen no encontrada">
         </div>
+        <div class="col-md-4">
+            <img src="images/access_finished.jpg" class="img-fluid" alt="Imagen no encontrada">
+        </div>
+    </div>
+    <h6>Software:</h6>
+    <ul>
+        <li>
+            <a href="https://github.com/pepevalbe/sim800">Librería SIMCOM 800L</a><br>
+            <p class="text-justify">El módulo SIMCOM se maneja desde un microcontrolador a través de comandos AT. Con
+                esta librería nos
+                ahorramos el trabajo de bajo nivel y podemos controlar el módulo a través de una clase sencilla en
+                Arduino.
+                Para utilizarla basta con copiarla a la carpeta <i>libraries</i> de Arduino.</p>
+        </li>
+        <li>
+            <a href="/user/sketches/register.zip" download>Sketch de ejemplo</a><br>
+            <p class="text-justify">Tras estos pasos ya podemos cargar el sketch. Tan solo hay que configurar los
+                siguentes parámetros:
+                <b>ssid</b>, <b>password</b> y <b>token</b>.</p>
+        </li>
+    </ul>
+</div>
 
-        <div id="footerId"></div>
+<div id="footerId"></div>
 
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="/public/js/loadnavbarandfooter.js"></script>
-    </body>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="/public/js/loadnavbarandfooter.js"></script>
+</body>
 </html>

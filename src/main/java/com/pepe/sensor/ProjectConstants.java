@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * Helper class to get and keep project configuration constants. They are looked
  * up from different sources in the next order:
- *
+ * <p>
  * 1: JVM property passed from command line (-Dkey=value), 2: Properties file
  * (application.properties), 3: Database (config_variable table), 4: Operating
  * System enviroment variable
@@ -31,7 +31,7 @@ public class ProjectConstants {
 
         APP_BASE_URL = getConstant("APP_BASE_URL");
         // Workaround for review apps in heroku (created on pull requests)
-        if (APP_BASE_URL == null ) {
+        if (APP_BASE_URL == null) {
             APP_BASE_URL = "http://" + getConstant("HEROKU_APP_NAME") + ".herokuapp.com";
         }
         EMAIL_USERNAME = getConstant("EMAIL_USERNAME");

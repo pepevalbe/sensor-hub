@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface DoorEventMapper {
-    
+
     @Mapping(target = "token", ignore = true)
     DoorEventDTO map(DoorEvent doorEvent);
 

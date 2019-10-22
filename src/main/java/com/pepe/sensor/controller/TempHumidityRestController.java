@@ -1,24 +1,19 @@
 package com.pepe.sensor.controller;
 
-import com.pepe.sensor.dto.TempHumidityDTO;
 import com.pepe.sensor.dto.DateFilterDTO;
 import com.pepe.sensor.dto.PageDTO;
+import com.pepe.sensor.dto.TempHumidityDTO;
 import com.pepe.sensor.persistence.TempHumidity;
 import com.pepe.sensor.service.TempHumidityService;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -30,7 +25,7 @@ public class TempHumidityRestController {
     public static final String USER_TEMPHUMIDITY_FINDBYDATE_URL = "/user/temphumidity/find";
     public static final String USER_TEMPHUMIDITY_FINDBYUSERNAME_URL = "/user/temphumidity/findByUsername";
     public static final String ADMIN_TEMPHUMIDITY_FINDALL_URL = "/admin/temphumidity/findall";
-    
+
     private final TempHumidityService tempHumidityService;
 
     /**
@@ -62,7 +57,7 @@ public class TempHumidityRestController {
      * Create a Temperature and Humidity register
      *
      * @param tempHumidityDTO DTO Object containing Temperature, Humidity and
-     * username timestamp will be ignored
+     *                        username timestamp will be ignored
      * @return Resource just created
      */
     @PostMapping(PUBLIC_TEMPHUMIDITY_URL)
@@ -76,12 +71,12 @@ public class TempHumidityRestController {
      * Find registers from logged user by date. If no date present, use server
      * date
      *
-     * @param auth Automatically filled when user is logged
-     * @param date Date to filter, format is: yyyy-mm-dd
-     * @param tz Time zone difference, in minutes, from UTC to client locale
-     * time. Default is 0 (UTC)
+     * @param auth    Automatically filled when user is logged
+     * @param date    Date to filter, format is: yyyy-mm-dd
+     * @param tz      Time zone difference, in minutes, from UTC to client locale
+     *                time. Default is 0 (UTC)
      * @param minutes Minutes offset to be added to date. Used to get data in
-     * interval different than 00:00-23:59, for example 00:30-00:29 (minutes=30)
+     *                interval different than 00:00-23:59, for example 00:30-00:29 (minutes=30)
      * @return List of Temperature, Humidity and Timestamp
      */
     @GetMapping(USER_TEMPHUMIDITY_FINDBYDATE_URL)

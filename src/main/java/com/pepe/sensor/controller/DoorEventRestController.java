@@ -5,24 +5,18 @@ import com.pepe.sensor.dto.DoorEventDTO;
 import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.persistence.DoorEvent;
 import com.pepe.sensor.service.DoorEventService;
-import java.sql.Date;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.Date;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RestController
@@ -72,7 +66,7 @@ public class DoorEventRestController {
      */
     @PostMapping(PUBLIC_DOOREVENT_URL)
     public ResponseEntity<DoorEventDTO> post(@RequestBody DoorEventDTO doorEventDTO) {
-   
+
         return doorEventService.create(doorEventDTO)
                 .map(d -> ResponseEntity.status(HttpStatus.CREATED).body(d))
                 .orElse(ResponseEntity.notFound().build());
@@ -84,14 +78,14 @@ public class DoorEventRestController {
      *
      * @param auth Automatically filled when user is logged
      * @param date Date to filter, format is: yyyy-mm-dd
-     * @param tz Time zone difference, in minutes, from UTC to client locale
-     * time. Default is 0 (UTC)
+     * @param tz   Time zone difference, in minutes, from UTC to client locale
+     *             time. Default is 0 (UTC)
      * @return List of Door Events
      */
     @GetMapping(USER_DOOREVENT_FINDBYDATE_URL)
     public ResponseEntity<List<DoorEventDTO>> findByUsernameAndDate(Authentication auth,
-            @RequestParam(value = "date", required = false) Date date,
-            @RequestParam(value = "tz", defaultValue = "0") int tz) {
+                                                                    @RequestParam(value = "date", required = false) Date date,
+                                                                    @RequestParam(value = "tz", defaultValue = "0") int tz) {
 
         return doorEventService.find(auth.getName(), new DateFilterDTO(date, tz, 0))
                 .map(d -> ResponseEntity.ok(d))
@@ -109,8 +103,8 @@ public class DoorEventRestController {
      */
     @GetMapping(USER_DOOREVENT_FINDBYUSERNAME_URL)
     public ResponseEntity<Page<DoorEventDTO>> findByUsername(Authentication auth,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size) {
+                                                             @RequestParam(value = "page", defaultValue = "0") int page,
+                                                             @RequestParam(value = "size", defaultValue = "20") int size) {
 
         return ResponseEntity.ok(doorEventService.find(auth.getName(), new PageDTO(page, size)));
     }
@@ -124,7 +118,7 @@ public class DoorEventRestController {
      */
     @RequestMapping(path = ADMIN_DOOREVENT_FINDALL_URL, method = GET)
     public ResponseEntity<Page<DoorEvent>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size) {
+                                                   @RequestParam(value = "size", defaultValue = "20") int size) {
 
         return ResponseEntity.ok(doorEventService.findAll(new PageDTO(page, size)));
     }

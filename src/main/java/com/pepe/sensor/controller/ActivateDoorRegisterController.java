@@ -1,12 +1,13 @@
 package com.pepe.sensor.controller;
 
 import com.pepe.sensor.service.ActivateDoorRegisterService;
-import java.security.Principal;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 @Slf4j
 @RestController("/user")
@@ -53,7 +54,7 @@ public class ActivateDoorRegisterController {
      */
     @RequestMapping(API_DOOREVENT_STATUS_URL)
     public ResponseEntity<String> getStatus(Principal principal) {
-        
+
         return ResponseEntity.ok(activateDoorRegisterService.status(principal.getName()));
     }
 }

@@ -5,22 +5,16 @@ import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.dto.SensorReadingDTO;
 import com.pepe.sensor.persistence.SensorReading;
 import com.pepe.sensor.service.SensorReadingService;
-import java.sql.Date;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestParam;
+import java.sql.Date;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -65,7 +59,7 @@ public class SensorReadingRestController {
      * Create a Sensor Reading register
      *
      * @param sensorReadingDTO DTO object containing sensor reading and username
-     * timestamp will be ignored
+     *                         timestamp will be ignored
      * @return Resource just created
      */
     @PostMapping(PUBLIC_GENERICSENSOR_URL)
@@ -82,14 +76,14 @@ public class SensorReadingRestController {
      *
      * @param auth Automatically filled when user is logged
      * @param date Date to filter, format is: yyyy-mm-dd
-     * @param tz Time zone difference, in minutes, from UTC to client locale
-     * time. Default is 0 (UTC)
+     * @param tz   Time zone difference, in minutes, from UTC to client locale
+     *             time. Default is 0 (UTC)
      * @return List of Sensor Reading with its Timestamps
      */
     @GetMapping(USER_GENERICSENSOR_FINDBYDATE_URL)
     public ResponseEntity<List<SensorReadingDTO>> findByUsernameAndDate(Authentication auth,
-            @RequestParam(value = "date", required = false) Date date,
-            @RequestParam(value = "tz", defaultValue = "0") Integer tz) {
+                                                                        @RequestParam(value = "date", required = false) Date date,
+                                                                        @RequestParam(value = "tz", defaultValue = "0") Integer tz) {
 
         return sensorReadingService.find(auth.getName(), new DateFilterDTO(date, tz, 0))
                 .map(l -> ResponseEntity.ok(l))
@@ -106,8 +100,8 @@ public class SensorReadingRestController {
      */
     @GetMapping(USER_GENERICSENSOR_FINDBYUSERNAME_URL)
     public ResponseEntity<Page<SensorReadingDTO>> findByUsername(Authentication auth,
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "20") Integer size) {
+                                                                 @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                                 @RequestParam(value = "size", defaultValue = "20") Integer size) {
 
         if (size > 50) {
             size = 50;
@@ -126,7 +120,7 @@ public class SensorReadingRestController {
      */
     @GetMapping(ADMIN_GENERICSENSOR_FINDALL_URL)
     public ResponseEntity<Page<SensorReading>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "20") Integer size) {
+                                                       @RequestParam(value = "size", defaultValue = "20") Integer size) {
 
         if (size > 50) {
             size = 50;

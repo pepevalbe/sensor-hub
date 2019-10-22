@@ -1,15 +1,12 @@
 package com.pepe.sensor.service;
 
 import com.pepe.sensor.dto.DateFilterDTO;
-import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.dto.DoorEventDTO;
+import com.pepe.sensor.dto.PageDTO;
 import com.pepe.sensor.persistence.DoorEvent;
-import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.repository.DoorEventRepository;
+import com.pepe.sensor.repository.PersonRepository;
 import com.pepe.sensor.service.mapper.DoorEventMapper;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,50 +15,54 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @AllArgsConstructor
 public class DoorEventService {
 
-    private final  DoorEventRepository doorEventRepository;
+    private final DoorEventRepository doorEventRepository;
 
-    private final  PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    private final  DoorEventMapper doorEventMapper;
+    private final DoorEventMapper doorEventMapper;
 
     @Transactional(readOnly = true)
     public Optional<DoorEventDTO> getById(long id) {
         return doorEventRepository.findById(id).map(doorEventMapper::map);
     }
-    
+
     @Transactional
-    public void deleteById(long id){
+    public void deleteById(long id) {
         doorEventRepository.deleteById(id);
     }
-    
+
     @Transactional
-    public Optional<DoorEventDTO> create(@NonNull DoorEventDTO doorEventDTO){
+    public Optional<DoorEventDTO> create(@NonNull DoorEventDTO doorEventDTO) {
         return personRepository.findByToken(doorEventDTO.getToken())
                 .map(owner -> doorEventMapper.map(doorEventDTO, owner))
                 .map(doorEventRepository::save)
                 .map(doorEventMapper::map);
     }
-    
+
     @Transactional(readOnly = true)
-    public Optional<List<DoorEventDTO>> find(String username, DateFilterDTO filter){
+    public Optional<List<DoorEventDTO>> find(String username, DateFilterDTO filter) {
         return personRepository.findById(username)
                 .map(owner -> doorEventRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
                         .map(doorEventMapper::map).collect(Collectors.toList()));
     }
-    
+
     @Transactional(readOnly = true)
-    public Page<DoorEventDTO> find(String username, PageDTO p){
+    public Page<DoorEventDTO> find(String username, PageDTO p) {
         return doorEventRepository.findByUsername(username, p.toRequest(Sort.Direction.ASC, "timestamp"))
                 .map(doorEventMapper::map);
     }
-    
+
     @Transactional(readOnly = true)
-    public Page<DoorEvent> findAll(PageDTO p){
+    public Page<DoorEvent> findAll(PageDTO p) {
         return doorEventRepository.findAll(p.toRequest(Sort.Direction.ASC, "timestamp"));
     }
 }

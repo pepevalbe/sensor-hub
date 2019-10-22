@@ -1,7 +1,6 @@
 package com.pepe.sensor.controller;
 
 import com.pepe.sensor.dto.PersonDTO;
-import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +44,7 @@ public class UserController {
      */
     @RequestMapping(value = PUBLIC_LOGIN_URL)
     public String loginForm(@RequestParam(name = "error", required = false) String error,
-            Map<String, Object> model) {
+                            Map<String, Object> model) {
 
         if (error != null) {
             model.put("loginError", true);
@@ -121,7 +120,7 @@ public class UserController {
     @Transactional
     @RequestMapping(value = PUBLIC_ACTIVATEUSER_URL)
     public String activateUser(@RequestParam("email") String email,
-            @RequestParam("token") String token, Map<String, Object> model) {
+                               @RequestParam("token") String token, Map<String, Object> model) {
 
         PersonDTO user = userService.activateUser(email, token);
 
@@ -180,7 +179,7 @@ public class UserController {
      */
     @RequestMapping(value = PUBLIC_RESETPASSWORDFORM_URL)
     public String resetPasswordForm(@RequestParam("email") String email,
-            @RequestParam("token") String token, Map<String, Object> model) {
+                                    @RequestParam("token") String token, Map<String, Object> model) {
 
         // If token is Ok we print the form otherwise we show an error
         if (userService.checkTemporaryToken(email, token)) {
@@ -196,16 +195,16 @@ public class UserController {
     /**
      * Reset user password
      *
-     * @param email User email
-     * @param token User reset token (needs to be generated previously)
+     * @param email       User email
+     * @param token       User reset token (needs to be generated previously)
      * @param newPassword New user password
      * @return 200 if password changed or 404 if email or token not valid
      */
     @Transactional
     @RequestMapping(value = PUBLIC_RESETPASSWORD_URL)
     public ResponseEntity resetPassword(@RequestParam("email") String email,
-            @RequestParam("token") String token,
-            @RequestParam("newPassword") String newPassword) {
+                                        @RequestParam("token") String token,
+                                        @RequestParam("newPassword") String newPassword) {
 
         userService.resetPassword(email, token, newPassword);
 
