@@ -43,51 +43,46 @@ public class EmailSender {
         message.setSubject(subject);
         message.setText(text);
         javaMailSender.send(message);
-        logger.info("Sending email to: " + to);
+        logger.info("Email sent to: " + to);
     }
 
     @Async
     public void sendActivateUserLinkEmail(Person user) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject(activateUserLinkSubject);
-        String text = String.format(activateUserLinkTemplate, user.getFirstName(),
-                APP_BASE_URL + UserController.PUBLIC_ACTIVATEUSER_URL, user.getEmail(), user.getTemporaryToken().getToken());
-        message.setText(text);
-        javaMailSender.send(message);
+        String text = String.format(activateUserLinkTemplate,
+                user.getFirstName(),
+                APP_BASE_URL + UserController.PUBLIC_ACTIVATEUSER_URL,
+                user.getEmail(),
+                user.getTemporaryToken().getToken());
         logger.info("Sending activate user link email to: " + user.getUsername() + " - " + user.getEmail());
+        sendEmail(user.getEmail(), activateUserLinkSubject, text);
     }
 
     @Async
     public void sendWelcomeEmail(Person user) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject(welcomeSubject);
-        String text = String.format(welcomeTemplate, user.getFirstName(), user.getUsername(), APP_BASE_URL, user.getToken());
-        message.setText(text);
-        javaMailSender.send(message);
+        String text = String.format(welcomeTemplate,
+                user.getFirstName(),
+                user.getUsername(),
+                APP_BASE_URL,
+                user.getToken());
         logger.info("Sending welcome email to: " + user.getUsername() + " - " + user.getEmail());
+        sendEmail(user.getEmail(), welcomeSubject, text);
     }
 
     @Async
     public void sendNewPersonalTokenEmail(Person user) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject(newPersonalTokenSubject);
-        message.setText(String.format(newPersonalTokenTemplate, user.getFirstName(), user.getToken()));
-        javaMailSender.send(message);
+        String text = String.format(newPersonalTokenTemplate, user.getFirstName(), user.getToken());
         logger.info("Sending new personal token email to: " + user.getUsername() + " - " + user.getEmail());
+        sendEmail(user.getEmail(), newPersonalTokenSubject, text);
     }
 
     @Async
     public void sendNewPasswordLinkEmail(TemporaryToken token) {
-        SimpleMailMessage message = new SimpleMailMessage();
         Person user = token.getPerson();
-        message.setTo(user.getEmail());
-        message.setSubject(newPasswordLinkSubject);
-        message.setText(String.format(newPasswordLinkTemplate, user.getFirstName(),
-                APP_BASE_URL + UserController.PUBLIC_RESETPASSWORDFORM_URL, user.getEmail(), token.getToken()));
-        javaMailSender.send(message);
+        String text = String.format(newPasswordLinkTemplate, user.getFirstName(),
+                APP_BASE_URL + UserController.PUBLIC_RESETPASSWORDFORM_URL,
+                user.getEmail(),
+                token.getToken());
         logger.info("Sending reset password link email to: " + user.getUsername() + " - " + user.getEmail());
+        sendEmail(user.getEmail(), newPasswordLinkSubject, text);
     }
 }
