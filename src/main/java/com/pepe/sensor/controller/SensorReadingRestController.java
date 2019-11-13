@@ -1,10 +1,10 @@
 package com.pepe.sensor.controller;
 
-import com.pepe.sensor.dto.DateFilterDTO;
-import com.pepe.sensor.dto.PageDTO;
-import com.pepe.sensor.dto.SensorReadingDTO;
-import com.pepe.sensor.persistence.SensorReading;
-import com.pepe.sensor.service.SensorReadingService;
+import com.pepe.sensor.persistence.MeasurementType;
+import com.pepe.sensor.service.MeasurementService;
+import com.pepe.sensor.service.dto.DateFilterDto;
+import com.pepe.sensor.service.dto.MeasurementDto;
+import com.pepe.sensor.service.dto.PageDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,51 +21,22 @@ import java.util.List;
 @AllArgsConstructor
 public class SensorReadingRestController {
 
-	public static final String USER_GENERICSENSOR_URL = "/user/genericsensor";
-	public static final String PUBLIC_GENERICSENSOR_URL = "/public/genericsensor";
-	public static final String USER_GENERICSENSOR_FINDBYDATE_URL = "/user/genericsensor/find";
-	public static final String USER_GENERICSENSOR_FINDBYUSERNAME_URL = "/user/genericsensor/findByUsername";
-	public static final String ADMIN_GENERICSENSOR_FINDALL_URL = "/admin/genericsensor/findall";
-
-	private final SensorReadingService sensorReadingService;
-
-	/**
-	 * Get a Sensor Reading register
-	 *
-	 * @param id Register to get
-	 * @return
-	 */
-	@GetMapping(USER_GENERICSENSOR_URL)
-	public ResponseEntity<SensorReadingDTO> get(@RequestParam("id") long id) {
-		return sensorReadingService.getById(id)
-				.map(t -> ResponseEntity.ok(t))
-				.orElse(ResponseEntity.notFound().build());
-	}
-
-	/**
-	 * Remove a Sensor Reading register
-	 *
-	 * @param id Register to delete
-	 * @return Http 200 OK if deleted or 404 if not found
-	 */
-	@DeleteMapping(USER_GENERICSENSOR_URL)
-	public ResponseEntity delete(@RequestParam("id") long id) {
-
-		sensorReadingService.deleteById(id);
-		return new ResponseEntity(HttpStatus.OK);
-	}
+	public static final String PUBLIC_GENERIC_SENSOR_URL = "/public/genericsensor";
+	private static final String USER_GENERIC_SENSOR_FIND_BY_DATE_URL = "/user/genericsensor/find";
+	private static final String USER_GENERIC_SENSOR_FIND_BY_USERNAME_URL = "/user/genericsensor/findByUsername";
+	private final MeasurementService measurementService;
 
 	/**
 	 * Create a Sensor Reading register
 	 *
-	 * @param sensorReadingDTO DTO object containing sensor reading and username
-	 *                         timestamp will be ignored
+	 * @param measurementDto DTO object containing sensor reading and username
+	 *                       timestamp will be ignored
 	 * @return Resource just created
 	 */
-	@PostMapping(PUBLIC_GENERICSENSOR_URL)
-	public ResponseEntity<SensorReadingDTO> post(@RequestBody SensorReadingDTO sensorReadingDTO) {
+	@PostMapping(PUBLIC_GENERIC_SENSOR_URL)
+	public ResponseEntity<MeasurementDto> post(@RequestBody MeasurementDto measurementDto) {
 
-		return sensorReadingService.create(sensorReadingDTO)
+		return measurementService.create(measurementDto, MeasurementType.GENERIC)
 				.map(t -> ResponseEntity.status(HttpStatus.CREATED).body(t))
 				.orElse(ResponseEntity.notFound().build());
 	}
@@ -80,14 +51,13 @@ public class SensorReadingRestController {
 	 *             time. Default is 0 (UTC)
 	 * @return List of Sensor Reading with its Timestamps
 	 */
-	@GetMapping(USER_GENERICSENSOR_FINDBYDATE_URL)
-	public ResponseEntity<List<SensorReadingDTO>> findByUsernameAndDate(Authentication auth,
-																		@RequestParam(value = "date", required = false) Date date,
-																		@RequestParam(value = "tz", defaultValue = "0") Integer tz) {
+	@GetMapping(USER_GENERIC_SENSOR_FIND_BY_DATE_URL)
+	public ResponseEntity<List<MeasurementDto>> findByUsernameAndDate(Authentication auth,
+																	  @RequestParam(value = "date", required = false) Date date,
+																	  @RequestParam(value = "tz", defaultValue = "0") Integer tz) {
 
-		return sensorReadingService.find(auth.getName(), new DateFilterDTO(date, tz, 0))
-				.map(l -> ResponseEntity.ok(l))
-				.orElse(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
+		return ResponseEntity.ok(measurementService.findByUsernameAndDate(auth.getName(),
+				MeasurementType.GENERIC, new DateFilterDto(date, tz, 0)));
 	}
 
 	/**
@@ -98,34 +68,16 @@ public class SensorReadingRestController {
 	 * @param size Page size
 	 * @return List of Sensor Reading (value 1, value2, value3) and Timestamp
 	 */
-	@GetMapping(USER_GENERICSENSOR_FINDBYUSERNAME_URL)
-	public ResponseEntity<Page<SensorReadingDTO>> findByUsername(Authentication auth,
-																 @RequestParam(value = "page", defaultValue = "0") Integer page,
-																 @RequestParam(value = "size", defaultValue = "20") Integer size) {
+	@GetMapping(USER_GENERIC_SENSOR_FIND_BY_USERNAME_URL)
+	public ResponseEntity<Page<MeasurementDto>> findByUsername(Authentication auth,
+															   @RequestParam(value = "page", defaultValue = "0") Integer page,
+															   @RequestParam(value = "size", defaultValue = "20") Integer size) {
 
 		if (size > 50) {
 			size = 50;
 		}
 
-		return ResponseEntity.ok(sensorReadingService.find(auth.getName(), new PageDTO(page, size)));
-	}
-
-	/**
-	 * Find all. Find all Sensor Reading registers
-	 *
-	 * @param page Page number
-	 * @param size Page size
-	 * @return Page of Sensor Reading (value 1, value2, value3) and Timestamp
-	 * from logged user
-	 */
-	@GetMapping(ADMIN_GENERICSENSOR_FINDALL_URL)
-	public ResponseEntity<Page<SensorReading>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
-													   @RequestParam(value = "size", defaultValue = "20") Integer size) {
-
-		if (size > 50) {
-			size = 50;
-		}
-
-		return ResponseEntity.ok(sensorReadingService.findAll(new PageDTO(page, size)));
+		return ResponseEntity.ok(measurementService.findByUsername(auth.getName(),
+				MeasurementType.GENERIC, new PageDto(page, size)));
 	}
 }

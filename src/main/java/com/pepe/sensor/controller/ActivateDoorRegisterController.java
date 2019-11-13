@@ -14,9 +14,9 @@ import java.security.Principal;
 @AllArgsConstructor
 public class ActivateDoorRegisterController {
 
-	public static final String API_DOOREVENT_ACTIVATE_URL = "/user/activate-doorevents";
-	public static final String API_DOOREVENT_DEACTIVATE_URL = "/user/deactivate-doorevents";
-	public static final String API_DOOREVENT_STATUS_URL = "/user/get-doorevents-status";
+	private static final String API_DOOR_EVENT_ACTIVATE_URL = "/user/activate-doorevents";
+	private static final String API_DOOR_EVENT_DEACTIVATE_URL = "/user/deactivate-doorevents";
+	private static final String API_DOOR_EVENT_STATUS_URL = "/user/get-doorevents-status";
 
 	private final ActivateDoorRegisterService activateDoorRegisterService;
 
@@ -26,7 +26,7 @@ public class ActivateDoorRegisterController {
 	 * @param principal Automatically filled when user is logged
 	 * @return 200 OK
 	 */
-	@RequestMapping(API_DOOREVENT_ACTIVATE_URL)
+	@RequestMapping(API_DOOR_EVENT_ACTIVATE_URL)
 	public ResponseEntity activate(Principal principal) {
 
 		activateDoorRegisterService.activate(principal.getName());
@@ -39,7 +39,7 @@ public class ActivateDoorRegisterController {
 	 * @param principal Automatically filled when user is logged
 	 * @return 200 OK
 	 */
-	@RequestMapping(API_DOOREVENT_DEACTIVATE_URL)
+	@RequestMapping(API_DOOR_EVENT_DEACTIVATE_URL)
 	public ResponseEntity deactivate(Principal principal) {
 
 		activateDoorRegisterService.deactivate(principal.getName());
@@ -52,7 +52,7 @@ public class ActivateDoorRegisterController {
 	 * @param principal Automatically filled when user is logged
 	 * @return Door register status: 1 on, 0 off
 	 */
-	@RequestMapping(API_DOOREVENT_STATUS_URL)
+	@RequestMapping(API_DOOR_EVENT_STATUS_URL)
 	public ResponseEntity<String> getStatus(Principal principal) {
 
 		return ResponseEntity.ok(activateDoorRegisterService.status(principal.getName()));

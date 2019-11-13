@@ -2,10 +2,9 @@ package com.pepe.sensor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -13,8 +12,7 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
-@EnableSwagger2 // visit: http://domain/swagger-ui.html#/
-@EnableJpaAuditing
+@EnableMongoRepositories
 public class SensorHubApplication {
 
 	@PostConstruct

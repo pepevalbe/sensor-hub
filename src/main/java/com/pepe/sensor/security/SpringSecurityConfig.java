@@ -19,9 +19,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	CustomUserDetailsService customeUserDetailsService;
+	private CustomUserDetailsService customUserDetailsService;
 
-	private final int REMEMBERME_VALIDITY = 15 * 24 * 60 * 60;    // 15 Days
+	private static final int REMEMBER_ME_VALIDITY = 15 * 24 * 60 * 60;    // 15 Days
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -29,21 +29,21 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 				.authorizeRequests()
 				.antMatchers("/", "/public/**",
-						TempHumidityRestController.PUBLIC_TEMPHUMIDITY_URL,
-						DoorEventRestController.PUBLIC_DOOREVENT_URL,
-						SensorReadingRestController.PUBLIC_GENERICSENSOR_URL).permitAll()
+						TempHumidityRestController.PUBLIC_TEMP_HUMIDITY_URL,
+						DoorEventRestController.PUBLIC_DOOR_EVENT_URL,
+						SensorReadingRestController.PUBLIC_GENERIC_SENSOR_URL).permitAll()
 				.antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
 				.antMatchers("/**").hasRole("ADMIN")
 				.and().formLogin().loginPage("/public/login").loginProcessingUrl("/public/login").failureUrl("/public/login?error")
 				.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/public/logout")).logoutSuccessUrl("/")
-				.and().rememberMe().rememberMeParameter("remember-me").key("cookie-secret").tokenValiditySeconds(REMEMBERME_VALIDITY);
+				.and().rememberMe().rememberMeParameter("remember-me").key("cookie-secret").tokenValiditySeconds(REMEMBER_ME_VALIDITY);
 
 		http.headers().frameOptions().sameOrigin();     // Needed for H2 console
 	}
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(customeUserDetailsService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean

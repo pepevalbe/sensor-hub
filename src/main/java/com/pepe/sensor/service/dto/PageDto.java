@@ -1,13 +1,13 @@
-package com.pepe.sensor.dto;
+package com.pepe.sensor.service.dto;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-public class PageDTO {
+public class PageDto {
 	private int page;
 	private int size;
 
-	public PageDTO(int page, int size) {
+	public PageDto(int page, int size) {
 		this.page = page;
 		this.size = size;
 	}

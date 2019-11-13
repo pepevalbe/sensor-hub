@@ -17,7 +17,7 @@ public class ActivateDoorRegisterService {
 	@Transactional()
 	public void activate(String username) {
 
-		Person user = personRepository.getOne(username);
+		Person user = personRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found!"));
 		user.setDoorRegisterActiveFlag(true);
 		personRepository.save(user);
 		log.info(user.getUsername() + " activated door register");
@@ -26,7 +26,7 @@ public class ActivateDoorRegisterService {
 	@Transactional()
 	public void deactivate(String username) {
 
-		Person user = personRepository.getOne(username);
+		Person user = personRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found!"));
 		user.setDoorRegisterActiveFlag(false);
 		personRepository.save(user);
 		log.info(user.getUsername() + " deactivated door register");
@@ -36,7 +36,8 @@ public class ActivateDoorRegisterService {
 	public String status(String username) {
 
 		boolean status = personRepository.findById(username)
-				.map(Person::isDoorRegisterActiveFlag).get();
+				.map(Person::isDoorRegisterActiveFlag)
+				.orElseThrow(() -> new RuntimeException("User not found!"));
 
 		return String.valueOf(status);
 	}

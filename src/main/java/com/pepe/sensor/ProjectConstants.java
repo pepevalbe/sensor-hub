@@ -1,5 +1,6 @@
 package com.pepe.sensor;
 
+import com.pepe.sensor.persistence.ConfigVariable;
 import com.pepe.sensor.repository.ConfigVariableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -54,7 +55,7 @@ public class ProjectConstants {
 			return value;
 		}
 
-		value = configVariableRepository.getValueByKey(key);
+		value = configVariableRepository.findByVarKey(key).map(ConfigVariable::getVarValue).orElse(null);
 		if (value != null) {
 			System.out.println("Configuration from database: " + key + " = " + value);
 			return value;

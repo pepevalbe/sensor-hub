@@ -1,19 +1,19 @@
 package com.pepe.sensor.controller;
 
-import com.pepe.sensor.dto.PersonDTO;
 import com.pepe.sensor.service.UserService;
+import com.pepe.sensor.service.dto.PersonDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.transaction.Transactional;
 import java.net.URI;
 import java.security.Principal;
 import java.util.Map;
@@ -75,7 +75,7 @@ public class UserController {
 	 * @return Logged user (Person object) or 403 (forbidden)if not logged
 	 */
 	@RequestMapping(value = USER_USERPROFILE_URL, method = RequestMethod.GET)
-	public ResponseEntity<PersonDTO> getUserProfile(Principal principal) {
+	public ResponseEntity<PersonDto> getUserProfile(Principal principal) {
 
 		if (principal == null) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -92,7 +92,7 @@ public class UserController {
 	 * up is disabled by admin or 201 (created) if user is successfully created
 	 */
 	@RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
-	public ResponseEntity<String> createUser(@RequestBody PersonDTO userDTO) {
+	public ResponseEntity<String> createUser(@RequestBody PersonDto userDTO) {
 
 		if ("true".equals(System.getProperty("sign-up-enabled"))) {
 			if (userService.getUserProfile(userDTO.getUsername()) != null) {
@@ -122,7 +122,7 @@ public class UserController {
 	public String activateUser(@RequestParam("email") String email,
 							   @RequestParam("token") String token, Map<String, Object> model) {
 
-		PersonDTO user = userService.activateUser(email, token);
+		PersonDto user = userService.activateUser(email, token);
 
 		// If token is ok we remove it and activate user otherwise we show an error
 		if (user != null) {

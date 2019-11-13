@@ -1,6 +1,7 @@
 package com.pepe.sensor;
 
 import com.pepe.sensor.persistence.Person;
+import com.pepe.sensor.repository.MeasurementRepository;
 import com.pepe.sensor.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,23 +9,20 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class DataLoader implements ApplicationRunner {
 
+	@Autowired
 	private PersonRepository personRepository;
+	@Autowired
+	private MeasurementRepository measurementRepository;
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Value("${pepe-sensores.demo_user_role}")
 	private String demoUserRole;
-
-	@Autowired
-	public DataLoader(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
-		this.personRepository = personRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
 
 	@Transactional
 	@Override
@@ -34,16 +32,15 @@ public class DataLoader implements ApplicationRunner {
 		Person user = new Person("user", passwordEncoder.encode("user"), demoUserRole,
 				"user@email.com", "NombreDeUsuario", "ApellidoDeUsuario");
 
-		// Remove existing demo user (delete propagates to OnetToMany relationships)
+		// Remove any previously existing data of demo user
+		measurementRepository.deleteByUsername(user.getUsername());
 		personRepository.deleteByUsername(user.getUsername());
-		// Use flush to actually delete from database
-		personRepository.flush();
 
-		// Save user (create timestamp and token)
-		user = personRepository.saveAndFlush(user);
+		// Create demo user (creationTimestamp and token are filled here)
+		user = personRepository.save(user);
 
 		// Activate demo user
 		user.setActivated(true);
-		personRepository.saveAndFlush(user);
+		personRepository.save(user);
 	}
 }

@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pepe.sensor.controller.DoorEventRestController;
 import com.pepe.sensor.controller.SensorReadingRestController;
 import com.pepe.sensor.controller.TempHumidityRestController;
-import com.pepe.sensor.dto.DoorEventDTO;
-import com.pepe.sensor.dto.SensorReadingDTO;
-import com.pepe.sensor.dto.TempHumidityDTO;
 import com.pepe.sensor.service.UserService;
+import com.pepe.sensor.service.dto.MeasurementDto;
+import com.pepe.sensor.service.dto.TempHumidityDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -48,31 +47,31 @@ public class RestClient {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode root = mapper.readTree(response.getBody());
 		JsonNode main = root.path("main");
-		TempHumidityDTO temphumidityDTO = new TempHumidityDTO();
+		TempHumidityDto temphumidityDTO = new TempHumidityDto();
 		temphumidityDTO.setTemperature(Float.parseFloat(main.path("temp").asText()));
 		temphumidityDTO.setHumidity(Float.parseFloat(main.path("humidity").asText()));
 		temphumidityDTO.setToken(userService.getUserProfile("user").getToken());
-		HttpEntity<TempHumidityDTO> request = new HttpEntity<>(temphumidityDTO);
-		restTemplate.postForObject(APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMPHUMIDITY_URL, request, TempHumidityDTO.class);
+		HttpEntity<TempHumidityDto> request = new HttpEntity<>(temphumidityDTO);
+		restTemplate.postForObject(APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMP_HUMIDITY_URL, request, TempHumidityDto.class);
 	}
 
 	@Async
 	public void postDoorEvent() throws Exception {
 		Thread.sleep(ThreadLocalRandom.current().nextLong(1, 100) * 60 * 1000L);    // Sleeps 1-100 minutes
-		DoorEventDTO doorEventDTO = new DoorEventDTO();
+		MeasurementDto doorEventDTO = new MeasurementDto();
 		doorEventDTO.setToken(userService.getUserProfile("user").getToken());
-		HttpEntity<DoorEventDTO> request = new HttpEntity<>(doorEventDTO);
-		restTemplate.postForObject(APP_BASE_URL + DoorEventRestController.PUBLIC_DOOREVENT_URL, request, DoorEventDTO.class);
+		HttpEntity<MeasurementDto> request = new HttpEntity<>(doorEventDTO);
+		restTemplate.postForObject(APP_BASE_URL + DoorEventRestController.PUBLIC_DOOR_EVENT_URL, request, MeasurementDto.class);
 	}
 
 	@Async
 	public void postSensorReading() throws Exception {
-		SensorReadingDTO sensorReadingDTO = new SensorReadingDTO();
+		MeasurementDto sensorReadingDTO = new MeasurementDto();
 		sensorReadingDTO.setValue1(ThreadLocalRandom.current().nextFloat());
 		sensorReadingDTO.setValue2((float) ThreadLocalRandom.current().nextDouble(-100, 100));
 		sensorReadingDTO.setValue3((float) ThreadLocalRandom.current().nextGaussian());
 		sensorReadingDTO.setToken(userService.getUserProfile("user").getToken());
-		HttpEntity<SensorReadingDTO> request = new HttpEntity<>(sensorReadingDTO);
-		restTemplate.postForObject(APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERICSENSOR_URL, request, SensorReadingDTO.class);
+		HttpEntity<MeasurementDto> request = new HttpEntity<>(sensorReadingDTO);
+		restTemplate.postForObject(APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERIC_SENSOR_URL, request, MeasurementDto.class);
 	}
 }

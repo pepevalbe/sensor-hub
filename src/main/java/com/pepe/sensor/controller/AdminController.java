@@ -20,10 +20,10 @@ import java.util.List;
 @Controller
 public class AdminController {
 
-	public static final String ADMIN_CONFIGVARS_URL = "/admin/configvars";
-	public static final String ADMIN_SIGNUPENABLE_URL = "/admin/signupenable";
-	public static final String ADMIN_SIGNUPDISABLE_URL = "/admin/signupdisable";
-	public static final String ADMIN_SIGNUPSTATUS_URL = "/admin/signupstatus";
+	private static final String ADMIN_CONFIGVARS_URL = "/admin/configvars";
+	private static final String ADMIN_SIGNUPENABLE_URL = "/admin/signupenable";
+	private static final String ADMIN_SIGNUPDISABLE_URL = "/admin/signupdisable";
+	private static final String ADMIN_SIGNUPSTATUS_URL = "/admin/signupstatus";
 
 	private final Environment environment;
 
@@ -41,8 +41,7 @@ public class AdminController {
 	@ResponseBody
 	public List<String> getConfigVars() {
 
-		List<String> configVars = new ArrayList<>();
-		configVars.addAll(Arrays.asList(environment.getActiveProfiles()));
+		List<String> configVars = new ArrayList<>(Arrays.asList(environment.getActiveProfiles()));
 		configVars.add(environment.getProperty("pepe-sensores.app_base_url"));
 		configVars.add(environment.getProperty("pepe-sensores.weather_url"));
 		configVars.add(environment.getProperty("pepe-sensores.sign_up_enabled"));

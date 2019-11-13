@@ -1,19 +1,15 @@
 package com.pepe.sensor.repository;
 
 import com.pepe.sensor.persistence.Person;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-// Extends JpaRepository so we can use flush (see DataLoader)
-@RepositoryRestResource
-public interface PersonRepository extends JpaRepository<Person, String> {
+public interface PersonRepository extends MongoRepository<Person, String> {
 
-	Optional<Person> findByToken(@Param("token") String token);
+	Optional<Person> findByToken(String token);
 
-	Person findByEmail(@Param("email") String email);
+	Optional<Person> findByEmail(String email);
 
-	Long deleteByUsername(@Param("username") String username);
+	void deleteByUsername(String username);
 }

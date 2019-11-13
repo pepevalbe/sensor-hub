@@ -1,13 +1,15 @@
 package com.pepe.sensor.service.mapper;
 
-import com.pepe.sensor.dto.PersonDTO;
 import com.pepe.sensor.persistence.Person;
+import com.pepe.sensor.service.dto.PersonDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
 
-	PersonDTO map(Person person);
+	@Mapping(target = "password", ignore = true)
+	PersonDto map(Person person);
 
-	Person map(PersonDTO personDTO);
+	Person map(PersonDto personDTO);
 }

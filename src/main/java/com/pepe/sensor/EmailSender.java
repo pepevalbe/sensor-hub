@@ -2,7 +2,6 @@ package com.pepe.sensor;
 
 import com.pepe.sensor.controller.UserController;
 import com.pepe.sensor.persistence.Person;
-import com.pepe.sensor.persistence.TemporaryToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,12 +75,11 @@ public class EmailSender {
 	}
 
 	@Async
-	public void sendNewPasswordLinkEmail(TemporaryToken token) {
-		Person user = token.getPerson();
+	public void sendNewPasswordLinkEmail(Person user) {
 		String text = String.format(newPasswordLinkTemplate, user.getFirstName(),
 				APP_BASE_URL + UserController.PUBLIC_RESETPASSWORDFORM_URL,
 				user.getEmail(),
-				token.getToken());
+				user.getTemporaryToken().getToken());
 		logger.info("Sending reset password link email to: " + user.getUsername() + " - " + user.getEmail());
 		sendEmail(user.getEmail(), newPasswordLinkSubject, text);
 	}
