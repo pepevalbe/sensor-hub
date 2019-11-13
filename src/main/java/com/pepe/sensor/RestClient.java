@@ -23,56 +23,56 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class RestClient {
 
-    private final RestTemplate restTemplate;
-    private final UserService userService;
+	private final RestTemplate restTemplate;
+	private final UserService userService;
 
-    @Value("${pepe-sensores.app_base_url}")
-    private String APP_BASE_URL;
+	@Value("${pepe-sensores.app_base_url}")
+	private String APP_BASE_URL;
 
-    @Value("${pepe-sensores.weather_url}")
-    private String WEATHER_URL;
+	@Value("${pepe-sensores.weather_url}")
+	private String WEATHER_URL;
 
-    @Autowired
-    public RestClient(RestTemplateBuilder restTemplateBuilder, UserService userService, ProjectConstants projectConstants) {
-        restTemplate = restTemplateBuilder.build();
-        this.userService = userService;
-    }
+	@Autowired
+	public RestClient(RestTemplateBuilder restTemplateBuilder, UserService userService, ProjectConstants projectConstants) {
+		restTemplate = restTemplateBuilder.build();
+		this.userService = userService;
+	}
 
-    @Async
-    public void postTempHumidity() throws Exception {
+	@Async
+	public void postTempHumidity() throws Exception {
 
-        if (WEATHER_URL.isEmpty()) {
-            return;
-        }
-        ResponseEntity<String> response = restTemplate.getForEntity(WEATHER_URL, String.class);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(response.getBody());
-        JsonNode main = root.path("main");
-        TempHumidityDTO temphumidityDTO = new TempHumidityDTO();
-        temphumidityDTO.setTemperature(Float.parseFloat(main.path("temp").asText()));
-        temphumidityDTO.setHumidity(Float.parseFloat(main.path("humidity").asText()));
-        temphumidityDTO.setToken(userService.getUserProfile("user").getToken());
-        HttpEntity<TempHumidityDTO> request = new HttpEntity<>(temphumidityDTO);
-        restTemplate.postForObject(APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMPHUMIDITY_URL, request, TempHumidityDTO.class);
-    }
+		if (WEATHER_URL.isEmpty()) {
+			return;
+		}
+		ResponseEntity<String> response = restTemplate.getForEntity(WEATHER_URL, String.class);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode root = mapper.readTree(response.getBody());
+		JsonNode main = root.path("main");
+		TempHumidityDTO temphumidityDTO = new TempHumidityDTO();
+		temphumidityDTO.setTemperature(Float.parseFloat(main.path("temp").asText()));
+		temphumidityDTO.setHumidity(Float.parseFloat(main.path("humidity").asText()));
+		temphumidityDTO.setToken(userService.getUserProfile("user").getToken());
+		HttpEntity<TempHumidityDTO> request = new HttpEntity<>(temphumidityDTO);
+		restTemplate.postForObject(APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMPHUMIDITY_URL, request, TempHumidityDTO.class);
+	}
 
-    @Async
-    public void postDoorEvent() throws Exception {
-        Thread.sleep(ThreadLocalRandom.current().nextLong(1, 100) * 60 * 1000L);    // Sleeps 1-100 minutes
-        DoorEventDTO doorEventDTO = new DoorEventDTO();
-        doorEventDTO.setToken(userService.getUserProfile("user").getToken());
-        HttpEntity<DoorEventDTO> request = new HttpEntity<>(doorEventDTO);
-        restTemplate.postForObject(APP_BASE_URL + DoorEventRestController.PUBLIC_DOOREVENT_URL, request, DoorEventDTO.class);
-    }
+	@Async
+	public void postDoorEvent() throws Exception {
+		Thread.sleep(ThreadLocalRandom.current().nextLong(1, 100) * 60 * 1000L);    // Sleeps 1-100 minutes
+		DoorEventDTO doorEventDTO = new DoorEventDTO();
+		doorEventDTO.setToken(userService.getUserProfile("user").getToken());
+		HttpEntity<DoorEventDTO> request = new HttpEntity<>(doorEventDTO);
+		restTemplate.postForObject(APP_BASE_URL + DoorEventRestController.PUBLIC_DOOREVENT_URL, request, DoorEventDTO.class);
+	}
 
-    @Async
-    public void postSensorReading() throws Exception {
-        SensorReadingDTO sensorReadingDTO = new SensorReadingDTO();
-        sensorReadingDTO.setValue1(ThreadLocalRandom.current().nextFloat());
-        sensorReadingDTO.setValue2((float) ThreadLocalRandom.current().nextDouble(-100, 100));
-        sensorReadingDTO.setValue3((float) ThreadLocalRandom.current().nextGaussian());
-        sensorReadingDTO.setToken(userService.getUserProfile("user").getToken());
-        HttpEntity<SensorReadingDTO> request = new HttpEntity<>(sensorReadingDTO);
-        restTemplate.postForObject(APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERICSENSOR_URL, request, SensorReadingDTO.class);
-    }
+	@Async
+	public void postSensorReading() throws Exception {
+		SensorReadingDTO sensorReadingDTO = new SensorReadingDTO();
+		sensorReadingDTO.setValue1(ThreadLocalRandom.current().nextFloat());
+		sensorReadingDTO.setValue2((float) ThreadLocalRandom.current().nextDouble(-100, 100));
+		sensorReadingDTO.setValue3((float) ThreadLocalRandom.current().nextGaussian());
+		sensorReadingDTO.setToken(userService.getUserProfile("user").getToken());
+		HttpEntity<SensorReadingDTO> request = new HttpEntity<>(sensorReadingDTO);
+		restTemplate.postForObject(APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERICSENSOR_URL, request, SensorReadingDTO.class);
+	}
 }

@@ -15,22 +15,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PersonRepository personRepository;
+	private final PersonRepository personRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    public CustomUserDetailsService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
+	@Autowired
+	public CustomUserDetailsService(PersonRepository personRepository) {
+		this.personRepository = personRepository;
+	}
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DisabledException {
-        Person user = personRepository.findById(username).get();
-        if (!user.isActivated()) {
-            logger.info("Trying to log in but user not activated: " + user.getUsername() + " - " + user.getEmail());
-            throw new DisabledException("User " + username + " not activated!");
-        }
-        return User.withUsername(user.getUsername()).password(user.getPassword()).roles(user.getRole()).build();
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DisabledException {
+		Person user = personRepository.findById(username).get();
+		if (!user.isActivated()) {
+			logger.info("Trying to log in but user not activated: " + user.getUsername() + " - " + user.getEmail());
+			throw new DisabledException("User " + username + " not activated!");
+		}
+		return User.withUsername(user.getUsername()).password(user.getPassword()).roles(user.getRole()).build();
+	}
 }

@@ -12,32 +12,32 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class ActivateDoorRegisterService {
 
-    private final PersonRepository personRepository;
+	private final PersonRepository personRepository;
 
-    @Transactional()
-    public void activate(String username) {
+	@Transactional()
+	public void activate(String username) {
 
-        Person user = personRepository.getOne(username);
-        user.setDoorRegisterActiveFlag(true);
-        personRepository.save(user);
-        log.info(user.getUsername() + " activated door register");
-    }
+		Person user = personRepository.getOne(username);
+		user.setDoorRegisterActiveFlag(true);
+		personRepository.save(user);
+		log.info(user.getUsername() + " activated door register");
+	}
 
-    @Transactional()
-    public void deactivate(String username) {
+	@Transactional()
+	public void deactivate(String username) {
 
-        Person user = personRepository.getOne(username);
-        user.setDoorRegisterActiveFlag(false);
-        personRepository.save(user);
-        log.info(user.getUsername() + " deactivated door register");
-    }
+		Person user = personRepository.getOne(username);
+		user.setDoorRegisterActiveFlag(false);
+		personRepository.save(user);
+		log.info(user.getUsername() + " deactivated door register");
+	}
 
-    @Transactional(readOnly = true)
-    public String status(String username) {
+	@Transactional(readOnly = true)
+	public String status(String username) {
 
-        boolean status = personRepository.findById(username)
-                .map(Person::isDoorRegisterActiveFlag).get();
+		boolean status = personRepository.findById(username)
+				.map(Person::isDoorRegisterActiveFlag).get();
 
-        return String.valueOf(status);
-    }
+		return String.valueOf(status);
+	}
 }

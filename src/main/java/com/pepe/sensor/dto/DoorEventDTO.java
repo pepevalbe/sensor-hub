@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Data
 public class DoorEventDTO {
 
-    private long id;
-    private Timestamp timestamp;
-    private String token;
+	private long id;
+	private Timestamp timestamp;
+	private String token;
 }

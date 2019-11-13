@@ -24,45 +24,45 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DoorEventService {
 
-    private final DoorEventRepository doorEventRepository;
+	private final DoorEventRepository doorEventRepository;
 
-    private final PersonRepository personRepository;
+	private final PersonRepository personRepository;
 
-    private final DoorEventMapper doorEventMapper;
+	private final DoorEventMapper doorEventMapper;
 
-    @Transactional(readOnly = true)
-    public Optional<DoorEventDTO> getById(long id) {
-        return doorEventRepository.findById(id).map(doorEventMapper::map);
-    }
+	@Transactional(readOnly = true)
+	public Optional<DoorEventDTO> getById(long id) {
+		return doorEventRepository.findById(id).map(doorEventMapper::map);
+	}
 
-    @Transactional
-    public void deleteById(long id) {
-        doorEventRepository.deleteById(id);
-    }
+	@Transactional
+	public void deleteById(long id) {
+		doorEventRepository.deleteById(id);
+	}
 
-    @Transactional
-    public Optional<DoorEventDTO> create(@NonNull DoorEventDTO doorEventDTO) {
-        return personRepository.findByToken(doorEventDTO.getToken())
-                .map(owner -> doorEventMapper.map(doorEventDTO, owner))
-                .map(doorEventRepository::save)
-                .map(doorEventMapper::map);
-    }
+	@Transactional
+	public Optional<DoorEventDTO> create(@NonNull DoorEventDTO doorEventDTO) {
+		return personRepository.findByToken(doorEventDTO.getToken())
+				.map(owner -> doorEventMapper.map(doorEventDTO, owner))
+				.map(doorEventRepository::save)
+				.map(doorEventMapper::map);
+	}
 
-    @Transactional(readOnly = true)
-    public Optional<List<DoorEventDTO>> find(String username, DateFilterDTO filter) {
-        return personRepository.findById(username)
-                .map(owner -> doorEventRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
-                        .map(doorEventMapper::map).collect(Collectors.toList()));
-    }
+	@Transactional(readOnly = true)
+	public Optional<List<DoorEventDTO>> find(String username, DateFilterDTO filter) {
+		return personRepository.findById(username)
+				.map(owner -> doorEventRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
+						.map(doorEventMapper::map).collect(Collectors.toList()));
+	}
 
-    @Transactional(readOnly = true)
-    public Page<DoorEventDTO> find(String username, PageDTO p) {
-        return doorEventRepository.findByUsername(username, p.toRequest(Sort.Direction.ASC, "timestamp"))
-                .map(doorEventMapper::map);
-    }
+	@Transactional(readOnly = true)
+	public Page<DoorEventDTO> find(String username, PageDTO p) {
+		return doorEventRepository.findByUsername(username, p.toRequest(Sort.Direction.ASC, "timestamp"))
+				.map(doorEventMapper::map);
+	}
 
-    @Transactional(readOnly = true)
-    public Page<DoorEvent> findAll(PageDTO p) {
-        return doorEventRepository.findAll(p.toRequest(Sort.Direction.ASC, "timestamp"));
-    }
+	@Transactional(readOnly = true)
+	public Page<DoorEvent> findAll(PageDTO p) {
+		return doorEventRepository.findAll(p.toRequest(Sort.Direction.ASC, "timestamp"));
+	}
 }

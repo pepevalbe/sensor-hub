@@ -15,11 +15,11 @@ import java.util.List;
 @RepositoryRestResource
 public interface TempHumidityRepository extends JpaRepository<TempHumidity, Long> {
 
-    @Query("select t from TempHumidity t where t.owner = ?1 and t.timestamp > ?2 and t.timestamp < ?3 order by t.timestamp asc")
-    List<TempHumidity> findByOwnerAndTimestampRange(Person owner, Timestamp beginTimestamp, Timestamp endTimestamp);
+	@Query("select t from TempHumidity t where t.owner = ?1 and t.timestamp > ?2 and t.timestamp < ?3 order by t.timestamp asc")
+	List<TempHumidity> findByOwnerAndTimestampRange(Person owner, Timestamp beginTimestamp, Timestamp endTimestamp);
 
-    @Query("select t from TempHumidity t where t.owner = (select p.id from Person p where p.username = ?1)")
-    Page<TempHumidity> findByUsername(@Param("username") String username, Pageable pageable);
+	@Query("select t from TempHumidity t where t.owner = (select p.id from Person p where p.username = ?1)")
+	Page<TempHumidity> findByUsername(@Param("username") String username, Pageable pageable);
 
-    List<TempHumidity> findByOwner(@Param("owner") Person owner);
+	List<TempHumidity> findByOwner(@Param("owner") Person owner);
 }

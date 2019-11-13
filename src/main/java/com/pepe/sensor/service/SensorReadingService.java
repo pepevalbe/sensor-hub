@@ -24,45 +24,45 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class SensorReadingService {
 
-    private final SensorReadingRepository sensorReadingRepository;
+	private final SensorReadingRepository sensorReadingRepository;
 
-    private final PersonRepository personRepository;
+	private final PersonRepository personRepository;
 
-    private final SensorReadingMapper sensorReadingMapper;
+	private final SensorReadingMapper sensorReadingMapper;
 
-    @Transactional(readOnly = true)
-    public Optional<SensorReadingDTO> getById(long id) {
-        return sensorReadingRepository.findById(id).map(sensorReadingMapper::map);
-    }
+	@Transactional(readOnly = true)
+	public Optional<SensorReadingDTO> getById(long id) {
+		return sensorReadingRepository.findById(id).map(sensorReadingMapper::map);
+	}
 
-    @Transactional
-    public void deleteById(long id) {
-        sensorReadingRepository.deleteById(id);
-    }
+	@Transactional
+	public void deleteById(long id) {
+		sensorReadingRepository.deleteById(id);
+	}
 
-    @Transactional
-    public Optional<SensorReadingDTO> create(@NonNull SensorReadingDTO sensorReadingDTO) {
-        return personRepository.findByToken(sensorReadingDTO.getToken())
-                .map(owner -> sensorReadingMapper.map(sensorReadingDTO, owner))
-                .map(sensorReadingRepository::save)
-                .map(sensorReadingMapper::map);
-    }
+	@Transactional
+	public Optional<SensorReadingDTO> create(@NonNull SensorReadingDTO sensorReadingDTO) {
+		return personRepository.findByToken(sensorReadingDTO.getToken())
+				.map(owner -> sensorReadingMapper.map(sensorReadingDTO, owner))
+				.map(sensorReadingRepository::save)
+				.map(sensorReadingMapper::map);
+	}
 
-    @Transactional(readOnly = true)
-    public Optional<List<SensorReadingDTO>> find(String username, DateFilterDTO filter) {
-        return personRepository.findById(username)
-                .map(owner -> sensorReadingRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
-                        .map(sensorReadingMapper::map).collect(Collectors.toList()));
-    }
+	@Transactional(readOnly = true)
+	public Optional<List<SensorReadingDTO>> find(String username, DateFilterDTO filter) {
+		return personRepository.findById(username)
+				.map(owner -> sensorReadingRepository.findByOwnerAndTimestampRange(owner, filter.getBegin(), filter.getEnd()).stream()
+						.map(sensorReadingMapper::map).collect(Collectors.toList()));
+	}
 
-    @Transactional(readOnly = true)
-    public Page<SensorReadingDTO> find(String username, PageDTO p) {
-        return sensorReadingRepository.findByUsername(username, p.toRequest(Sort.Direction.ASC, "timestamp"))
-                .map(sensorReadingMapper::map);
-    }
+	@Transactional(readOnly = true)
+	public Page<SensorReadingDTO> find(String username, PageDTO p) {
+		return sensorReadingRepository.findByUsername(username, p.toRequest(Sort.Direction.ASC, "timestamp"))
+				.map(sensorReadingMapper::map);
+	}
 
-    @Transactional(readOnly = true)
-    public Page<SensorReading> findAll(PageDTO p) {
-        return sensorReadingRepository.findAll(p.toRequest(Sort.Direction.ASC, "timestamp"));
-    }
+	@Transactional(readOnly = true)
+	public Page<SensorReading> findAll(PageDTO p) {
+		return sensorReadingRepository.findAll(p.toRequest(Sort.Direction.ASC, "timestamp"));
+	}
 }

@@ -15,11 +15,11 @@ import java.util.List;
 @RepositoryRestResource
 public interface SensorReadingRepository extends PagingAndSortingRepository<SensorReading, Long> {
 
-    @Query("select s from SensorReading s where s.owner = ?1 and s.timestamp > ?2 and s.timestamp < ?3 order by s.timestamp asc")
-    List<SensorReading> findByOwnerAndTimestampRange(Person owner, Timestamp beginTimestamp, Timestamp endTimestamp);
+	@Query("select s from SensorReading s where s.owner = ?1 and s.timestamp > ?2 and s.timestamp < ?3 order by s.timestamp asc")
+	List<SensorReading> findByOwnerAndTimestampRange(Person owner, Timestamp beginTimestamp, Timestamp endTimestamp);
 
-    @Query("select s from SensorReading s where s.owner = (select p.id from Person p where p.username = ?1)")
-    Page<SensorReading> findByUsername(@Param("username") String username, Pageable pageable);
+	@Query("select s from SensorReading s where s.owner = (select p.id from Person p where p.username = ?1)")
+	Page<SensorReading> findByUsername(@Param("username") String username, Pageable pageable);
 
-    List<SensorReading> findByOwner(Person owner);
+	List<SensorReading> findByOwner(Person owner);
 }

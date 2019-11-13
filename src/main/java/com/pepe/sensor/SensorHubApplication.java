@@ -17,13 +17,13 @@ import java.util.TimeZone;
 @EnableJpaAuditing
 public class SensorHubApplication {
 
-    @PostConstruct
-    public void init() {
-        // Setting Application Time Zone to UTC
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-    }
+	@PostConstruct
+	public void init() {
+		// Setting Application Time Zone to UTC
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
-    public static void main(String[] args) {
-        SpringApplication.run(SensorHubApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(SensorHubApplication.class, args);
+	}
 }

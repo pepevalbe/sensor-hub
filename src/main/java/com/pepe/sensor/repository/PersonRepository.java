@@ -11,9 +11,9 @@ import java.util.Optional;
 @RepositoryRestResource
 public interface PersonRepository extends JpaRepository<Person, String> {
 
-    Optional<Person> findByToken(@Param("token") String token);
+	Optional<Person> findByToken(@Param("token") String token);
 
-    Person findByEmail(@Param("email") String email);
+	Person findByEmail(@Param("email") String email);
 
-    Long deleteByUsername(@Param("username") String username);
+	Long deleteByUsername(@Param("username") String username);
 }

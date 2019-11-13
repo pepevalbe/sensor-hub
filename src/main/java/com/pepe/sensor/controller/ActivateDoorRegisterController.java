@@ -14,47 +14,47 @@ import java.security.Principal;
 @AllArgsConstructor
 public class ActivateDoorRegisterController {
 
-    public static final String API_DOOREVENT_ACTIVATE_URL = "/user/activate-doorevents";
-    public static final String API_DOOREVENT_DEACTIVATE_URL = "/user/deactivate-doorevents";
-    public static final String API_DOOREVENT_STATUS_URL = "/user/get-doorevents-status";
+	public static final String API_DOOREVENT_ACTIVATE_URL = "/user/activate-doorevents";
+	public static final String API_DOOREVENT_DEACTIVATE_URL = "/user/deactivate-doorevents";
+	public static final String API_DOOREVENT_STATUS_URL = "/user/get-doorevents-status";
 
-    private final ActivateDoorRegisterService activateDoorRegisterService;
+	private final ActivateDoorRegisterService activateDoorRegisterService;
 
-    /**
-     * Activate door access register. POST events will create registers
-     *
-     * @param principal Automatically filled when user is logged
-     * @return 200 OK
-     */
-    @RequestMapping(API_DOOREVENT_ACTIVATE_URL)
-    public ResponseEntity activate(Principal principal) {
+	/**
+	 * Activate door access register. POST events will create registers
+	 *
+	 * @param principal Automatically filled when user is logged
+	 * @return 200 OK
+	 */
+	@RequestMapping(API_DOOREVENT_ACTIVATE_URL)
+	public ResponseEntity activate(Principal principal) {
 
-        activateDoorRegisterService.activate(principal.getName());
-        return ResponseEntity.ok().build();
-    }
+		activateDoorRegisterService.activate(principal.getName());
+		return ResponseEntity.ok().build();
+	}
 
-    /**
-     * Deactivate door access register. POST events will be ignored
-     *
-     * @param principal Automatically filled when user is logged
-     * @return 200 OK
-     */
-    @RequestMapping(API_DOOREVENT_DEACTIVATE_URL)
-    public ResponseEntity deactivate(Principal principal) {
+	/**
+	 * Deactivate door access register. POST events will be ignored
+	 *
+	 * @param principal Automatically filled when user is logged
+	 * @return 200 OK
+	 */
+	@RequestMapping(API_DOOREVENT_DEACTIVATE_URL)
+	public ResponseEntity deactivate(Principal principal) {
 
-        activateDoorRegisterService.deactivate(principal.getName());
-        return ResponseEntity.ok().build();
-    }
+		activateDoorRegisterService.deactivate(principal.getName());
+		return ResponseEntity.ok().build();
+	}
 
-    /**
-     * Check door access register status
-     *
-     * @param principal Automatically filled when user is logged
-     * @return Door register status: 1 on, 0 off
-     */
-    @RequestMapping(API_DOOREVENT_STATUS_URL)
-    public ResponseEntity<String> getStatus(Principal principal) {
+	/**
+	 * Check door access register status
+	 *
+	 * @param principal Automatically filled when user is logged
+	 * @return Door register status: 1 on, 0 off
+	 */
+	@RequestMapping(API_DOOREVENT_STATUS_URL)
+	public ResponseEntity<String> getStatus(Principal principal) {
 
-        return ResponseEntity.ok(activateDoorRegisterService.status(principal.getName()));
-    }
+		return ResponseEntity.ok(activateDoorRegisterService.status(principal.getName()));
+	}
 }

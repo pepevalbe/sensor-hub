@@ -15,11 +15,11 @@ import java.util.List;
 @RepositoryRestResource
 public interface DoorEventRepository extends PagingAndSortingRepository<DoorEvent, Long> {
 
-    @Query("select d from DoorEvent d where d.owner = ?1 and d.timestamp > ?2 and d.timestamp < ?3 order by d.timestamp asc")
-    List<DoorEvent> findByOwnerAndTimestampRange(Person owner, Timestamp beginTimestamp, Timestamp endTimestamp);
+	@Query("select d from DoorEvent d where d.owner = ?1 and d.timestamp > ?2 and d.timestamp < ?3 order by d.timestamp asc")
+	List<DoorEvent> findByOwnerAndTimestampRange(Person owner, Timestamp beginTimestamp, Timestamp endTimestamp);
 
-    @Query("select d from DoorEvent d where d.owner = (select p.id from Person p where p.username = ?1)")
-    Page<DoorEvent> findByUsername(@Param("username") String username, Pageable pageable);
+	@Query("select d from DoorEvent d where d.owner = (select p.id from Person p where p.username = ?1)")
+	Page<DoorEvent> findByUsername(@Param("username") String username, Pageable pageable);
 
-    List<DoorEvent> findByOwner(Person owner);
+	List<DoorEvent> findByOwner(Person owner);
 }

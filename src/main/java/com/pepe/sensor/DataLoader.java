@@ -14,36 +14,36 @@ import javax.transaction.Transactional;
 @Component
 public class DataLoader implements ApplicationRunner {
 
-    private PersonRepository personRepository;
-    private PasswordEncoder passwordEncoder;
+	private PersonRepository personRepository;
+	private PasswordEncoder passwordEncoder;
 
-    @Value("${pepe-sensores.demo_user_role}")
-    private String demoUserRole;
+	@Value("${pepe-sensores.demo_user_role}")
+	private String demoUserRole;
 
-    @Autowired
-    public DataLoader(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
-        this.personRepository = personRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+	@Autowired
+	public DataLoader(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
+		this.personRepository = personRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
 
-    @Transactional
-    @Override
-    public void run(ApplicationArguments args) {
+	@Transactional
+	@Override
+	public void run(ApplicationArguments args) {
 
-        // Create demo user
-        Person user = new Person("user", passwordEncoder.encode("user"), demoUserRole,
-                "user@email.com", "NombreDeUsuario", "ApellidoDeUsuario");
+		// Create demo user
+		Person user = new Person("user", passwordEncoder.encode("user"), demoUserRole,
+				"user@email.com", "NombreDeUsuario", "ApellidoDeUsuario");
 
-        // Remove existing demo user (delete propagates to OnetToMany relationships)
-        personRepository.deleteByUsername(user.getUsername());
-        // Use flush to actually delete from database
-        personRepository.flush();
+		// Remove existing demo user (delete propagates to OnetToMany relationships)
+		personRepository.deleteByUsername(user.getUsername());
+		// Use flush to actually delete from database
+		personRepository.flush();
 
-        // Save user (create timestamp and token)
-        user = personRepository.saveAndFlush(user);
+		// Save user (create timestamp and token)
+		user = personRepository.saveAndFlush(user);
 
-        // Activate demo user
-        user.setActivated(true);
-        personRepository.saveAndFlush(user);
-    }
+		// Activate demo user
+		user.setActivated(true);
+		personRepository.saveAndFlush(user);
+	}
 }

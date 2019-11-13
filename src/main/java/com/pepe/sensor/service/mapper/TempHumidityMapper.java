@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TempHumidityMapper {
 
-    @Mapping(target = "token", ignore = true)
-    TempHumidityDTO map(TempHumidity tempHumidity);
+	@Mapping(target = "token", ignore = true)
+	TempHumidityDTO map(TempHumidity tempHumidity);
 
-    TempHumidity map(TempHumidityDTO tempHumidity, Person owner);
+	TempHumidity map(TempHumidityDTO tempHumidity, Person owner);
 }

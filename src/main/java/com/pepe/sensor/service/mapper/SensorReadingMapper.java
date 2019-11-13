@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SensorReadingMapper {
 
-    @Mapping(target = "token", ignore = true)
-    SensorReadingDTO map(SensorReading sensorReading);
+	@Mapping(target = "token", ignore = true)
+	SensorReadingDTO map(SensorReading sensorReading);
 
-    SensorReading map(SensorReadingDTO sensorReadingDTO, Person owner);
+	SensorReading map(SensorReadingDTO sensorReadingDTO, Person owner);
 }
