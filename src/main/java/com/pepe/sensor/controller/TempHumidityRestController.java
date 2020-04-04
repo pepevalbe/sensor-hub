@@ -42,7 +42,7 @@ public class TempHumidityRestController {
 	 */
 	@PostMapping(PUBLIC_TEMP_HUMIDITY_URL)
 	public ResponseEntity<MeasurementDto> post(@RequestBody MeasurementDto measurementDto) {
-		System.out.println(measurementDto.toString());
+
 		return measurementService.create(measurementDto, MeasurementType.TEMP_HUMIDITY)
 				.map(t -> ResponseEntity.status(HttpStatus.CREATED).body(t))
 				.orElse(ResponseEntity.notFound().build());

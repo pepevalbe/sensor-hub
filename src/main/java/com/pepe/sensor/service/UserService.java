@@ -25,13 +25,13 @@ public class UserService {
 	private final PersonMapper personMapper;
 
 	@Transactional(readOnly = true)
-	public PersonDto getUserProfile(String username) {
+	public PersonDto getUserByUsername(String username) {
 
 		return personMapper.map(personRepository.findById(username).orElse(null));
 	}
 
 	@Transactional(readOnly = true)
-	public PersonDto getByEmail(String email) {
+	public PersonDto getUserByEmail(String email) {
 
 		return personMapper.map(personRepository.findByEmail(email).orElse(null));
 	}
@@ -92,6 +92,7 @@ public class UserService {
 		});
 	}
 
+	@Transactional(readOnly = true)
 	public boolean checkTemporaryToken(String email, String token) {
 
 		Person person = personRepository.findByEmail(email).orElse(null);
@@ -100,6 +101,7 @@ public class UserService {
 				&& !person.getTemporaryToken().hasExpired();
 	}
 
+	@Transactional()
 	public void resetPassword(String email, String token, String newPassword) {
 
 		personRepository.findByEmail(email).ifPresent(person -> {

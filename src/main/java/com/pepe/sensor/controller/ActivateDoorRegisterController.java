@@ -27,7 +27,7 @@ public class ActivateDoorRegisterController {
 	 * @return 200 OK
 	 */
 	@RequestMapping(API_DOOR_EVENT_ACTIVATE_URL)
-	public ResponseEntity activate(Principal principal) {
+	public ResponseEntity<Void> activate(Principal principal) {
 
 		activateDoorRegisterService.activate(principal.getName());
 		return ResponseEntity.ok().build();
@@ -40,7 +40,7 @@ public class ActivateDoorRegisterController {
 	 * @return 200 OK
 	 */
 	@RequestMapping(API_DOOR_EVENT_DEACTIVATE_URL)
-	public ResponseEntity deactivate(Principal principal) {
+	public ResponseEntity<Void> deactivate(Principal principal) {
 
 		activateDoorRegisterService.deactivate(principal.getName());
 		return ResponseEntity.ok().build();
