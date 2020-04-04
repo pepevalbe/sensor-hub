@@ -90,6 +90,23 @@ public class UserController {
 	}
 
 	/**
+	 * Modify user profile
+	 *
+	 * @param userDTO User to modify in database
+	 * @return 409 (conflict) in case username or email already exists, or 200 if user is successfully saved
+	 */
+	@RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
+	public ResponseEntity<String> modifyUser(@RequestBody PersonDto userDTO) {
+
+		if (userService.getUserByUsername(userDTO.getUsername()) != null) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya existe, por favor elija otro.");
+		} else {
+			userService.modifyUser(userDTO);
+			return ResponseEntity.status(HttpStatus.CREATED).body("Usuario modificado.");
+		}
+	}
+
+	/**
 	 * Regenerate user Personal Token for API calls
 	 *
 	 * @param principal Automatically filled when user is logged

@@ -48,6 +48,18 @@ public class UserService {
 	}
 
 	@Transactional()
+	public void modifyUser(PersonDto personDTO) {
+		Person user = personRepository.findByEmail(personDTO.getEmail()).orElse(null);
+		user.setUsername(personDTO.getUsername());
+		user.setFirstName(personDTO.getFirstName());
+		user.setLastName(personDTO.getLastName());
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		personRepository.save(user);
+		// TODO: send email
+		log.info("User modified: " + user.getUsername() + " - " + user.getEmail());
+	}
+
+	@Transactional()
 	public PersonDto activateUser(String email, String token) {
 
 		Person user = personRepository.findByEmail(email).orElse(null);
