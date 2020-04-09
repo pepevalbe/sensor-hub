@@ -1,4 +1,4 @@
-package com.pepe.sensor;
+package com.pepe.sensor.demo;
 
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.repository.MeasurementRepository;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /* Component responsible of loading demo user on startup */
 @Component
-public class DataLoader implements ApplicationRunner {
+public class DemoUserLoader implements ApplicationRunner {
 
 	@Autowired
 	private PersonRepository personRepository;

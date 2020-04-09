@@ -1,4 +1,4 @@
-package com.pepe.sensor;
+package com.pepe.sensor.demo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,20 +10,20 @@ import org.springframework.stereotype.Component;
 public class ScheduledTask {
 
 	@Autowired
-	private RestClient restClient;
+	private DemoUserSensor demoUserSensor;
 
 	@Scheduled(fixedRate = 3600000, initialDelay = 1000) // Every hour
 	public void postTempHumidity() throws JsonProcessingException {
-		restClient.postTempHumidity();
+		demoUserSensor.postTempHumidity();
 	}
 
 	@Scheduled(fixedRate = 7200000, initialDelay = 1000) // Every 2 hours
 	public void postDoorEvent() throws InterruptedException {
-		restClient.postDoorEvent();
+		demoUserSensor.postDoorEvent();
 	}
 
 	@Scheduled(fixedRate = 7200000, initialDelay = 1000) // Every 2 hours
 	public void postSensorReading() {
-		restClient.postSensorReading();
+		demoUserSensor.postSensorReading();
 	}
 }

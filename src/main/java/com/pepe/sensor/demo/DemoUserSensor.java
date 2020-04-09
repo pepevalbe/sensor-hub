@@ -1,4 +1,4 @@
-package com.pepe.sensor;
+package com.pepe.sensor.demo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,9 +20,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/* Component responsible for performing http requests against the demo user account acting as a sensor */
+/* Component responsible of performing http requests against the demo user account acting as a sensor */
 @Service
-public class RestClient {
+public class DemoUserSensor {
 
 	private final RestTemplate restTemplate;
 	private final UserService userService;
@@ -34,7 +34,7 @@ public class RestClient {
 	private String WEATHER_URL;
 
 	@Autowired
-	public RestClient(RestTemplateBuilder restTemplateBuilder, UserService userService) {
+	public DemoUserSensor(RestTemplateBuilder restTemplateBuilder, UserService userService) {
 		restTemplate = restTemplateBuilder.build();
 		this.userService = userService;
 	}
