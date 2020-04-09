@@ -1,29 +1,8 @@
 {
   "name": "sensor-hub",
-  "scripts": {
-  },
-  "env": {
-    "EMAIL_PASSWORD": {
-      "required": true
-    },
-    "EMAIL_USERNAME": {
-      "required": true
-    },
-    "SPRING_PROFILES_ACTIVE": "reviewapp",
-    "WEATHER_URL": {
-      "required": true
-    },
-    "HEROKU_APP_NAME": {
-      "required": true
-    }
-  },
-  "formation": {
-    "web": {
-      "quantity": 1
-    }
-  },
   "addons": [
-    "heroku-jawsdb"
+    "mongolab:sandbox",
+    "timber-logging:free"
   ],
   "buildpacks": [
     {
