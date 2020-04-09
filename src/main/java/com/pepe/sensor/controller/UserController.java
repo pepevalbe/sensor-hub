@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URI;
@@ -22,13 +22,13 @@ import java.security.Principal;
 @AllArgsConstructor
 public class UserController {
 
-	public static final String PUBLIC_USERNAME_URL = "/public/username";
-	public static final String USER_USERPROFILE_URL = "/user/userprofile";
-	public static final String PUBLIC_CREATEUSER_URL = "/public/createuser";
-	public static final String USER_REGENERATEPERSONALTOKEN_URL = "/user/regeneratepersonaltoken";
-	public static final String PUBLIC_GENERATEPASSWORDTOKEN_URL = "/public/generatepasswordtoken";
-	public static final String PUBLIC_RESETPASSWORDFORM_URL = "/public/resetpasswordform";
-	public static final String PUBLIC_RESETPASSWORD_URL = "/public/resetpassword";
+	private static final String PUBLIC_USERNAME_URL = "/public/username";
+	private static final String USER_USERPROFILE_URL = "/user/userprofile";
+	private static final String PUBLIC_CREATEUSER_URL = "/public/createuser";
+	private static final String PUBLIC_MODIFYUSER_URL = "/public/modifyuser";
+	private static final String USER_REGENERATEPERSONALTOKEN_URL = "/user/regeneratepersonaltoken";
+	private static final String PUBLIC_GENERATEPASSWORDTOKEN_URL = "/public/generatepasswordtoken";
+	private static final String PUBLIC_RESETPASSWORD_URL = "/public/resetpassword";
 
 	private final UserService userService;
 
@@ -38,7 +38,7 @@ public class UserController {
 	 * @param principal Automatically filled when user is logged
 	 * @return Logged username or 403 forbidden if not logged
 	 */
-	@RequestMapping(value = PUBLIC_USERNAME_URL, method = RequestMethod.GET)
+	@GetMapping(PUBLIC_USERNAME_URL)
 	public ResponseEntity<String> getUsername(Principal principal) {
 
 		if (principal == null) {
@@ -54,7 +54,7 @@ public class UserController {
 	 * @param principal Automatically filled when user is logged
 	 * @return Logged user (Person object) or 403 (forbidden)if not logged
 	 */
-	@RequestMapping(value = USER_USERPROFILE_URL, method = RequestMethod.GET)
+	@GetMapping(USER_USERPROFILE_URL)
 	public ResponseEntity<PersonDto> getUserProfile(Principal principal) {
 
 		if (principal == null) {
@@ -71,7 +71,7 @@ public class UserController {
 	 * @return 409 (conflict) in case username or email already exists, or sign
 	 * up is disabled by admin or 201 (created) if user is successfully created
 	 */
-	@RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
+	@PostMapping(PUBLIC_CREATEUSER_URL)
 	public ResponseEntity<String> createUser(@RequestBody PersonDto userDTO) {
 
 		if ("true".equals(System.getProperty("sign-up-enabled"))) {
@@ -95,7 +95,7 @@ public class UserController {
 	 * @param userDTO User to modify in database
 	 * @return 409 (conflict) in case username or email already exists, or 200 if user is successfully saved
 	 */
-	@RequestMapping(value = PUBLIC_CREATEUSER_URL, method = RequestMethod.POST)
+	@PostMapping(PUBLIC_MODIFYUSER_URL)
 	public ResponseEntity<String> modifyUser(@RequestBody PersonDto userDTO) {
 
 		if (userService.getUserByUsername(userDTO.getUsername()) != null) {
@@ -112,7 +112,7 @@ public class UserController {
 	 * @param principal Automatically filled when user is logged
 	 * @return Logged user (Person object) or 403 forbidden if not logged
 	 */
-	@RequestMapping(value = USER_REGENERATEPERSONALTOKEN_URL, method = RequestMethod.POST)
+	@PostMapping(USER_REGENERATEPERSONALTOKEN_URL)
 	public ResponseEntity<Void> regeneratePersonalToken(Principal principal) {
 
 		if (principal == null) {
@@ -130,7 +130,7 @@ public class UserController {
 	 * @return 200 if token generated or 404 if email not found
 	 */
 	@Transactional
-	@RequestMapping(value = PUBLIC_GENERATEPASSWORDTOKEN_URL)
+	@GetMapping(PUBLIC_GENERATEPASSWORDTOKEN_URL)
 	public ResponseEntity<Void> generatePasswordToken(@RequestParam("email") String email) {
 
 		userService.generatePasswordToken(email);
@@ -150,7 +150,7 @@ public class UserController {
 	 * @return 200 if password changed or 404 if email or token not valid
 	 */
 	@Transactional
-	@RequestMapping(value = PUBLIC_RESETPASSWORD_URL)
+	@GetMapping(PUBLIC_RESETPASSWORD_URL)
 	public ResponseEntity<Void> resetPassword(@RequestParam("email") String email,
 											  @RequestParam("token") String token,
 											  @RequestParam("newPassword") String newPassword) {

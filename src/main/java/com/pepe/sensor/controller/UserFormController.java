@@ -29,7 +29,7 @@ public class UserFormController {
 	 * @param model
 	 * @return Login HTML form
 	 */
-	@RequestMapping(value = PUBLIC_LOGIN_URL)
+	@RequestMapping(PUBLIC_LOGIN_URL)
 	public String loginForm(@RequestParam(name = "error", required = false) String error, Map<String, Object> model) {
 
 		if (error != null) {
@@ -47,7 +47,7 @@ public class UserFormController {
 	 * @return User created HTML
 	 */
 	@Transactional
-	@RequestMapping(value = PUBLIC_ACTIVATEUSER_URL)
+	@RequestMapping(PUBLIC_ACTIVATEUSER_URL)
 	public String activateUser(@RequestParam("email") String email, @RequestParam("token") String token, Map<String, Object> model) {
 
 		PersonDto user = userService.activateUser(email, token);
@@ -70,7 +70,7 @@ public class UserFormController {
 	 * @param model
 	 * @return Reset Password HTML form
 	 */
-	@RequestMapping(value = PUBLIC_RESETPASSWORDFORM_URL)
+	@RequestMapping(PUBLIC_RESETPASSWORDFORM_URL)
 	public String resetPasswordForm(@RequestParam("email") String email, @RequestParam("token") String token, Map<String, Object> model) {
 
 		// If token is Ok we print the form otherwise we show an error

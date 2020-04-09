@@ -1,5 +1,6 @@
 package com.pepe.sensor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pepe.sensor.controller.DoorEventRestController;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/* Component responsible for performing http requests against the demo user account acting as a sensor */
 @Service
 public class RestClient {
 
@@ -32,13 +34,13 @@ public class RestClient {
 	private String WEATHER_URL;
 
 	@Autowired
-	public RestClient(RestTemplateBuilder restTemplateBuilder, UserService userService, ProjectConstants projectConstants) {
+	public RestClient(RestTemplateBuilder restTemplateBuilder, UserService userService) {
 		restTemplate = restTemplateBuilder.build();
 		this.userService = userService;
 	}
 
 	@Async
-	public void postTempHumidity() throws Exception {
+	public void postTempHumidity() throws JsonProcessingException {
 
 		if (WEATHER_URL.isEmpty()) {
 			return;
@@ -56,7 +58,7 @@ public class RestClient {
 	}
 
 	@Async
-	public void postDoorEvent() throws Exception {
+	public void postDoorEvent() throws InterruptedException {
 		Thread.sleep(ThreadLocalRandom.current().nextLong(1, 100) * 60 * 1000L);    // Sleeps 1-100 minutes
 		MeasurementDto doorEventDTO = new MeasurementDto();
 		doorEventDTO.setToken(userService.getUserByUsername("user").getToken());
@@ -65,7 +67,7 @@ public class RestClient {
 	}
 
 	@Async
-	public void postSensorReading() throws Exception {
+	public void postSensorReading() {
 		MeasurementDto sensorReadingDTO = new MeasurementDto();
 		sensorReadingDTO.setValue1(ThreadLocalRandom.current().nextFloat());
 		sensorReadingDTO.setValue2((float) ThreadLocalRandom.current().nextDouble(-100, 100));
