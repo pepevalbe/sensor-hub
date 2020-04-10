@@ -94,13 +94,13 @@ public class UserService {
 	}
 
 	@Transactional()
-	public void generatePasswordToken(String email) {
+	public void rememberCredentials(String email) {
 
 		personRepository.findByEmail(email).ifPresent(person -> {
 			// Create new temporary token
 			person.setTemporaryToken(new TemporaryToken());
 			personRepository.save(person);
-			emailSender.sendNewPasswordLinkEmail(person);
+			emailSender.sendForgottenCredentialsEmail(person);
 		});
 	}
 

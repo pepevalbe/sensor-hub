@@ -126,16 +126,16 @@ public class UserController {
 	}
 
 	/**
-	 * Generate a reset password token and send to user email.
+	 * Generate a reset password token and send forgotten credentials email to user.
 	 *
 	 * @param email User email
 	 * @return 200 if token generated or 404 if email not found
 	 */
 	@Transactional
 	@PostMapping(PUBLIC_GENERATEPASSWORDTOKEN_URL)
-	public ResponseEntity<Void> generatePasswordToken(@RequestParam("email") String email) {
+	public ResponseEntity<Void> rememberCredentials(@RequestParam("email") String email) {
 
-		userService.generatePasswordToken(email);
+		userService.rememberCredentials(email);
 
 		// Always redirect to login page
 		HttpHeaders httpHeaders = new HttpHeaders();

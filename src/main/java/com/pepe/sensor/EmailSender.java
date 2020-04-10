@@ -20,8 +20,8 @@ public class EmailSender {
 	private static final String WELCOME_EMAIL_TEMPLATE = "Hola %s, ya puedes entrar a tu cuenta con tu nombre de usuario (%s) y contraseña: %s\nTu Token Personal es: %s. Utilízalo para enviar información desde tus sensores y no lo compartas.";
 	private static final String PERSONAL_TOKEN_GENERATION_EMAIL_SUBJECT = "Token Personal regenerado en pepe-sensores";
 	private static final String PERSONAL_TOKEN_GENERATION_EMAIL_TEMPLATE = "Hola %s, se ha regenerado tu Token Personal. El nuevo Token es: %s";
-	private static final String FORGOTTEN_PASSWORD_EMAIL_SUBJECT = "Solicitud regeneración de contraseña en pepe-sensores";
-	private static final String FORGOTTEN_PASSWORD_EMAIL_TEMPLATE = "Hola %s, por favor utiliza el siguiente link para crear una nueva contraseña: %s?email=%s&token=%s";
+	private static final String FORGOTTEN_CREDENTIALS_EMAIL_SUBJECT = "Solicitud de recuerdo de credenciales en pepe-sensores";
+	private static final String FORGOTTEN_CREDENTIALS_EMAIL_TEMPLATE = "Hola %s, su usuario en pepe-sensores es: %s\nPuede utilizar el siguiente enlace si desea crear una nueva contraseña: %s";
 
 	@Autowired
 	private JavaMailSender javaMailSender;
@@ -70,12 +70,14 @@ public class EmailSender {
 	}
 
 	@Async
-	public void sendNewPasswordLinkEmail(Person user) {
-		String text = String.format(FORGOTTEN_PASSWORD_EMAIL_TEMPLATE, user.getFirstName(),
-				configVarHolder.getAppBaseUrl() + UserFormController.PUBLIC_RESETPASSWORDFORM_URL,
-				user.getEmail(),
-				user.getTemporaryToken().getToken());
-		log.info("Sending reset password link email to: " + user.getUsername() + " - " + user.getEmail());
-		sendEmail(user.getEmail(), FORGOTTEN_PASSWORD_EMAIL_SUBJECT, text);
+	public void sendForgottenCredentialsEmail(Person user) {
+		String newPasswordLink = configVarHolder.getAppBaseUrl() + UserFormController.PUBLIC_RESETPASSWORDFORM_URL
+				+ "?email=" + user.getEmail() + "&token=" + user.getTemporaryToken().getToken();
+		String text = String.format(FORGOTTEN_CREDENTIALS_EMAIL_TEMPLATE,
+				user.getFirstName(),
+				user.getUsername(),
+				newPasswordLink);
+		log.info("Sending forgotten credentials email to: " + user.getUsername() + " - " + user.getEmail());
+		sendEmail(user.getEmail(), FORGOTTEN_CREDENTIALS_EMAIL_SUBJECT, text);
 	}
 }

@@ -27,7 +27,7 @@
                    name="password"></input>
             <div class="d-flex justify-content-between">
                 <label class="my-2"><input type="checkbox" name="remember-me"></input> Recordar</label>
-                <a class="my-2" href="#" data-toggle="modal" data-target="#regenaratePasswordModal">¿Contraseña
+                <a class="my-2" href="#" data-toggle="modal" data-target="#regenaratePasswordModal">¿Usuario/Contraseña
                     olvidada?</a>
             </div>
             <button class="btn btn-lg btn-info btn-block my-2" type="submit">Entrar</button>
@@ -55,15 +55,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Regenerar contraseña</h5>
+                <h5 class="modal-title">Recuperar credenciales</h5>
                 <button type="button" class="close" data-dismiss="modal">
                     <span>&times;</span>
                 </button>
             </div>
             <form class="form-login" action="/public/generatepasswordtoken" method="POST">
                 <div class="modal-body">
-                    <p class="text-justify">Introduzca su dirección de registro para crear una nueva contraseña.
-                        Recibirá un email con un link para regenerarla.</p>
+                    <p class="text-justify">Introduzca su dirección de registro para recibir un email con su nombre de usuario.
+                        También obtendrá un enlace para regenerar su contraseña si lo desea.</p>
                 </div>
                 <input type="email" class="form-control col-sm-8 offset-sm-2 mb-4" placeholder="Email"
                        th:required="required" th:autofocus="autofocus" name="email"></input>
