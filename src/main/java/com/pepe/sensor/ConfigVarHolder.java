@@ -1,28 +1,33 @@
 package com.pepe.sensor;
 
 import com.pepe.sensor.persistence.ConfigVariable;
+import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.repository.ConfigVariableRepository;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
- * Helper class to get and keep project configuration constants.
- * They are looked up from different sources in the next order:
+ * Helper class manage project configuration variables. All components should used this to load any configuration
+ * Variables are looked up on startup from different sources in the next order:
  * 1: JVM property passed from command line (-Dkey=value)
- * 2: Properties file (application.properties)
+ * 2: Property file (application.properties)
  * 3: Database (config_variable table)
  * 4: Operating System environment variable
  */
 @Slf4j
+@Data
 @Component
 public class ConfigVarHolder {
 
-	public final String APP_BASE_URL;
-	public final String EMAIL_USERNAME;
-	public final String EMAIL_PASSWORD;
-	public final String WEATHER_URL;
+	private final String emailUsername;
+	private final String emailPassword;
+	private final String userRegistryEnabled;
+	private final String appBaseUrl;
+	private final String weatherUrl;
+	private final Person demoUser;
 
 	private final Environment env;
 	private final ConfigVariableRepository configVariableRepository;
@@ -32,13 +37,12 @@ public class ConfigVarHolder {
 		this.env = env;
 		this.configVariableRepository = configVariableRepository;
 
-		String retrievedAppBaseUrl = getConstant("APP_BASE_URL");
-		// If app base url is not found we use heroku app name as workaround
-		// This is needed for review apps in heroku (created on pull requests)
-		APP_BASE_URL = retrievedAppBaseUrl != null ? retrievedAppBaseUrl : "http://" + getConstant("HEROKU_APP_NAME") + ".herokuapp.com";
-		EMAIL_USERNAME = getConstant("EMAIL_USERNAME");
-		EMAIL_PASSWORD = getConstant("EMAIL_PASSWORD");
-		WEATHER_URL = getConstant("WEATHER_URL");
+		emailUsername = getConstant("spring.mail.username");
+		emailPassword = getConstant("spring.mail.password");
+		userRegistryEnabled = getConstant("user_registry_enabled");
+		appBaseUrl = getConstant("app_base_url");
+		weatherUrl = getConstant("weather_url");
+		demoUser = parseDemoUser(getConstant("demo_user"));
 	}
 
 	private String getConstant(String key) {
@@ -52,7 +56,7 @@ public class ConfigVarHolder {
 
 		value = env.getProperty(key);
 		if (value != null) {
-			log.info("Configuration from properties file: " + key + " = " + value);
+			log.info("Configuration from property file: " + key + " = " + value);
 			return value;
 		}
 
@@ -70,5 +74,16 @@ public class ConfigVarHolder {
 
 		log.info("Couldn't find configuration value for: " + key);
 		return value;
+	}
+
+	private Person parseDemoUser(String serializedDemoUser) {
+
+		if (serializedDemoUser == null || serializedDemoUser.split(",").length != 6) {
+			throw new RuntimeException("Can not parse demo user!");
+		}
+
+		String[] demoUserFields = serializedDemoUser.split(",");
+
+		return new Person(demoUserFields[0], demoUserFields[1], demoUserFields[2], demoUserFields[3], demoUserFields[4], demoUserFields[5]);
 	}
 }

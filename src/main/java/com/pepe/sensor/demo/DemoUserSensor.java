@@ -3,6 +3,7 @@ package com.pepe.sensor.demo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pepe.sensor.ConfigVarHolder;
 import com.pepe.sensor.controller.DoorEventRestController;
 import com.pepe.sensor.controller.SensorReadingRestController;
 import com.pepe.sensor.controller.TempHumidityRestController;
@@ -10,7 +11,6 @@ import com.pepe.sensor.service.UserService;
 import com.pepe.sensor.service.dto.MeasurementDto;
 import com.pepe.sensor.service.dto.TempHumidityDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -26,26 +26,22 @@ public class DemoUserSensor {
 
 	private final RestTemplate restTemplate;
 	private final UserService userService;
-
-	@Value("${pepe-sensores.app_base_url}")
-	private String APP_BASE_URL;
-
-	@Value("${pepe-sensores.weather_url}")
-	private String WEATHER_URL;
+	private final ConfigVarHolder configVarHolder;
 
 	@Autowired
-	public DemoUserSensor(RestTemplateBuilder restTemplateBuilder, UserService userService) {
+	public DemoUserSensor(RestTemplateBuilder restTemplateBuilder, UserService userService, ConfigVarHolder configVarHolder) {
 		restTemplate = restTemplateBuilder.build();
 		this.userService = userService;
+		this.configVarHolder = configVarHolder;
 	}
 
 	@Async
 	public void postTempHumidity() throws JsonProcessingException {
 
-		if (WEATHER_URL.isEmpty()) {
+		if (configVarHolder.getWeatherUrl().isEmpty()) {
 			return;
 		}
-		ResponseEntity<String> response = restTemplate.getForEntity(WEATHER_URL, String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity(configVarHolder.getWeatherUrl(), String.class);
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode root = mapper.readTree(response.getBody());
 		JsonNode main = root.path("main");
@@ -54,7 +50,7 @@ public class DemoUserSensor {
 		temphumidityDTO.setHumidity(Float.parseFloat(main.path("humidity").asText()));
 		temphumidityDTO.setToken(userService.getUserByUsername("user").getToken());
 		HttpEntity<TempHumidityDto> request = new HttpEntity<>(temphumidityDTO);
-		restTemplate.postForObject(APP_BASE_URL + TempHumidityRestController.PUBLIC_TEMP_HUMIDITY_URL, request, TempHumidityDto.class);
+		restTemplate.postForObject(configVarHolder.getAppBaseUrl() + TempHumidityRestController.PUBLIC_TEMP_HUMIDITY_URL, request, TempHumidityDto.class);
 	}
 
 	@Async
@@ -63,7 +59,7 @@ public class DemoUserSensor {
 		MeasurementDto doorEventDTO = new MeasurementDto();
 		doorEventDTO.setToken(userService.getUserByUsername("user").getToken());
 		HttpEntity<MeasurementDto> request = new HttpEntity<>(doorEventDTO);
-		restTemplate.postForObject(APP_BASE_URL + DoorEventRestController.PUBLIC_DOOR_EVENT_URL, request, MeasurementDto.class);
+		restTemplate.postForObject(configVarHolder.getAppBaseUrl() + DoorEventRestController.PUBLIC_DOOR_EVENT_URL, request, MeasurementDto.class);
 	}
 
 	@Async
@@ -74,6 +70,6 @@ public class DemoUserSensor {
 		sensorReadingDTO.setValue3((float) ThreadLocalRandom.current().nextGaussian());
 		sensorReadingDTO.setToken(userService.getUserByUsername("user").getToken());
 		HttpEntity<MeasurementDto> request = new HttpEntity<>(sensorReadingDTO);
-		restTemplate.postForObject(APP_BASE_URL + SensorReadingRestController.PUBLIC_GENERIC_SENSOR_URL, request, MeasurementDto.class);
+		restTemplate.postForObject(configVarHolder.getAppBaseUrl() + SensorReadingRestController.PUBLIC_GENERIC_SENSOR_URL, request, MeasurementDto.class);
 	}
 }

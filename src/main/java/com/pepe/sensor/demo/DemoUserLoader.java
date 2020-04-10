@@ -1,10 +1,10 @@
 package com.pepe.sensor.demo;
 
+import com.pepe.sensor.ConfigVarHolder;
 import com.pepe.sensor.persistence.Person;
 import com.pepe.sensor.repository.MeasurementRepository;
 import com.pepe.sensor.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,27 +21,32 @@ public class DemoUserLoader implements ApplicationRunner {
 	private MeasurementRepository measurementRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	@Value("${pepe-sensores.demo_user_role}")
-	private String demoUserRole;
+	@Autowired
+	private ConfigVarHolder configVarHolder;
 
 	@Transactional
 	@Override
 	public void run(ApplicationArguments args) {
 
-		// Create demo user
-		Person user = new Person("user", passwordEncoder.encode("user"), demoUserRole,
-				"user@email.com", "NombreDeUsuario", "ApellidoDeUsuario");
+		// Retrieve demo user from configuration
+		Person demoUser = configVarHolder.getDemoUser();
+
+		// Encode demo user password before persisting
+		demoUser.setPassword(passwordEncoder.encode(demoUser.getPassword()));
 
 		// Remove any previously existing data of demo user
-		measurementRepository.deleteByUsername(user.getUsername());
-		personRepository.deleteByUsername(user.getUsername());
+		measurementRepository.deleteByUsername(demoUser.getUsername());
+		personRepository.deleteByUsername(demoUser.getUsername());
 
 		// Create demo user (creationTimestamp and token are filled here)
-		user = personRepository.save(user);
+		demoUser = personRepository.save(demoUser);
 
 		// Activate demo user
-		user.setActivated(true);
-		personRepository.save(user);
+		demoUser.setActivated(true);
+
+		// Enable door event registers
+		demoUser.setDoorRegisterActiveFlag(true);
+
+		personRepository.save(demoUser);
 	}
 }

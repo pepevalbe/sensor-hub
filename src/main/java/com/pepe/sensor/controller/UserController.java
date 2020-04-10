@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.net.URI;
 import java.security.Principal;
 
+import static com.pepe.sensor.controller.AdminController.SIGN_UP_ENABLED_SYSTEM_PROPERTY;
+
 @Slf4j
 @Controller
 @AllArgsConstructor
@@ -74,7 +76,7 @@ public class UserController {
 	@PostMapping(PUBLIC_CREATEUSER_URL)
 	public ResponseEntity<String> createUser(@RequestBody PersonDto userDTO) {
 
-		if ("true".equals(System.getProperty("sign-up-enabled"))) {
+		if ("true".equals(System.getProperty(SIGN_UP_ENABLED_SYSTEM_PROPERTY))) {
 			if (userService.getUserByUsername(userDTO.getUsername()) != null) {
 				return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya existe, por favor elija otro.");
 			} else if (userService.getUserByEmail(userDTO.getEmail()) != null) {
