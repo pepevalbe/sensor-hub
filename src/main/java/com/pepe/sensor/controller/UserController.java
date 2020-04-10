@@ -132,7 +132,7 @@ public class UserController {
 	 * @return 200 if token generated or 404 if email not found
 	 */
 	@Transactional
-	@GetMapping(PUBLIC_GENERATEPASSWORDTOKEN_URL)
+	@PostMapping(PUBLIC_GENERATEPASSWORDTOKEN_URL)
 	public ResponseEntity<Void> generatePasswordToken(@RequestParam("email") String email) {
 
 		userService.generatePasswordToken(email);
@@ -140,7 +140,7 @@ public class UserController {
 		// Always redirect to login page
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setLocation(URI.create("/public/login"));
-		return new ResponseEntity(httpHeaders, HttpStatus.SEE_OTHER);
+		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class UserController {
 	 * @return 200 if password changed or 404 if email or token not valid
 	 */
 	@Transactional
-	@GetMapping(PUBLIC_RESETPASSWORD_URL)
+	@PostMapping(PUBLIC_RESETPASSWORD_URL)
 	public ResponseEntity<Void> resetPassword(@RequestParam("email") String email,
 											  @RequestParam("token") String token,
 											  @RequestParam("newPassword") String newPassword) {
@@ -162,6 +162,6 @@ public class UserController {
 		// Always redirect to login page
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setLocation(URI.create("/public/login"));
-		return new ResponseEntity(httpHeaders, HttpStatus.SEE_OTHER);
+		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
 	}
 }
