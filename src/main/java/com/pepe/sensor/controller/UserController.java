@@ -1,5 +1,6 @@
 package com.pepe.sensor.controller;
 
+import com.pepe.sensor.VarKeeper;
 import com.pepe.sensor.service.UserService;
 import com.pepe.sensor.service.dto.PersonDto;
 import lombok.AllArgsConstructor;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.net.URI;
 import java.security.Principal;
 
-import static com.pepe.sensor.controller.AdminController.SIGN_UP_ENABLED_SYSTEM_PROPERTY;
-
 @Slf4j
 @Controller
 @AllArgsConstructor
@@ -32,6 +31,7 @@ public class UserController {
 	private static final String PUBLIC_GENERATEPASSWORDTOKEN_URL = "/public/generatepasswordtoken";
 	private static final String PUBLIC_RESETPASSWORD_URL = "/public/resetpassword";
 
+	private final VarKeeper varKeeper;
 	private final UserService userService;
 
 	/**
@@ -76,7 +76,7 @@ public class UserController {
 	@PostMapping(PUBLIC_CREATEUSER_URL)
 	public ResponseEntity<String> createUser(@RequestBody PersonDto userDTO) {
 
-		if ("true".equals(System.getProperty(SIGN_UP_ENABLED_SYSTEM_PROPERTY))) {
+		if (varKeeper.isUserRegistryEnabled()) {
 			if (userService.getUserByUsername(userDTO.getUsername()) != null) {
 				return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya existe, por favor elija otro.");
 			} else if (userService.getUserByEmail(userDTO.getEmail()) != null) {

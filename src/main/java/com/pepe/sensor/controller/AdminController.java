@@ -1,18 +1,17 @@
 package com.pepe.sensor.controller;
 
-import com.pepe.sensor.ConfigVarHolder;
+import com.pepe.sensor.VarKeeper;
+import com.pepe.sensor.persistence.ConfigVariable;
+import com.pepe.sensor.repository.ConfigVariableRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,69 +21,30 @@ import java.util.List;
 @Controller
 public class AdminController {
 
-	public static final String SIGN_UP_ENABLED_SYSTEM_PROPERTY = "sign-up-enabled";
-
+	private static final String ADMIN_CONFIGVARS_ALL_URL = "/admin/configvars/all";
 	private static final String ADMIN_CONFIGVARS_URL = "/admin/configvars";
-	private static final String ADMIN_SIGNUPENABLE_URL = "/admin/signupenable";
-	private static final String ADMIN_SIGNUPDISABLE_URL = "/admin/signupdisable";
-	private static final String ADMIN_SIGNUPSTATUS_URL = "/admin/signupstatus";
 
 	@Autowired
-	private ConfigVarHolder configVarHolder;
-	@Autowired
-	private Environment environment;
+	private VarKeeper varKeeper;
 
-	public AdminController(ConfigVarHolder configVarHolder) {
-		System.setProperty(SIGN_UP_ENABLED_SYSTEM_PROPERTY, configVarHolder.getUserRegistryEnabled());
+	@GetMapping(ADMIN_CONFIGVARS_ALL_URL)
+	public List<ConfigVariable> getConfigVars() {
+
+		List<ConfigVariable> configVariables = new ArrayList<>();
+		varKeeper.getAll().forEach((key, value) -> configVariables.add(new ConfigVariable(key, value)));
+
+		return configVariables;
 	}
 
-	/**
-	 * Get active profiles and config vars
-	 *
-	 * @return Active profiles and config vars
-	 */
-	@RequestMapping(ADMIN_CONFIGVARS_URL)
-	@ResponseBody
-	public List<String> getConfigVars() {
+	@GetMapping(ADMIN_CONFIGVARS_URL)
+	public ConfigVariable getConfigVar(@RequestParam String varKey) {
 
-		List<String> configVars = new ArrayList<>(Arrays.asList(environment.getActiveProfiles()));
-		configVars.add(configVarHolder.getEmailUsername());
-		configVars.add(configVarHolder.getEmailPassword());
-		configVars.add(configVarHolder.getUserRegistryEnabled());
-		configVars.add(configVarHolder.getAppBaseUrl());
-		configVars.add(configVarHolder.getWeatherUrl());
-		configVars.add(configVarHolder.getDemoUser().toString());
-		return configVars;
+		return new ConfigVariable(varKey, varKeeper.get(varKey));
 	}
 
-	/**
-	 * Enable signing up
-	 */
-	@RequestMapping(ADMIN_SIGNUPENABLE_URL)
-	@ResponseStatus(HttpStatus.OK)
-	public void enableSignup() {
-		System.setProperty(SIGN_UP_ENABLED_SYSTEM_PROPERTY, "true");
-		log.info("Sign up enabled");
-	}
+	@PostMapping(ADMIN_CONFIGVARS_URL)
+	public void postConfigVar(@RequestBody ConfigVariable configVariable) {
 
-	/**
-	 * Disable signing up
-	 */
-	@RequestMapping(ADMIN_SIGNUPDISABLE_URL)
-	@ResponseStatus(HttpStatus.OK)
-	public void disableSignup() {
-		System.setProperty(SIGN_UP_ENABLED_SYSTEM_PROPERTY, "false");
-		log.info("Sign up disabled");
-	}
-
-	/**
-	 * Check if signing up status
-	 *
-	 * @return true sign up enabled, false sign up disabled
-	 */
-	@RequestMapping(ADMIN_SIGNUPSTATUS_URL)
-	@ResponseBody
-	public String getSignupStatus() {
-		return System.getProperty("sign-up-enabled");
+		varKeeper.put(configVariable.getVarKey(), configVariable.getVarValue());
 	}
 }

@@ -9,6 +9,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import static com.pepe.sensor.VarKeeper.APP_BASE_URL_KEY;
+import static com.pepe.sensor.VarKeeper.EMAIL_USERNAME_KEY;
+
 /* Component responsible of sending email to users */
 @Slf4j
 @Component
@@ -27,12 +30,12 @@ public class EmailSender {
 	private JavaMailSender javaMailSender;
 
 	@Autowired
-	private ConfigVarHolder configVarHolder;
+	private VarKeeper varKeeper;
 
 	@Async
 	public void sendEmail(String to, String subject, String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(configVarHolder.getEmailUsername());
+		message.setFrom(varKeeper.get(EMAIL_USERNAME_KEY));
 		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(text);
@@ -44,7 +47,7 @@ public class EmailSender {
 	public void sendActivateUserLinkEmail(Person user) {
 		String text = String.format(ACTIVATE_USER_EMAIL_TEMPLATE,
 				user.getFirstName(),
-				configVarHolder.getAppBaseUrl() + UserFormController.PUBLIC_ACTIVATEUSER_URL,
+				varKeeper.get(APP_BASE_URL_KEY) + UserFormController.PUBLIC_ACTIVATEUSER_URL,
 				user.getEmail(),
 				user.getTemporaryToken().getToken());
 		log.info("Sending activate user link email to: " + user.getUsername() + " - " + user.getEmail());
@@ -56,7 +59,7 @@ public class EmailSender {
 		String text = String.format(WELCOME_EMAIL_TEMPLATE,
 				user.getFirstName(),
 				user.getUsername(),
-				configVarHolder.getAppBaseUrl() + UserFormController.PUBLIC_LOGIN_URL,
+				varKeeper.get(APP_BASE_URL_KEY) + UserFormController.PUBLIC_LOGIN_URL,
 				user.getToken());
 		log.info("Sending welcome email to: " + user.getUsername() + " - " + user.getEmail());
 		sendEmail(user.getEmail(), WELCOME_EMAIL_SUBJECT, text);
@@ -71,7 +74,7 @@ public class EmailSender {
 
 	@Async
 	public void sendForgottenCredentialsEmail(Person user) {
-		String newPasswordLink = configVarHolder.getAppBaseUrl() + UserFormController.PUBLIC_RESETPASSWORDFORM_URL
+		String newPasswordLink = varKeeper.get(APP_BASE_URL_KEY) + UserFormController.PUBLIC_RESETPASSWORDFORM_URL
 				+ "?email=" + user.getEmail() + "&token=" + user.getTemporaryToken().getToken();
 		String text = String.format(FORGOTTEN_CREDENTIALS_EMAIL_TEMPLATE,
 				user.getFirstName(),
