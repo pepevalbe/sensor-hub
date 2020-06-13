@@ -4,7 +4,7 @@ import com.pepe.sensor.persistence.Measurement;
 import com.pepe.sensor.persistence.Person;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.mapping.event.BeforeSaveCallback;
+import org.springframework.data.mongodb.core.mapping.event.BeforeConvertCallback;
 
 import java.util.UUID;
 
@@ -12,8 +12,8 @@ import java.util.UUID;
 public class EntityCallbackConfiguration {
 
 	@Bean
-	BeforeSaveCallback<Person> beforeSavePerson() {
-		return (entity, document, collection) -> {
+	BeforeConvertCallback<Person> beforeSavePerson() {
+		return (entity, document) -> {
 			entity.setCreationTimestamp(System.currentTimeMillis());
 			entity.setToken(UUID.randomUUID().toString());
 			entity.setActivated(false);
@@ -23,8 +23,8 @@ public class EntityCallbackConfiguration {
 	}
 
 	@Bean
-	BeforeSaveCallback<Measurement> beforeSaveMeasurement() {
-		return (entity, document, collection) -> {
+	BeforeConvertCallback<Measurement> beforeConvertMeasurementCallback() {
+		return (entity, document) -> {
 			entity.setTimestamp(System.currentTimeMillis());
 			return entity;
 		};

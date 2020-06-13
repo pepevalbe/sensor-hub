@@ -29,7 +29,6 @@ public class MeasurementService {
 
 	@Transactional
 	public Optional<MeasurementDto> create(MeasurementDto measurementDto, MeasurementType type) {
-		measurementDto.setTimestamp(System.currentTimeMillis());
 		return personRepository.findByToken(measurementDto.getToken())
 				.map(person -> measurementMapper.map(measurementDto, type, person))
 				.map(measurementRepository::save)
