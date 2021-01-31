@@ -12,12 +12,14 @@ import java.util.UUID;
 public class EntityCallbackConfiguration {
 
 	@Bean
-	BeforeConvertCallback<Person> beforeSavePerson() {
+	BeforeConvertCallback<Person> beforeConvertPersonCallback() {
 		return (entity, document) -> {
-			entity.setCreationTimestamp(System.currentTimeMillis());
-			entity.setToken(UUID.randomUUID().toString());
-			entity.setActivated(false);
-			entity.setDoorRegisterActiveFlag(false);
+			if (entity.getCreationTimestamp() == 0) {
+				entity.setCreationTimestamp(System.currentTimeMillis());
+				entity.setToken(UUID.randomUUID().toString());
+				entity.setActivated(false);
+				entity.setDoorRegisterActiveFlag(false);
+			}
 			return entity;
 		};
 	}
@@ -25,7 +27,9 @@ public class EntityCallbackConfiguration {
 	@Bean
 	BeforeConvertCallback<Measurement> beforeConvertMeasurementCallback() {
 		return (entity, document) -> {
-			entity.setTimestamp(System.currentTimeMillis());
+			if (entity.getTimestamp() == 0) {
+				entity.setTimestamp(System.currentTimeMillis());
+			}
 			return entity;
 		};
 	}
