@@ -1,5 +1,5 @@
 // Constants
-var GET_USER_PROFILE_URL = "/user/userprofile";
+var GET_USER_PROFILE_URL = "/public/userprofile";
 var REGENERATE_TOKEN_URL = "/user/regeneratepersonaltoken";
 
 $(document).ready(function () {
