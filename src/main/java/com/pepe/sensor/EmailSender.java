@@ -32,18 +32,6 @@ public class EmailSender {
 	@Autowired
 	private VarKeeper varKeeper;
 
-	@Async
-	public void sendEmail(String to, String subject, String text) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(varKeeper.get(EMAIL_USERNAME_KEY));
-		message.setTo(to);
-		message.setSubject(subject);
-		message.setText(text);
-		javaMailSender.send(message);
-		log.info("Email sent to: " + to);
-	}
-
-	@Async
 	public void sendActivateUserLinkEmail(Person user) {
 		String text = String.format(ACTIVATE_USER_EMAIL_TEMPLATE,
 				user.getFirstName(),
@@ -54,7 +42,6 @@ public class EmailSender {
 		sendEmail(user.getEmail(), ACTIVATE_USER_EMAIL_SUBJECT, text);
 	}
 
-	@Async
 	public void sendWelcomeEmail(Person user) {
 		String text = String.format(WELCOME_EMAIL_TEMPLATE,
 				user.getFirstName(),
@@ -65,14 +52,12 @@ public class EmailSender {
 		sendEmail(user.getEmail(), WELCOME_EMAIL_SUBJECT, text);
 	}
 
-	@Async
 	public void sendNewPersonalTokenEmail(Person user) {
 		String text = String.format(PERSONAL_TOKEN_GENERATION_EMAIL_TEMPLATE, user.getFirstName(), user.getToken());
 		log.info("Sending new personal token email to: " + user.getUsername() + " - " + user.getEmail());
 		sendEmail(user.getEmail(), PERSONAL_TOKEN_GENERATION_EMAIL_SUBJECT, text);
 	}
 
-	@Async
 	public void sendForgottenCredentialsEmail(Person user) {
 		String newPasswordLink = varKeeper.get(APP_BASE_URL_KEY) + UserFormController.PUBLIC_RESETPASSWORDFORM_URL
 				+ "?email=" + user.getEmail() + "&token=" + user.getTemporaryToken().getToken();
@@ -82,5 +67,15 @@ public class EmailSender {
 				newPasswordLink);
 		log.info("Sending forgotten credentials email to: " + user.getUsername() + " - " + user.getEmail());
 		sendEmail(user.getEmail(), FORGOTTEN_CREDENTIALS_EMAIL_SUBJECT, text);
+	}
+
+	private void sendEmail(String to, String subject, String text) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom(varKeeper.get(EMAIL_USERNAME_KEY));
+		message.setTo(to);
+		message.setSubject(subject);
+		message.setText(text);
+		javaMailSender.send(message);
+		log.info("Email sent to: " + to);
 	}
 }
