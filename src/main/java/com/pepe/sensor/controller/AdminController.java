@@ -2,7 +2,6 @@ package com.pepe.sensor.controller;
 
 import com.pepe.sensor.VarKeeper;
 import com.pepe.sensor.persistence.ConfigVariable;
-import com.pepe.sensor.repository.ConfigVariableRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
