@@ -1,8 +1,7 @@
 {
   "name": "sensor-hub",
   "addons": [
-    "mongolab:sandbox",
-    "timber-logging:free"
+    "logentries:le_tryit"
   ],
   "buildpacks": [
     {
